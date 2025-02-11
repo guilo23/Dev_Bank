@@ -10,8 +10,7 @@ const LoginPageComponente: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Aqui você pode adicionar a lógica de autenticação
-    console.log("Login attempt", { email, password })
+    //console.log("Login attempt", { email, password })
   }
 
   return (
