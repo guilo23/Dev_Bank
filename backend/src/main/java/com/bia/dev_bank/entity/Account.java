@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_account")
+@Table(name = "tb_accounts")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

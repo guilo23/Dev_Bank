@@ -9,16 +9,26 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_customers")
+@Table(name = "tb_users")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-public class Customer {
+@Getter @Setter
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String customerType;
+    private String name;
+
+    private String birthday;
+
+    @Column(unique = true)
+    private String CPF;
+
+    @Column(unique = true)
+    private String email;
+
+    private String phoneNumber;
 
 }
