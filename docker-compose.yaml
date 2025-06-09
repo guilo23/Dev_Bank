@@ -19,7 +19,7 @@ services:
 
   app:
     build:
-      context: .
+      context: ./backend/dockerfile
       args:
         - DATABASE_JDBC=jdbc:postgresql://postgres:5432/${DATABASE_NAME}
         - DATABASE_USERNAME=${DATABASE_USERNAME}
