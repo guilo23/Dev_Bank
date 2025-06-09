@@ -21,8 +21,8 @@ public class Account {
     private String AccountNumber;
 
     @ManyToOne
-    @JoinColumn(name="costumer_id")
-    private Customer costumer;
+    @JoinColumn(name="customer_id")
+    private Customer customer;
 
     private String AccountType;
 
