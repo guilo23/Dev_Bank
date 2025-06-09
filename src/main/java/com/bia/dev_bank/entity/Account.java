@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tb_account")
@@ -19,14 +18,11 @@ import java.util.UUID;
 public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String AccountNumber;
 
     @ManyToOne
-    @JoinColumn(name="person_id")
-    private Costumer costumer;
-
-    private String AccountNumber;
+    @JoinColumn(name="customer_id")
+    private Customer customer;
 
     private String AccountType;
 
