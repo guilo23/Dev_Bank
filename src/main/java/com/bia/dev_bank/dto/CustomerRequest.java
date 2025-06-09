@@ -1,8 +1,6 @@
 package com.bia.dev_bank.dto;
 
-import jakarta.persistence.Column;
-
-public record CostumerRequest(String name,
+public record CustomerRequest(String name,
                               String email,
                               String password,
                               String birthday,

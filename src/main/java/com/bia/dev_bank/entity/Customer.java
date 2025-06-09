@@ -12,8 +12,9 @@ import java.util.List;
 @Table(name = "tb_costumer")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter
-public class Costumer {
+@Getter
+@Setter
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
