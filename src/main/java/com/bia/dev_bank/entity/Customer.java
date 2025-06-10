@@ -34,7 +34,7 @@ public class Customer {
 
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "costumer",
+    @OneToMany(mappedBy = "customer",
             cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Account> accounts;
 
