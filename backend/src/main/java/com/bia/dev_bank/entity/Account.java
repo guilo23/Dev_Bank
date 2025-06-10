@@ -27,10 +27,10 @@ public class Account {
 
     private String accountType;
 
-    @OneToMany(mappedBy = "originAccount")
+    @OneToMany(mappedBy = "originAccount",cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
     private List<Transaction> transactionsSent;
 
-    @OneToMany(mappedBy = "destinyAccount")
+    @OneToMany(mappedBy = "destinyAccount",cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
     private List<Transaction> transactionsReceived;
 
     private double currentBalance;
