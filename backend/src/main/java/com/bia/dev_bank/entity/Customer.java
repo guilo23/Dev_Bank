@@ -6,19 +6,36 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
+import java.util.List;
 
 @Entity
-@Table(name = "tb_customers")
+@Table(name = "tb_costumer")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class Customer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
 
-    private String customerType;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @Column(unique = true)
+    private String email;
+
+    private String password;
+
+    private String birthday;
+
+    @Column(unique = true)
+    private String CPF;
+
+    private String phoneNumber;
+
+    @OneToMany(mappedBy = "customer",
+            cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Account> accounts;
 
 }

@@ -6,11 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
-import java.util.UUID;
+import java.util.List;
 
 @Entity
-@Table(name = "tb_accounts")
+@Table(name = "tb_account")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -18,19 +19,22 @@ import java.util.UUID;
 public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String accountNumber;
 
-    private String AccountNumber;
+    @ManyToOne
+    @JoinColumn(name="customer_id")
+    private Customer customer;
 
-    private String AccountType;
+    private String accountType;
+
+    @OneToMany(mappedBy = "originAccount")
+    private List<Transaction> transactionsSent;
+
+    @OneToMany(mappedBy = "destinyAccount")
+    private List<Transaction> transactionsReceived;
 
     private double currentBalance;
 
-    private Date dateOpened;
-
-    private Date dateClosed;
-
-    private String accountStatus;
+    private LocalDate dateOpened;
 
 }
