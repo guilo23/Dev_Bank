@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -18,13 +19,13 @@ import java.util.List;
 public class Account {
 
     @Id
-    private String AccountNumber;
+    private String accountNumber;
 
     @ManyToOne
     @JoinColumn(name="customer_id")
     private Customer customer;
 
-    private String AccountType;
+    private String accountType;
 
     @OneToMany(mappedBy = "originAccount")
     private List<Transaction> transactionsSent;
@@ -34,10 +35,6 @@ public class Account {
 
     private double currentBalance;
 
-    private Date dateOpened;
-
-    private Date dateClosed;
-
-    private String accountStatus;
+      private LocalDate dateOpened;
 
 }
