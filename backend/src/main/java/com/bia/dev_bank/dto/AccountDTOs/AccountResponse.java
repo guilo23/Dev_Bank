@@ -1,7 +1,6 @@
-package com.bia.dev_bank.dto;
+package com.bia.dev_bank.dto.AccountDTOs;
 
 import com.bia.dev_bank.entity.Account;
-import com.bia.dev_bank.entity.Customer;
 
 public record AccountResponse(
         String accountNumber,

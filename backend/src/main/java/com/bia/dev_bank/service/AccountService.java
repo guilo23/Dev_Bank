@@ -1,8 +1,8 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.AccountRequest;
-import com.bia.dev_bank.dto.AccountResponse;
-import com.bia.dev_bank.dto.AccountUpdate;
+import com.bia.dev_bank.dto.AccountDTOs.AccountRequest;
+import com.bia.dev_bank.dto.AccountDTOs.AccountResponse;
+import com.bia.dev_bank.dto.AccountDTOs.AccountUpdate;
 import com.bia.dev_bank.entity.Account;
 import com.bia.dev_bank.repository.AccountRepository;
 import com.bia.dev_bank.repository.CustomerRepository;
@@ -23,12 +23,32 @@ public class AccountService {
     @Autowired
     private CustomerRepository customerRepository;
 
+    public void debit(String accountNumber, Double amount) {
+        var account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));;
 
+        if (account.getCurrentBalance() < amount) {
+            throw new IllegalArgumentException("Saldo insuficiente.");
+        }
+
+        account.setCurrentBalance(account.getCurrentBalance() - amount);
+        accountRepository.save(account);
+    }
+    public void credit(String accountNumber, Double amount) {
+        var account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
+
+        account.setCurrentBalance(account.getCurrentBalance() + amount);
+        accountRepository.save(account);
+    }
     public AccountResponse createAccount(AccountRequest request,Long customerId){
         var customer = customerRepository.findById(customerId).orElseThrow(
                 ()-> new EntityNotFoundException("Não foi encontrado nenhum cliente com o id:  " + customerId));
+
+      var accountNumberWithDv = generateAccountNumberWithCheckDigit();
+
         var account = new Account(
-                generateAccountNumber(),
+                accountNumberWithDv,
                 customer,
                 request.AccountType(),
                 List.of(),
@@ -44,7 +64,8 @@ public class AccountService {
         );
     }
     public AccountResponse getAccountById(String accountNumber){
-        var account = accountRepository.findByAccountNumber(accountNumber);
+        var account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));;
 
         return  new AccountResponse(account.getAccountNumber(),
                 account.getCustomer().getName(),
@@ -58,66 +79,34 @@ public class AccountService {
         return  accounts.stream().map(AccountResponse::new).collect(Collectors.toList());
     }
     public void accountUpdate(String accountNumber, AccountUpdate update){
-        var account = accountRepository.findByAccountNumber(accountNumber);
+        var account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
+
+        account.setCurrentBalance(update.currentBalance());
+        account.setAccountType(update.AccountType());
         accountRepository.save(account);
     }
-    public void accountUpdate(String accountNumber){
-        var account = accountRepository.findByAccountNumber(accountNumber);
+    public void accountDelete(String accountNumber){
+        var account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
         accountRepository.delete(account);
     }
 
-    private String generateAccountNumber() {
-        return String.format("%08d", new Random().nextInt(100_000_000));
+    public static String generateAccountNumberWithCheckDigit() {
+        var accountNumber =  String.format("%08d", new Random().nextInt(100_000_000));
+
+        int[] weights = {9, 8, 7, 6, 5, 4, 3, 2};
+        int sum = 0;
+
+        for (int i = 0; i < accountNumber.length(); i++) {
+            int digit = Character.getNumericValue(accountNumber.charAt(i));
+            sum += digit * weights[i];
+        }
+
+        int remainder = sum % 11;
+        int checkDigit = (remainder < 2) ? 0 : 11 - remainder;
+
+        return accountNumber + "-" + checkDigit;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    public class ContaGenerator {
-//
-//        public static String gerarNumeroConta(int sequencia) {
-//            String conta = String.format("%08d", sequencia); // Ex: "00000001"
-//            int dv = calcularDigitoVerificador(conta);
-//            return conta + "-" + dv;
-//        }
-//
-//        private static int calcularDigitoVerificador(String conta) {
-//            int[] pesos = {9, 8, 7, 6, 5, 4, 3, 2}; // pesos de trás pra frente
-//            int soma = 0;
-//
-//            for (int i = 0; i < conta.length(); i++) {
-//                int digito = Character.getNumericValue(conta.charAt(i));
-//                soma += digito * pesos[i];
-//            }
-//
-//            int resto = soma % 11;
-//            if (resto < 2) return 0;
-//            return 11 - resto;
-//        }
-//
-//        public static void main(String[] args) {
-//            for (int i = 1; i <= 10; i++) {
-//                System.out.println(gerarNumeroConta(i));
-//            }
-//        }
-//    }
-
 
 }

@@ -1,10 +1,7 @@
 package com.bia.dev_bank.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -14,14 +11,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Double amount;
-
-    private String type;
 
     @ManyToOne
     @JoinColumn(name = "destiny_account_id")
@@ -32,5 +28,7 @@ public class Transaction {
     private Account originAccount;
 
     private LocalDate transactionDate;
+
+
 
 }
