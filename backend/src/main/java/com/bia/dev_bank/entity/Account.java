@@ -1,5 +1,6 @@
 package com.bia.dev_bank.entity;
 
+import com.bia.dev_bank.entity.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +26,8 @@ public class Account {
     @JoinColumn(name="customer_id")
     private Customer customer;
 
-    private String accountType;
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType;
 
     @OneToMany(mappedBy = "originAccount",cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
     private List<Transaction> transactionsSent;

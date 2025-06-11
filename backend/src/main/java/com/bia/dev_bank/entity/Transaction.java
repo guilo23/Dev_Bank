@@ -29,6 +29,4 @@ public class Transaction {
 
     private LocalDate transactionDate;
 
-
-
 }

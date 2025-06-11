@@ -50,7 +50,7 @@ public class AccountService {
         var account = new Account(
                 accountNumberWithDv,
                 customer,
-                request.AccountType(),
+                request.accountType(),
                 List.of(),
                 List.of(),
                 request.currentBalance(),

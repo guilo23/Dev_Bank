@@ -1,7 +1,7 @@
 package com.bia.dev_bank.controller;
 
-import com.bia.dev_bank.dto.CustomerUpdate;
-import com.bia.dev_bank.dto.CustomerRequest;
+import com.bia.dev_bank.dto.costumerDTOs.CustomerUpdate;
+import com.bia.dev_bank.dto.costumerDTOs.CustomerRequest;
 import com.bia.dev_bank.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
