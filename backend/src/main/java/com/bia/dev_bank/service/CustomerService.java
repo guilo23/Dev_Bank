@@ -1,8 +1,8 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.CustomerRequest;
-import com.bia.dev_bank.dto.CustomerResponse;
-import com.bia.dev_bank.dto.CustomerUpdate;
+import com.bia.dev_bank.dto.costumerDTOs.CustomerRequest;
+import com.bia.dev_bank.dto.costumerDTOs.CustomerResponse;
+import com.bia.dev_bank.dto.costumerDTOs.CustomerUpdate;
 import com.bia.dev_bank.entity.Customer;
 import com.bia.dev_bank.repository.CustomerRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -40,13 +40,14 @@ public class CustomerService {
                                     customer.getPhoneNumber());
     }
     public CustomerResponse customerUpdate(Long id, CustomerUpdate update){
-       var costumer = customerRepository.findById(id).orElseThrow(()->
+       var customer = customerRepository.findById(id).orElseThrow(()->
                new EntityNotFoundException("Customer not found with id: " + id));
-       costumer.setEmail(update.email());
-       costumer.setPassword(update.password());
-       costumer.setPhoneNumber(update.phoneNumber());
+       customer.setEmail(update.email());
+       customer.setPassword(update.password());
+       customer.setPhoneNumber(update.phoneNumber());
+       customerRepository.save(customer);
 
-       return new CustomerResponse(costumer.getName(), costumer.getEmail(), costumer.getCPF(), costumer.getPhoneNumber());
+       return new CustomerResponse(customer.getName(), customer.getEmail(), customer.getCPF(), customer.getPhoneNumber());
     }
     public void customerDelete(Long id){
         customerRepository.deleteById(id);

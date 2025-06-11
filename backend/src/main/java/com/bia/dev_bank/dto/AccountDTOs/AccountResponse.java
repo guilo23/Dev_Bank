@@ -1,18 +1,19 @@
 package com.bia.dev_bank.dto.AccountDTOs;
 
 import com.bia.dev_bank.entity.Account;
+import com.bia.dev_bank.entity.enums.AccountType;
 
 public record AccountResponse(
         String accountNumber,
         String customerName,
-        String accountType,
+        AccountType accountType,
         double currentBalance
 ) {
     public AccountResponse(Account account) {
         this(
                 account.getAccountNumber(),
-                account.getAccountType(),
                 account.getCustomer().getName(),
+                account.getAccountType(),
                 account.getCurrentBalance()
         );
     }

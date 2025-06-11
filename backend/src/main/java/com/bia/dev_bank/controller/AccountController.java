@@ -1,7 +1,7 @@
 package com.bia.dev_bank.controller;
 
-import com.bia.dev_bank.dto.AccountRequest;
-import com.bia.dev_bank.dto.AccountUpdate;
+import com.bia.dev_bank.dto.AccountDTOs.AccountRequest;
+import com.bia.dev_bank.dto.AccountDTOs.AccountUpdate;
 import com.bia.dev_bank.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,7 @@ public class AccountController {
     }
     @DeleteMapping("/{accountNumber}")
     public ResponseEntity accountDelete(@PathVariable String accountNumber){
-        accountService.accountUpdate(accountNumber);
+        accountService.accountDelete(accountNumber);
         return ResponseEntity.ok().body(":( Sua conta foi deletada, espero " +
                 "que continue sendo nosso cliente");
     }

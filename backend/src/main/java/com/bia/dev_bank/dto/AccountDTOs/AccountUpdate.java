@@ -1,6 +1,8 @@
 package com.bia.dev_bank.dto.AccountDTOs;
 
-public record AccountUpdate( String AccountType,
-                             double currentBalance
+import com.bia.dev_bank.entity.enums.AccountType;
+
+public record AccountUpdate(AccountType AccountType,
+                            double currentBalance
                             ) {
 }
