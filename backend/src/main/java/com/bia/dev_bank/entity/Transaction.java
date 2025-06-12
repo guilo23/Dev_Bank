@@ -27,6 +27,10 @@ public class Transaction {
     @JoinColumn(name = "origin_account_id")
     private Account originAccount;
 
+    @ManyToOne
+    @JoinColumn(name = "loan_payment_id")
+    private LoanPayments loanPayment;
+
     private LocalDate transactionDate;
 
 }

@@ -1,17 +1,20 @@
 package com.bia.dev_bank.controller;
 
 import com.bia.dev_bank.dto.transactionDTOs.TransactionRequest;
+import com.bia.dev_bank.service.LoanPaymentsService;
 import com.bia.dev_bank.service.TransactionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/bia/transactions")
 public class TransactionController {
-    @Autowired
-    private TransactionService transactionService;
+
+    private final TransactionService transactionService;
+    private final LoanPaymentsService loanPaymentsService;
 
     @PostMapping("/{originAccountNumber}")
     public ResponseEntity createTransaction(@RequestBody TransactionRequest request,
@@ -40,5 +43,10 @@ public class TransactionController {
     public ResponseEntity transactionsDelete(@PathVariable Long id){
         transactionService.transactionDelete(id);
         return ResponseEntity.ok().body("Transação foi excluida com sucesso a policia não vai te pegar :)");
+    }
+    @PostMapping("/loanPayments/{loanPaymentsId}")
+    public ResponseEntity transactionAddLoanPayments(@PathVariable Long loanPaymentsId,@RequestBody TransactionRequest request){
+        loanPaymentsService.addTransactionToLoanPayment(loanPaymentsId,request);
+        return ResponseEntity.ok().body("Pago com sucesso");
     }
 }
