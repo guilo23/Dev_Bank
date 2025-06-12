@@ -1,6 +1,5 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.AccountDTOs.AccountUpdate;
 import com.bia.dev_bank.dto.transactionDTOs.TransactionRequest;
 import com.bia.dev_bank.dto.transactionDTOs.TransactionResponse;
 import com.bia.dev_bank.entity.Transaction;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +32,9 @@ public class TransactionService {
                 request.amount(),
                 accountD,
                 accountO,
+                null,
                 LocalDate.now()
+
         );
         transactionRepository.save(transaction);
 
