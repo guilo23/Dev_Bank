@@ -41,8 +41,6 @@ public class LoanRepositoryTest {
 
         assertNotNull(saved.getId());
         assertNotNull(saved.getTotalPayable());
-
-
     }
     @Test
     void shouldDeleteLoan(){
@@ -55,9 +53,6 @@ public class LoanRepositoryTest {
 
         Loan saved = loanRepository.save(loan);
         loanRepository.delete(loan);
-
         assertTrue(loanRepository.findById(loan.getId()).isEmpty());
     }
-
-
 }

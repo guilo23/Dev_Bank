@@ -90,11 +90,10 @@ class LoanPaymentsServiceTest {
 
     @Test
     void shouldAddTransactionToLoanPayment() {
-        // Arrange
+
         Long loanPaymentId = 1L;
         TransactionRequest request = new TransactionRequest(100.00, "12345",String.valueOf(1L));
 
-        // mock da conta e customer
         Customer customer = new Customer();
         customer.setName("João da Silva");
 
@@ -106,11 +105,9 @@ class LoanPaymentsServiceTest {
         loanPayments.setLoanPaymentId(loanPaymentId);
         loanPayments.setTransactions(new ArrayList<>());
 
-        // comportamento dos mocks
         when(loanPaymentsRepository.findById(loanPaymentId)).thenReturn(Optional.of(loanPayments));
         when(accountRepository.findByAccountNumber("12345")).thenReturn(Optional.of(account));
 
-        // Simular salvamento da transação
         Transaction savedTransaction = new Transaction();
         savedTransaction.setAmount(100.00);
         savedTransaction.setDestinyAccount(account);
@@ -118,10 +115,8 @@ class LoanPaymentsServiceTest {
 
         when(transactionRepository.save(any(Transaction.class))).thenReturn(savedTransaction);
 
-        // Act
         TransactionResponse response = loanPaymentsService.addTransactionToLoanPayment(loanPaymentId, request);
 
-        // Assert
         assertEquals(100.00, response.amount());
         assertEquals("João da Silva", response.name());
     }

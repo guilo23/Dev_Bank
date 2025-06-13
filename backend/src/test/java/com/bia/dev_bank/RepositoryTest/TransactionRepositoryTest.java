@@ -33,7 +33,7 @@ public class TransactionRepositoryTest {
     private Customer originCustomer;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         originCustomer = new Customer();
         originCustomer.setName("Carlos");
 
@@ -49,12 +49,8 @@ public class TransactionRepositoryTest {
         destinyAccount.setCustomer(destinyCustomer);
     }
 
-
     @Test
-    void shouldfindAndSaveAccount(){
-
-
-
+    void shouldfindAndSaveAccount() {
         var transaction = new Transaction(
                 null,
                 100.00,
@@ -68,11 +64,12 @@ public class TransactionRepositoryTest {
         var found = transactionRepository.findById(transaction.getId()).orElse(null);
         assertNotNull(found);
         assertEquals("Carlos", found.getDestinyAccount().getCustomer().getName());
-        assertEquals(100.00,found.getAmount());
-        assertEquals("Maria",found.getOriginAccount().getCustomer().getName());
+        assertEquals(100.00, found.getAmount());
+        assertEquals("Maria", found.getOriginAccount().getCustomer().getName());
     }
+
     @Test
-    void ShouldDeleteAccount(){
+    void ShouldDeleteAccount() {
         var transaction = new Transaction(
                 null,
                 100.00,

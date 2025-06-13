@@ -80,10 +80,8 @@ class LoanServiceTest {
                 10,
                 LoanType.PERSONAL
         );
-
         when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
                 loanService.createLoan(request, customerId));
 
@@ -92,43 +90,38 @@ class LoanServiceTest {
 
     @Test
     void shouldReturnAllLoans() {
-        // Arrange
         Loan loan1 = new Loan(1L, LoanType.PERSONAL, LocalDate.now(), new BigDecimal("1000"), 10, null, null, new BigDecimal("0.1"), new Customer(), List.of());
         Loan loan2 = new Loan(2L, LoanType.BUSINESS, LocalDate.now(), new BigDecimal("2000"), 24, null, null, new BigDecimal("0.2"), new Customer(), List.of());
 
         when(loanRepository.findAll()).thenReturn(List.of(loan1, loan2));
 
-        // Act
         List<LoanResponse> loans = loanService.findAllLoans();
 
-        // Assert
         assertEquals(2, loans.size());
         assertEquals(loan1.getLoanAmount(), loans.get(0).loanAmount());
     }
 
     @Test
     void shouldReturnLoanById() {
-        // Arrange
+
         Long loanId = 1L;
         Loan loan = new Loan(loanId, LoanType.PERSONAL, LocalDate.now(), new BigDecimal("5000"), 12, null, null, new BigDecimal("0.1"), new Customer(), List.of());
 
         when(loanRepository.findById(loanId)).thenReturn(Optional.of(loan));
 
-        // Act
+
         LoanResponse response = loanService.findLoanById(loanId);
 
-        // Assert
         assertEquals(loan.getLoanAmount(), response.loanAmount());
         assertEquals(loan.getInstallments(), response.installments());
     }
 
     @Test
     void shouldThrowExceptionWhenLoanNotFound() {
-        // Arrange
+
         Long loanId = 99L;
         when(loanRepository.findById(loanId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(RuntimeException.class, () -> loanService.findLoanById(loanId));
     }
 }
