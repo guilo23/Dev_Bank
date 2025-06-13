@@ -1,6 +1,6 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.loanDTOs.LoanUpdate;
+
 import com.bia.dev_bank.dto.loanDTOs.LoanRequest;
 import com.bia.dev_bank.dto.loanDTOs.LoanResponse;
 import com.bia.dev_bank.entity.Customer;
@@ -88,8 +88,4 @@ public class LoanService {
                 -> new EntityNotFoundException("Emprestimo inexistente para esse id:"));
         return new LoanResponse(loan);
     }
-//    public LoanResponse loanUpdate(LoanUpdate update,Long id){
-//        var loan = loanRepository.findById(id);
-//        loan.se
-//    }
 }

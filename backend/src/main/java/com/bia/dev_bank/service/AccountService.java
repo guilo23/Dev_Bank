@@ -1,8 +1,8 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.AccountDTOs.AccountRequest;
-import com.bia.dev_bank.dto.AccountDTOs.AccountResponse;
-import com.bia.dev_bank.dto.AccountDTOs.AccountUpdate;
+import com.bia.dev_bank.dto.accountDTOs.AccountRequest;
+import com.bia.dev_bank.dto.accountDTOs.AccountResponse;
+import com.bia.dev_bank.dto.accountDTOs.AccountUpdate;
 import com.bia.dev_bank.entity.Account;
 import com.bia.dev_bank.repository.AccountRepository;
 import com.bia.dev_bank.repository.CustomerRepository;
