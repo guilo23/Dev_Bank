@@ -1,7 +1,7 @@
 package com.bia.dev_bank.controller;
 
-import com.bia.dev_bank.dto.AccountDTOs.AccountRequest;
-import com.bia.dev_bank.dto.AccountDTOs.AccountUpdate;
+import com.bia.dev_bank.dto.accountDTOs.AccountRequest;
+import com.bia.dev_bank.dto.accountDTOs.AccountUpdate;
 import com.bia.dev_bank.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ public class AccountController {
     @PostMapping("/{customerId}")
     public ResponseEntity createAccount (@RequestBody AccountRequest request,@PathVariable Long customerId){
         var account = accountService.createAccount(request,customerId);
-        return  ResponseEntity.ok().body(account + "Parabéns sua conta foi criada com sucesso");
+        return  ResponseEntity.ok().body(account.accountNumber() + " Parabéns sua conta foi criada com sucesso");
     }
     @GetMapping("/{accountNumber}")
     public ResponseEntity getAccountByNumber(@PathVariable String accountNumber){

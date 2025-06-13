@@ -48,7 +48,7 @@ public class Loan {
     public void calculatedLoanDetails(){
         BigDecimal totalInterest = loanAmount.multiply(interestRate);
         this.totalPayable = loanAmount.add(totalInterest);
-        this.monthlyInstallment = totalPayable.divide(new BigDecimal(installments));
+        this.monthlyInstallment = totalPayable.divide(new BigDecimal(installments),2);
     }
 
 
