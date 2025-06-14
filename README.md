@@ -1,3 +1,4 @@
+[![CI - Dev_Bank](https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml/badge.svg)](https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml)
 # Dev_Bank
 
 Um projeto desenvolvido com a ideia de simular um sistema bancario onde se pode registrar clientes, criar contas fazer transações entre contas "pedir" emprestimos e gerar ordens de pagamento
