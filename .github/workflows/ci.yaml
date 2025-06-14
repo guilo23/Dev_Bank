@@ -34,7 +34,7 @@ jobs:
       run: mvn clean install -DskipTests
 
     - name: Upload build artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: backend-build
         path: backend/target
@@ -63,7 +63,7 @@ jobs:
           ${{ runner.os }}-maven-
 
     - name: Download build artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: backend-build
         path: backend/target
