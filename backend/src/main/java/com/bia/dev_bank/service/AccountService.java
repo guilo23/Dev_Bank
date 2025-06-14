@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -51,8 +52,9 @@ public class AccountService {
                 accountNumberWithDv,
                 customer,
                 request.accountType(),
-                List.of(),
-                List.of(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
                 request.currentBalance(),
                 LocalDate.now()
         );
