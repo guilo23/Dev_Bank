@@ -4,6 +4,7 @@ import com.bia.dev_bank.dto.accountDTOs.AccountRequest;
 import com.bia.dev_bank.dto.accountDTOs.AccountUpdate;
 import com.bia.dev_bank.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,22 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+    @PostMapping("/balanceIn/{accountNumber}")
+    public ResponseEntity accountDeposit(@RequestBody AccountUpdate update,
+                                         @PathVariable String accountNumber){
+        accountService.accountDeposit(update, accountNumber);
+
+      return  ResponseEntity.status(HttpStatus.ACCEPTED).body("o valor de R$" + update.currentBalance() +
+              " foi depositado na sua conta com sucesso consulte seu extrato para mais detalhes.");
+    }
+    @PostMapping("/balanceOut/{accountNumber}")
+    public ResponseEntity accountCashOut(@RequestBody AccountUpdate update,
+                                         @PathVariable String accountNumber){
+        accountService.accountCashOut(update, accountNumber);
+
+        return  ResponseEntity.status(HttpStatus.ACCEPTED).body("o valor de R$" + update.currentBalance() +
+                " foi sacado da sua conta com sucesso consulte seu extrato para mais detalhes.");
+    }
     @PostMapping("/{customerId}")
     public ResponseEntity createAccount (@RequestBody AccountRequest request,@PathVariable Long customerId){
         var account = accountService.createAccount(request,customerId);

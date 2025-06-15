@@ -42,6 +42,26 @@ public class AccountService {
         account.setCurrentBalance(account.getCurrentBalance().add(amount));
         accountRepository.save(account);
     }
+    public AccountResponse accountDeposit(AccountUpdate update, String accountNumber){
+        var account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(
+                ()-> new EntityNotFoundException("numero de conta não encontrado"));
+        credit(account.getAccountNumber(),update.currentBalance());
+        return new AccountResponse(
+                accountNumber,
+                account.getCustomer().getName(),
+                account.getAccountType(),
+                account.getCurrentBalance());
+    }
+    public AccountResponse accountCashOut(AccountUpdate update, String accountNumber){
+        var account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(
+                ()-> new EntityNotFoundException("numero de conta não encontrado"));
+        debit(account.getAccountNumber(),update.currentBalance());
+        return new AccountResponse(
+                accountNumber,
+                account.getCustomer().getName(),
+                account.getAccountType(),
+                account.getCurrentBalance());
+    }
     public AccountResponse createAccount(AccountRequest request,Long customerId){
         var customer = customerRepository.findById(customerId).orElseThrow(
                 ()-> new EntityNotFoundException("Não foi encontrado nenhum cliente com o id:  " + customerId));
