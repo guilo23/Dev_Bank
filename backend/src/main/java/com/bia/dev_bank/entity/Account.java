@@ -35,6 +35,9 @@ public class Account {
     @OneToMany(mappedBy = "destinyAccount",cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
     private List<Transaction> transactionsReceived;
 
+    @OneToMany(mappedBy = "account")
+    private List<Card> cards;
+
     private double currentBalance;
 
     private LocalDate dateOpened;

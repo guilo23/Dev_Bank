@@ -1,0 +1,9 @@
+CREATE TABLE tb_customer (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255),
+  email VARCHAR(255) UNIQUE,
+  password VARCHAR(255),
+  birthday VARCHAR(255),
+  CPF VARCHAR(255) UNIQUE,
+  phoneNumber VARCHAR(255)
+);

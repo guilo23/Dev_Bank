@@ -1,8 +1,8 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.AccountDTOs.AccountRequest;
-import com.bia.dev_bank.dto.AccountDTOs.AccountResponse;
-import com.bia.dev_bank.dto.AccountDTOs.AccountUpdate;
+import com.bia.dev_bank.dto.accountDTOs.AccountRequest;
+import com.bia.dev_bank.dto.accountDTOs.AccountResponse;
+import com.bia.dev_bank.dto.accountDTOs.AccountUpdate;
 import com.bia.dev_bank.entity.Account;
 import com.bia.dev_bank.repository.AccountRepository;
 import com.bia.dev_bank.repository.CustomerRepository;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -51,8 +52,9 @@ public class AccountService {
                 accountNumberWithDv,
                 customer,
                 request.accountType(),
-                List.of(),
-                List.of(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
                 request.currentBalance(),
                 LocalDate.now()
         );
