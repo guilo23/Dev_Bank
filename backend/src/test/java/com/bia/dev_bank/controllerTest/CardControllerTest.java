@@ -5,6 +5,7 @@ import com.bia.dev_bank.dto.cardDTOs.CardRequest;
 import com.bia.dev_bank.dto.cardDTOs.CardResponse;
 import com.bia.dev_bank.dto.cardDTOs.CardUpdate;
 import com.bia.dev_bank.entity.enums.CardType;
+import com.bia.dev_bank.service.CardPaymentsService;
 import com.bia.dev_bank.service.CardService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,9 @@ class CardControllerTest {
     @MockitoBean
     private CardService cardService;
 
+    @MockitoBean
+    private  CardPaymentsService cardPaymentsService;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -44,7 +48,7 @@ class CardControllerTest {
 
         Mockito.when(cardService.cardCreate(any(CardRequest.class), eq("123456"))).thenReturn(response);
 
-        mockMvc.perform(post("/bia/cards/123456")
+        mockMvc.perform(post("/bia/cards/add/123456")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())

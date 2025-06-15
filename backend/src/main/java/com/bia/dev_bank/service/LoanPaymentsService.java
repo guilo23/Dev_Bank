@@ -30,12 +30,12 @@ public class LoanPaymentsService {
     public LoanPayments updatePaidAmount(Long loanPaymentId) {
         LoanPayments payment = getLoanPaymentsById(loanPaymentId);
 
-        double totalPaid = payment.getTransactions()
+        BigDecimal totalPaid = payment.getTransactions()
                 .stream()
-                .mapToDouble(Transaction::getAmount)
-                .sum();
+                .map(t -> t.getAmount() != null ? t.getAmount() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        payment.setPaidAmount(new BigDecimal(totalPaid));
+        payment.setPaidAmount(totalPaid);
         updateLoanPaymentStatus(payment);
         return loanPaymentsRepository.save(payment);
     }
@@ -46,8 +46,9 @@ public class LoanPaymentsService {
         var transaction = new Transaction(
                 null,
                 request.amount(),
-                account,
-               null,
+                null,
+               account,
+                null,
                 null,
                 LocalDate.now()
         );

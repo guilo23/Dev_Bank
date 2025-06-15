@@ -20,6 +20,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -45,8 +47,8 @@ public class AccountControllerTest {
     @Test
     void shouldCreateAccountSuccessfully() throws Exception {
         Long customerId =1L;
-        var request = new AccountRequest(AccountType.CHECKING, 500.0);
-        var response = new AccountResponse("12345678-9","Maria",AccountType.CHECKING,500.0);
+        var request = new AccountRequest(AccountType.CHECKING, BigDecimal.valueOf(500.0));
+        var response = new AccountResponse("12345678-9","Maria",AccountType.CHECKING,BigDecimal.valueOf(500.0));
 
         when(accountService.createAccount(any(AccountRequest.class), eq(customerId))).thenReturn(response);
 
@@ -58,7 +60,7 @@ public class AccountControllerTest {
     }
     @Test
     void shouldGetAccountByAccountNumber() throws Exception {
-        var response = new AccountResponse("12345678-9","Maria",AccountType.CHECKING,500);
+        var response = new AccountResponse("12345678-9","Maria",AccountType.CHECKING,BigDecimal.valueOf(500));
 
         when(accountService.getAccountById("12345678-9")).thenReturn(response);
 
@@ -70,8 +72,8 @@ public class AccountControllerTest {
     @Test
     void shouldListAllAccountsByCustomerId() throws Exception {
         when(accountService.getAllAccountByCostumerId(1L)).thenReturn(java.util.List.of(
-                new AccountResponse("123", "Maria", AccountType.SAVINGS, 500.0),
-                new AccountResponse("456", "Maria", AccountType.CHECKING, 1500.0)
+                new AccountResponse("123", "Maria", AccountType.SAVINGS, BigDecimal.valueOf(500.0)),
+                new AccountResponse("456", "Maria", AccountType.CHECKING, BigDecimal.valueOf(1500.0))
         ));
         mockMvc.perform(get("/bia/account/list/1"))
                 .andExpect(status().isOk())
@@ -79,7 +81,7 @@ public class AccountControllerTest {
     }
     @Test
     void ShouldUpdateAccount() throws Exception{
-        var update = new AccountUpdate(AccountType.CHECKING,1500);
+        var update = new AccountUpdate(AccountType.CHECKING,BigDecimal.valueOf(1500));
 
         doNothing().when(accountService).accountUpdate(eq("12345678-9"),any(AccountUpdate.class));
         mockMvc.perform(put("/bia/account/12345678-9")

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class AccountRepositoryTest {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                500.0,
+                BigDecimal.valueOf(500.0),
                 LocalDate.now()
         );
         var saved = accountRepository.save(account);
@@ -75,7 +76,7 @@ public class AccountRepositoryTest {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                500.0,
+                BigDecimal.valueOf(500.0),
                 LocalDate.now()
         );
         var saved = accountRepository.save(account);

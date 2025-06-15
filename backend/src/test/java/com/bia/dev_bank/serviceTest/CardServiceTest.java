@@ -64,7 +64,7 @@ public class CardServiceTest {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                500.0,
+                BigDecimal.valueOf(500.0),
                 LocalDate.now()
         );
 

@@ -21,7 +21,7 @@ public class TransactionController {
                                             @PathVariable String originAccountNumber){
         var transaction = transactionService.createTransaction(request,originAccountNumber);
         return ResponseEntity.ok().body(":) Parabéns sua transferência para "
-                + transaction.name() +" foi concretizada com sucesso");
+                + transaction.ReceiverName() +" foi concretizada com sucesso");
     }
     @GetMapping("/{id}")
     public ResponseEntity getTransactionById(@PathVariable Long id){
