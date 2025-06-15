@@ -3,6 +3,7 @@ package com.bia.dev_bank.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -17,7 +18,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double amount;
+    private BigDecimal amount;
 
     @ManyToOne
     @JoinColumn(name = "destiny_account_id")
@@ -30,6 +31,10 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "loan_payment_id")
     private LoanPayments loanPayment;
+
+    @ManyToOne
+    @JoinColumn(name = "card_payment_id")
+    private CardPayments cardPayment;
 
     private LocalDate transactionDate;
 

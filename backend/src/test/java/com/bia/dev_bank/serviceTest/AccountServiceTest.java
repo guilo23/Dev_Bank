@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,39 +63,39 @@ public class AccountServiceTest {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                500.0,
+                BigDecimal.valueOf(500.0),
                 LocalDate.now()
         );
     }
     @Test
      void shouldMakeDebitSucelly(){
         when(accountRepository.findByAccountNumber("12345678-9")).thenReturn(Optional.of(account));
-        accountService.debit("12345678-9",200.0);
-        assertEquals(300.0,account.getCurrentBalance());
+        accountService.debit("12345678-9",BigDecimal.valueOf(200.0));
+        assertEquals(BigDecimal.valueOf(300.0),account.getCurrentBalance());
         verify(accountRepository).save(account);
     }
     @Test
     void shouldThrowExceptionOnInsufficientBalance(){
-        account.setCurrentBalance(100);
+        account.setCurrentBalance(BigDecimal.valueOf(100));
         when(accountRepository.findByAccountNumber("12345678-9")).thenReturn(Optional.of(account));
-        assertThrows(IllegalArgumentException.class, () -> accountService.debit("12345678-9",200.0));
+        assertThrows(IllegalArgumentException.class, () -> accountService.debit("12345678-9",BigDecimal.valueOf(200.0)));
     }
     @Test
     void shouldMakeCreditSucelly(){
         when(accountRepository.findByAccountNumber("12345678-9")).thenReturn(Optional.of(account));
-        accountService.credit("12345678-9",200.0);
-        assertEquals(700,account.getCurrentBalance());
+        accountService.credit("12345678-9",BigDecimal.valueOf(200.0));
+        assertEquals(BigDecimal.valueOf(700.0),account.getCurrentBalance());
         verify(accountRepository).save(account);
     }
     @Test
     void ShouldCreateAccountSucelly(){
-        var  request = new AccountRequest(AccountType.CHECKING,150.0);
+        var  request = new AccountRequest(AccountType.CHECKING,BigDecimal.valueOf(150.0));
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
 
         var response = accountService.createAccount(request,1L);
         assertEquals("João da Silva",response.customerName());
         assertEquals(AccountType.CHECKING,response.accountType());
-        assertEquals(150,.0,response.currentBalance());
+        assertEquals(BigDecimal.valueOf(150.0),response.currentBalance());
 
     }
     @Test
@@ -102,7 +103,7 @@ public class AccountServiceTest {
         when(accountRepository.findByAccountNumber("12345678-9")).thenReturn(Optional.of(account));
         var response = accountService.getAccountById("12345678-9");
         assertEquals("João da Silva", response.customerName());
-        assertEquals(500.0, response.currentBalance());
+        assertEquals(BigDecimal.valueOf(500.0), response.currentBalance());
     }
     @Test
     void shouldThrowExceptionWhenAccountNotFound(){
@@ -111,13 +112,13 @@ public class AccountServiceTest {
     }
     @Test
     void ShouldUpdateAccountSucefully(){
-        var update = new AccountUpdate(AccountType.SAVINGS,800.0);
+        var update = new AccountUpdate(AccountType.SAVINGS,BigDecimal.valueOf(800.0));
         when(accountRepository.findByAccountNumber("12345678-9")).thenReturn(Optional.of(account));
 
         accountService.accountUpdate("12345678-9", update);
 
         assertEquals(AccountType.SAVINGS,account.getAccountType());
-        assertEquals(800.0,account.getCurrentBalance());
+        assertEquals(BigDecimal.valueOf(800.0),account.getCurrentBalance());
         verify(accountRepository).save(account);
     }
     @Test

@@ -33,9 +33,8 @@ public class Card {
     @Column( precision = 10, scale = 2)
     private BigDecimal cardBilling;
 
-    // @OneToMany(mappedBy = "card")
-    // TODO: change for real type
-    private List<String> installments = new ArrayList<>();
+     @OneToMany(mappedBy = "card")
+    private List<CardPayments> installments = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name="account_number")

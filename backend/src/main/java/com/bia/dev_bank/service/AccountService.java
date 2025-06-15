@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,22 +25,21 @@ public class AccountService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public void debit(String accountNumber, Double amount) {
+    public void debit(String accountNumber, BigDecimal amount) {
         var account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));;
 
-        if (account.getCurrentBalance() < amount) {
+        if (account.getCurrentBalance().compareTo(amount) == -1) {
             throw new IllegalArgumentException("Saldo insuficiente.");
         }
-
-        account.setCurrentBalance(account.getCurrentBalance() - amount);
+        account.setCurrentBalance(account.getCurrentBalance().subtract(amount));
         accountRepository.save(account);
     }
-    public void credit(String accountNumber, Double amount) {
+    public void credit(String accountNumber, BigDecimal amount) {
         var account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
 
-        account.setCurrentBalance(account.getCurrentBalance() + amount);
+        account.setCurrentBalance(account.getCurrentBalance().add(amount));
         accountRepository.save(account);
     }
     public AccountResponse createAccount(AccountRequest request,Long customerId){

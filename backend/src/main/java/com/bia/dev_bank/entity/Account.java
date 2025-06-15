@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,7 @@ public class Account {
     @OneToMany(mappedBy = "account")
     private List<Card> cards;
 
-    private double currentBalance;
+    private BigDecimal currentBalance;
 
     private LocalDate dateOpened;
 
