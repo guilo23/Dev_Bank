@@ -128,7 +128,7 @@ public class AccountServiceTest {
         assertEquals(accountNumber, response.accountNumber());
         assertEquals("Maria", response.customerName());
         assertEquals(AccountType.CHECKING, response.accountType());
-        assertEquals(new BigDecimal("1500.00"), response.currentBalance()); // saldo atualizado
+        assertEquals(new BigDecimal("1500.00"), response.currentBalance());
         verify(accountRepository).save(account);
     }
     @Test
@@ -154,7 +154,7 @@ public class AccountServiceTest {
         assertEquals(accountNumber, response.accountNumber());
         assertEquals("Carlos", response.customerName());
         assertEquals(AccountType.SAVINGS, response.accountType());
-        assertEquals(new BigDecimal("700.00"), response.currentBalance()); // saldo atualizado
+        assertEquals(new BigDecimal("700.00"), response.currentBalance());
         verify(accountRepository).save(account);
     }
 
