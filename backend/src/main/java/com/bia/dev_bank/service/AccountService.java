@@ -42,6 +42,7 @@ public class AccountService {
         account.setCurrentBalance(account.getCurrentBalance().add(amount));
         accountRepository.save(account);
     }
+
     public AccountResponse accountDeposit(AccountUpdate update, String accountNumber){
         var account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(
                 ()-> new EntityNotFoundException("numero de conta não encontrado"));
