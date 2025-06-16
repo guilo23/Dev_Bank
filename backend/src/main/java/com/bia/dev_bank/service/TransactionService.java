@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,10 +56,10 @@ public class TransactionService {
                 .map(tx -> {
                     String description;
                     if (tx.getDestinyAccount() != null && tx.getDestinyAccount().getCustomer() != null) {
-                        description = String.format("Transferência de R$%.2f para %s",
+                        description = String.format(new Locale("pt","BR"),"Transferência de R$%.2f para %s",
                                 tx.getAmount(), tx.getDestinyAccount().getCustomer().getName());
                     } else {
-                        description = String.format("Transferência de R$%.2f para conta desconhecida", tx.getAmount());
+                        description = String.format(new Locale("pt","BR"),"Transferência de R$%.2f para conta desconhecida",tx.getAmount());
                     }
 
                     return new StatementResponse(

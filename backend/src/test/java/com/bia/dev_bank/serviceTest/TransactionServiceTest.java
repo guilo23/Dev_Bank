@@ -145,7 +145,7 @@ public class TransactionServiceTest {
         assertEquals("Transação entre contas", response.type());
         assertEquals(new BigDecimal("200.00"), response.amount());
         assertEquals(LocalDate.of(2025, 6, 10), response.timeStamp());
-        assertEquals("Transferência de R$200.00 para João", response.description());
+        assertEquals("Transferência de R$200,00 para João", response.description());
     }
 
     @Test
@@ -167,7 +167,7 @@ public class TransactionServiceTest {
         assertEquals("Transação entre contas", response.type());
         assertEquals(new BigDecimal("150.00"), response.amount());
         assertEquals(LocalDate.of(2025, 6, 11), response.timeStamp());
-        assertEquals("Transferência de R$150.00 para conta desconhecida", response.description());
+        assertEquals("Transferência de R$150,00 para conta desconhecida", response.description());
     }
 
     @Test
