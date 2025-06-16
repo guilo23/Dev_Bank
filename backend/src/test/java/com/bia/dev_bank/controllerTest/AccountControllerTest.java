@@ -59,6 +59,36 @@ public class AccountControllerTest {
                 .andExpect(content().string("12345678-9 Parabéns sua conta foi criada com sucesso"));
     }
     @Test
+    void shouldMakeDepositSuccessfully() throws  Exception{
+        String accountNumber = "12345678-9";
+        var update = new AccountUpdate(AccountType.CHECKING,BigDecimal.valueOf(50.0));
+        var response = new AccountResponse("12345678-9","Maria",AccountType.CHECKING,BigDecimal.valueOf(550.0));
+
+        when(accountService.accountDeposit(any(AccountUpdate.class), eq(accountNumber))).thenReturn(response);
+
+        mockMvc.perform(post("/bia/account/balanceIn/12345678-9")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(update)))
+                .andExpect(status().isAccepted())
+                .andExpect(content().string("o valor de R$50.0 foi depositado na sua conta com sucesso consulte seu extrato para mais detalhes."));
+
+    }
+    @Test
+    void shouldMakeCashOutSuccessfully() throws  Exception{
+        String accountNumber = "12345678-9";
+        var update = new AccountUpdate(AccountType.CHECKING,BigDecimal.valueOf(50.0));
+        var response = new AccountResponse("12345678-9","Maria",AccountType.CHECKING,BigDecimal.valueOf(550.0));
+
+        when(accountService.accountCashOut(any(AccountUpdate.class), eq(accountNumber))).thenReturn(response);
+
+        mockMvc.perform(post("/bia/account/balanceOut/12345678-9")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(update)))
+                .andExpect(status().isAccepted())
+                .andExpect(content().string("o valor de R$50.0 foi sacado da sua conta com sucesso consulte seu extrato para mais detalhes."));
+
+    }
+    @Test
     void shouldGetAccountByAccountNumber() throws Exception {
         var response = new AccountResponse("12345678-9","Maria",AccountType.CHECKING,BigDecimal.valueOf(500));
 

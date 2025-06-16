@@ -106,6 +106,80 @@ public class AccountServiceTest {
         assertEquals(BigDecimal.valueOf(500.0), response.currentBalance());
     }
     @Test
+    void shouldDepositToAccountSuccessfully() {
+        String accountNumber = "000123";
+        BigDecimal depositAmount = new BigDecimal("500.00");
+
+        Customer customer = new Customer();
+        customer.setName("Maria");
+
+        Account account = new Account();
+        account.setAccountNumber(accountNumber);
+        account.setCustomer(customer);
+        account.setAccountType(AccountType.CHECKING);
+        account.setCurrentBalance(new BigDecimal("1000.00"));
+
+        AccountUpdate update = new AccountUpdate(AccountType.CHECKING, depositAmount);
+
+        when(accountRepository.findByAccountNumber(accountNumber)).thenReturn(Optional.of(account));
+
+        AccountResponse response = accountService.accountDeposit(update, accountNumber);
+
+        assertEquals(accountNumber, response.accountNumber());
+        assertEquals("Maria", response.customerName());
+        assertEquals(AccountType.CHECKING, response.accountType());
+        assertEquals(new BigDecimal("1500.00"), response.currentBalance()); // saldo atualizado
+        verify(accountRepository).save(account);
+    }
+    @Test
+    void shouldWithdrawFromAccountSuccessfully() {
+        String accountNumber = "000123";
+        BigDecimal withdrawAmount = new BigDecimal("300.00");
+
+        Customer customer = new Customer();
+        customer.setName("Carlos");
+
+        Account account = new Account();
+        account.setAccountNumber(accountNumber);
+        account.setCustomer(customer);
+        account.setAccountType(AccountType.SAVINGS);
+        account.setCurrentBalance(new BigDecimal("1000.00"));
+
+        AccountUpdate update = new AccountUpdate(AccountType.SAVINGS, withdrawAmount);
+
+        when(accountRepository.findByAccountNumber(accountNumber)).thenReturn(Optional.of(account));
+
+        AccountResponse response = accountService.accountCashOut(update, accountNumber);
+
+        assertEquals(accountNumber, response.accountNumber());
+        assertEquals("Carlos", response.customerName());
+        assertEquals(AccountType.SAVINGS, response.accountType());
+        assertEquals(new BigDecimal("700.00"), response.currentBalance()); // saldo atualizado
+        verify(accountRepository).save(account);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAccountNotFoundForDeposit() {
+        String accountNumber = "999999";
+        AccountUpdate update = new AccountUpdate(AccountType.CHECKING,new BigDecimal("100.00"));
+
+        when(accountRepository.findByAccountNumber(accountNumber)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class,
+                () -> accountService.accountDeposit(update, accountNumber));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAccountNotFoundForWithdraw() {
+        String accountNumber = "999999";
+        AccountUpdate update = new AccountUpdate(AccountType.CHECKING,new BigDecimal("100.00"));
+
+        when(accountRepository.findByAccountNumber(accountNumber)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class,
+                () -> accountService.accountCashOut(update, accountNumber));
+    }
+    @Test
     void shouldThrowExceptionWhenAccountNotFound(){
         when(accountRepository.findByAccountNumber("0000000-0")).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class,()-> accountService.getAccountById("0000000-0"));
