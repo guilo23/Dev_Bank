@@ -15,165 +15,200 @@ import com.bia.dev_bank.repository.AccountRepository;
 import com.bia.dev_bank.repository.CardPaymentsRepository;
 import com.bia.dev_bank.repository.CardRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.time.LocalTime.now;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class CardService {
 
-    private final CardRepository cardRepository;
-    private final AccountRepository accountRepository;
-    private final CardPaymentsRepository cardPaymentsRepository;
+  private final CardRepository cardRepository;
+  private final AccountRepository accountRepository;
+  private final CardPaymentsRepository cardPaymentsRepository;
 
-    public CardResponse cardCreate(CardRequest request,String accountNumber) {
-        var account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(
+  public CardResponse cardCreate(CardRequest request, String accountNumber) {
+    var account =
+        accountRepository
+            .findByAccountNumber(accountNumber)
+            .orElseThrow(
                 () -> new EntityNotFoundException("Nenhuma conta Registrada com esse numero"));
-        BigDecimal limit = request.cardType() == CardType.CREDIT
-                ? request.cardLimit()
-                : account.getCurrentBalance();
+    BigDecimal limit =
+        request.cardType() == CardType.CREDIT ? request.cardLimit() : account.getCurrentBalance();
 
-        var card = new Card(
-                null,
-                request.cardNumber(),
-                request.cardType(),
-                limit,
-                BigDecimal.ZERO,
-                new ArrayList<>(),
-                new ArrayList<>(),
-                account
-        );
-        cardRepository.save(card);
-        return new CardResponse(card);
-    }
-    @Transactional
-    public CardPaymentsResponse addCreditCardPayment(CardPaymentsRequest request){
-        var card = cardRepository.findCardByCardNumber(request.cardNumber()).orElseThrow(
+    var card =
+        new Card(
+            null,
+            request.cardNumber(),
+            request.cardType(),
+            limit,
+            BigDecimal.ZERO,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            account);
+    cardRepository.save(card);
+    return new CardResponse(card);
+  }
+
+  @Transactional
+  public CardPaymentsResponse addCreditCardPayment(CardPaymentsRequest request) {
+    var card =
+        cardRepository
+            .findCardByCardNumber(request.cardNumber())
+            .orElseThrow(
                 () -> new EntityNotFoundException("nenhum cartão registrado com esse numero"));
-        var currentDate = LocalDate.now();
-        List<CardPayments> payments = new ArrayList<>();
-        for (int i = 0; i < request.installmentNumber(); i++) {
-            CardPayments payment = new CardPayments();
-            payment.setInstallmentNumber(request.installmentNumber());
-            payment.setCard(card);
-            payment.setDueDate(currentDate.plusMonths(i+1));
-            payment.setProductName(request.productName());
-            payment.setTotalBuying(request.totalBuying());
-            payment.calculatedPaymentsDetails();
-            payment.setPAID(PayedStatus.TO_PAY);
-            payments.add(payment);
-        }
-        cardPaymentsRepository.saveAll(payments);
-        card.getPurchases().add(new CreditPurchase(
+    var currentDate = LocalDate.now();
+    List<CardPayments> payments = new ArrayList<>();
+    for (int i = 0; i < request.installmentNumber(); i++) {
+      CardPayments payment = new CardPayments();
+      payment.setInstallmentNumber(request.installmentNumber());
+      payment.setCard(card);
+      payment.setDueDate(currentDate.plusMonths(i + 1));
+      payment.setProductName(request.productName());
+      payment.setTotalBuying(request.totalBuying());
+      payment.calculatedPaymentsDetails();
+      payment.setPAID(PayedStatus.TO_PAY);
+      payments.add(payment);
+    }
+    cardPaymentsRepository.saveAll(payments);
+    card.getPurchases()
+        .add(
+            new CreditPurchase(
                 null,
                 request.productName(),
                 request.totalBuying(),
                 LocalDate.now(),
                 request.installmentNumber(),
-                card
-        ));
-        return new CardPaymentsResponse(
-                card.getCardNumber(),
-                payments.get(0).getProductName(),
-                payments.get(0).getInstallmentNumber(),
-                payments.get(0).getInstallmentAmount());
+                card));
+    return new CardPaymentsResponse(
+        card.getCardNumber(),
+        payments.get(0).getProductName(),
+        payments.get(0).getInstallmentNumber(),
+        payments.get(0).getInstallmentAmount());
+  }
+
+  public List<StatementResponse> cardsDebitPaymentsReport(String cardNumber) {
+    var card =
+        cardRepository
+            .findCardByCardNumber(cardNumber)
+            .orElseThrow(() -> new EntityNotFoundException("numero de cartão não encontrado"));
+    if (CardType.DEBIT.equals(card.getCardType())) {
+      List<CardPayments> payments = cardPaymentsRepository.findByCardId(card.getId());
+      return payments.stream()
+          .map(
+              px ->
+                  new StatementResponse(
+                      "Pagamento no cartão de débito",
+                      px.getTotalBuying(),
+                      px.getPaymentDate(),
+                      String.format("Compra no débito de de um %s", px.getProductName())))
+          .toList();
+    } else {
+      List<StatementResponse> returns = new ArrayList<>();
+      returns.add(
+          new StatementResponse(
+              "TIPO_DESCONHECIDO", BigDecimal.ZERO, LocalDate.now(), "Tipo de cartão inválido"));
+      return returns;
     }
-    public List<StatementResponse> cardsDebitPaymentsReport(String cardNumber){
-        var card = cardRepository.findCardByCardNumber(cardNumber).orElseThrow(
-                ()-> new EntityNotFoundException("numero de cartão não encontrado"));
-        if (CardType.DEBIT.equals(card.getCardType())) {
-            List<CardPayments> payments = cardPaymentsRepository.findByCardId(card.getId());
-            return payments.stream().map(px -> new StatementResponse(
-                    "Pagamento no cartão de débito",
-                    px.getTotalBuying(),
-                    px.getPaymentDate(),
-                    String.format("Compra no débito de de um %s",px.getProductName())
-            )).toList();
-        }
-        else{
-             List<StatementResponse> returns = new ArrayList<>();
-            returns.add(new StatementResponse("TIPO_DESCONHECIDO", BigDecimal.ZERO, LocalDate.now(), "Tipo de cartão inválido"));
-            return returns;
-        }
+  }
+
+  public List<StatementResponse> cardsCreditPaymentsReport(String cardNumber) {
+    var card =
+        cardRepository
+            .findCardByCardNumber(cardNumber)
+            .orElseThrow(() -> new EntityNotFoundException("numero de cartão não encontrado"));
+    if (CardType.CREDIT.equals(card.getCardType())) {
+      List<CreditPurchase> purchases = card.getPurchases();
+      return purchases.stream()
+          .map(
+              px ->
+                  new StatementResponse(
+                      "Pagamento no cartão de Crédito",
+                      px.getAmount(),
+                      px.getPurchaseDate(),
+                      String.format("Compra no credito de de um %s", px.getProductName())))
+          .toList();
+    } else {
+      List<StatementResponse> returns = new ArrayList<>();
+      returns.add(
+          new StatementResponse("", BigDecimal.ZERO, LocalDate.now(), "Tipo de cartão inválido"));
+      return returns;
     }
-    public List<StatementResponse> cardsCreditPaymentsReport(String cardNumber){
-        var card = cardRepository.findCardByCardNumber(cardNumber).orElseThrow(
-                ()-> new EntityNotFoundException("numero de cartão não encontrado"));
-        if (CardType.CREDIT.equals(card.getCardType())) {
-            List<CreditPurchase> purchases = card.getPurchases();
-            return purchases.stream().map(px -> new StatementResponse(
-                    "Pagamento no cartão de Crédito",
-                    px.getAmount(),
-                    px.getPurchaseDate(),
-                    String.format("Compra no credito de de um %s",px.getProductName())
-            )).toList();
-        }
-        else{
-            List<StatementResponse> returns = new ArrayList<>();
-            returns.add(new StatementResponse("", BigDecimal.ZERO, LocalDate.now(), "Tipo de cartão inválido"));
-            return returns;
-        }
-    }
-    public CardResponse getCardById(Long id) {
-        var card = cardRepository.findById(id).orElseThrow(
+  }
+
+  public CardResponse getCardById(Long id) {
+    var card =
+        cardRepository
+            .findById(id)
+            .orElseThrow(
                 () -> new EntityNotFoundException("Nenhum cartão Registrado com esse Id:"));
-        return new CardResponse(card);
+    return new CardResponse(card);
+  }
 
-    }
-
-    public List<CardResponse> getAllCardByAccountNumber(String accountNumber) {
-        var cards = cardRepository.findAllCardsByAccountAccountNumber(accountNumber).orElseThrow(
+  public List<CardResponse> getAllCardByAccountNumber(String accountNumber) {
+    var cards =
+        cardRepository
+            .findAllCardsByAccountAccountNumber(accountNumber)
+            .orElseThrow(
                 () -> new EntityNotFoundException("Não há cartões Registrados para essa conta:"));
 
-        return cards.stream().map(CardResponse::new).collect(Collectors.toList());
-    }
-    public List<Card> getAllCardForReport(String accountNumber) {
-        var cards = cardRepository.findAllCardsByAccountAccountNumber(accountNumber).orElseThrow(
+    return cards.stream().map(CardResponse::new).collect(Collectors.toList());
+  }
+
+  public List<Card> getAllCardForReport(String accountNumber) {
+    var cards =
+        cardRepository
+            .findAllCardsByAccountAccountNumber(accountNumber)
+            .orElseThrow(
                 () -> new EntityNotFoundException("Não há cartões Registrados para essa conta:"));
 
-        return cards;
-    }
+    return cards;
+  }
 
-    @Transactional
-    public CardResponse cardUpdate(CardUpdate update, Long id) {
-        var card = cardRepository.findById(id).orElseThrow(
+  @Transactional
+  public CardResponse cardUpdate(CardUpdate update, Long id) {
+    var card =
+        cardRepository
+            .findById(id)
+            .orElseThrow(
                 () -> new EntityNotFoundException("Nenhum cartão Registrado com esse Id:"));
-        card.setCardLimit(update.cardLimit());
-        return new CardResponse(card);
-    }
+    card.setCardLimit(update.cardLimit());
+    return new CardResponse(card);
+  }
 
-    public void cardDelete(Long id) {
-        cardRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Nenhum cartão Registrado com esse Id:"));
-        cardRepository.deleteById(id);
-    }
-    public CardPayments addDebitCardPayment(CardPaymentsRequest request) {
-        var card = cardRepository.findCardByCardNumber(request.cardNumber()).orElseThrow(
+  public void cardDelete(Long id) {
+    cardRepository
+        .findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Nenhum cartão Registrado com esse Id:"));
+    cardRepository.deleteById(id);
+  }
+
+  public CardPayments addDebitCardPayment(CardPaymentsRequest request) {
+    var card =
+        cardRepository
+            .findCardByCardNumber(request.cardNumber())
+            .orElseThrow(
                 () -> new EntityNotFoundException("nenhum cartão registrado com esse numero"));
-        List<CardPayments> payments = new ArrayList<>();
-        CardPayments payment = new CardPayments(
-                null,
-                request.productName(),
-                request.totalBuying(),
-                1,
-                request.totalBuying(),
-                request.totalBuying(),
-                null,
-                LocalDate.now(),
-                PayedStatus.TO_PAY,
-                card,
-                new ArrayList<>()
-        );
-        cardPaymentsRepository.save(payment);
-        return payment;
-    }
+    List<CardPayments> payments = new ArrayList<>();
+    CardPayments payment =
+        new CardPayments(
+            null,
+            request.productName(),
+            request.totalBuying(),
+            1,
+            request.totalBuying(),
+            request.totalBuying(),
+            null,
+            LocalDate.now(),
+            PayedStatus.TO_PAY,
+            card,
+            new ArrayList<>());
+    cardPaymentsRepository.save(payment);
+    return payment;
+  }
 }

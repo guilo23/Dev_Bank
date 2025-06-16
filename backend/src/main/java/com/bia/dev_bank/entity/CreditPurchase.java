@@ -1,13 +1,13 @@
 package com.bia.dev_bank.entity;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 @Entity
 @Table(name = "tb_creditPhurcase")
 @NoArgsConstructor
@@ -15,14 +15,14 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class CreditPurchase {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String productName;
-    private BigDecimal amount;
-    private LocalDate purchaseDate;
-    private Integer installmentNumber;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne
-    private Card card;
+  private String productName;
+  private BigDecimal amount;
+  private LocalDate purchaseDate;
+  private Integer installmentNumber;
+
+  @ManyToOne private Card card;
 }
