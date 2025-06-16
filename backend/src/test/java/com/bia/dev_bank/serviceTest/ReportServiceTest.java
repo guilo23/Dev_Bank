@@ -56,7 +56,7 @@ public class ReportServiceTest {
         );
         when(cardService.cardsDebitPaymentsReport("DEBIT123")).thenReturn(List.of(debitResponse));
 
-        // Mock credit payments
+
         StatementResponse creditResponse = new StatementResponse(
                 "Pagamento no crédito",
                 new BigDecimal("300.00"),
@@ -65,7 +65,7 @@ public class ReportServiceTest {
         );
         when(cardService.cardsCreditPaymentsReport("CREDIT123")).thenReturn(List.of(creditResponse));
 
-        // Mock transactions
+
         StatementResponse txResponse = new StatementResponse(
                 "Transferência",
                 new BigDecimal("500.00"),
@@ -74,10 +74,10 @@ public class ReportServiceTest {
         );
         when(transactionService.getStatementByAccountNumber(accountNumber)).thenReturn(List.of(txResponse));
 
-        // Act
+
         List<StatementResponse> result = reportService.allcardReports(accountNumber);
 
-        // Assert
+
         assertEquals(3, result.size());
         assertTrue(result.contains(debitResponse));
         assertTrue(result.contains(creditResponse));

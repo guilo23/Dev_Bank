@@ -155,7 +155,7 @@ public class TransactionServiceTest {
         Transaction transaction = new Transaction();
         transaction.setAmount(new BigDecimal("150.00"));
         transaction.setTransactionDate(LocalDate.of(2025, 6, 11));
-        transaction.setDestinyAccount(null); // <- cenário com destino nulo
+        transaction.setDestinyAccount(null);
 
         when(transactionRepository.findTransactionsByOriginAccountAccountNumber(accountNumber))
                 .thenReturn(List.of(transaction));
