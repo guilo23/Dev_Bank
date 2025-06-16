@@ -9,10 +9,7 @@ import com.bia.dev_bank.service.LoanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,12 +21,12 @@ public class PaymentController {
     private final LoanPaymentsService loanPaymentsService;
     private final CardPaymentsService cardPaymentsService;
 
-    @PostMapping("/loan")
+    @GetMapping("/loan")
     public ResponseEntity getLoanPaymentById(Long loanPaymentId){
     var loan = loanPaymentsService.getLoanPaymentsById(loanPaymentId);
     return ResponseEntity.status(HttpStatus.OK).body(loan);
 }
-    @PostMapping("/card")
+    @GetMapping("/card")
     public ResponseEntity getCardPaymentById(Long cardPaymentId){
         var card = cardPaymentsService.getCardPaymentsById(cardPaymentId);
 

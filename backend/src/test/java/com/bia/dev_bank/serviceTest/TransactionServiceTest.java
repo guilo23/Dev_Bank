@@ -1,6 +1,7 @@
 package com.bia.dev_bank.serviceTest;
 
 
+import com.bia.dev_bank.dto.reportDTOs.StatementResponse;
 import com.bia.dev_bank.dto.transactionDTOs.TransactionRequest;
 import com.bia.dev_bank.dto.transactionDTOs.TransactionResponse;
 import com.bia.dev_bank.entity.Account;
@@ -118,6 +119,55 @@ public class TransactionServiceTest {
 
         assertEquals(1, responses.size());
         assertEquals(BigDecimal.valueOf(30.00), responses.get(0).amount());
+    }
+    @Test
+    void shouldReturnStatementForValidDestinyAccount() {
+        String accountNumber = "000001";
+
+        Customer customer = new Customer();
+        customer.setName("João");
+
+        Account destinyAccount = new Account();
+        destinyAccount.setCustomer(customer);
+
+        Transaction transaction = new Transaction();
+        transaction.setAmount(new BigDecimal("200.00"));
+        transaction.setTransactionDate(LocalDate.of(2025, 6, 10));
+        transaction.setDestinyAccount(destinyAccount);
+
+        when(transactionRepository.findTransactionsByOriginAccountAccountNumber(accountNumber))
+                .thenReturn(List.of(transaction));
+
+        List<StatementResponse> responses = transactionService.getStatementByAccountNumber(accountNumber);
+
+        assertEquals(1, responses.size());
+        StatementResponse response = responses.get(0);
+        assertEquals("Transação entre contas", response.type());
+        assertEquals(new BigDecimal("200.00"), response.amount());
+        assertEquals(LocalDate.of(2025, 6, 10), response.timeStamp());
+        assertEquals("Transferência de R$200,00 para João", response.description());
+    }
+
+    @Test
+    void shouldHandleNullDestinyAccountOrCustomer() {
+        String accountNumber = "000002";
+
+        Transaction transaction = new Transaction();
+        transaction.setAmount(new BigDecimal("150.00"));
+        transaction.setTransactionDate(LocalDate.of(2025, 6, 11));
+        transaction.setDestinyAccount(null); // <- cenário com destino nulo
+
+        when(transactionRepository.findTransactionsByOriginAccountAccountNumber(accountNumber))
+                .thenReturn(List.of(transaction));
+
+        List<StatementResponse> responses = transactionService.getStatementByAccountNumber(accountNumber);
+
+        assertEquals(1, responses.size());
+        StatementResponse response = responses.get(0);
+        assertEquals("Transação entre contas", response.type());
+        assertEquals(new BigDecimal("150.00"), response.amount());
+        assertEquals(LocalDate.of(2025, 6, 11), response.timeStamp());
+        assertEquals("Transferência de R$150,00 para conta desconhecida", response.description());
     }
 
     @Test

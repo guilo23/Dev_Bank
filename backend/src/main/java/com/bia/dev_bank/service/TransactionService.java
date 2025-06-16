@@ -1,5 +1,6 @@
 package com.bia.dev_bank.service;
 
+import com.bia.dev_bank.dto.reportDTOs.StatementResponse;
 import com.bia.dev_bank.dto.transactionDTOs.TransactionRequest;
 import com.bia.dev_bank.dto.transactionDTOs.TransactionResponse;
 import com.bia.dev_bank.entity.Transaction;
@@ -45,6 +46,29 @@ public class TransactionService {
                 transaction.getOriginAccount().getCustomer().getName(),
                 transaction.getOriginAccount().getCustomer().getName(),
                 transaction.getTransactionDate());
+    }
+
+    public List<StatementResponse> getStatementByAccountNumber(String accountNumber) {
+        List<Transaction> transactions = transactionRepository.findTransactionsByOriginAccountAccountNumber(accountNumber);
+
+        return transactions.stream()
+                .map(tx -> {
+                    String description;
+                    if (tx.getDestinyAccount() != null && tx.getDestinyAccount().getCustomer() != null) {
+                        description = String.format("Transferência de R$%.2f para %s",
+                                tx.getAmount(), tx.getDestinyAccount().getCustomer().getName());
+                    } else {
+                        description = String.format("Transferência de R$%.2f para conta desconhecida", tx.getAmount());
+                    }
+
+                    return new StatementResponse(
+                            "Transação entre contas",
+                            tx.getAmount(),
+                            tx.getTransactionDate(),
+                            description
+                    );
+                })
+                .toList();
     }
 
     public TransactionResponse getTransactionById(Long id) {

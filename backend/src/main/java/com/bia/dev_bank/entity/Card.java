@@ -33,6 +33,9 @@ public class Card {
     @Column( precision = 10, scale = 2)
     private BigDecimal cardBilling;
 
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<CreditPurchase> purchases = new ArrayList<>();
+
      @OneToMany(mappedBy = "card")
     private List<CardPayments> installments = new ArrayList<>();
 

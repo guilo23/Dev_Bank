@@ -84,5 +84,4 @@ public class CardPaymentsService {
             payment.setPaymentDate(today);
         }
     }
-
 }
