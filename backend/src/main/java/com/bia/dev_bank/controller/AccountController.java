@@ -5,11 +5,19 @@ import com.bia.dev_bank.dto.accountDTOs.AccountUpdate;
 import com.bia.dev_bank.service.AccountService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,6 +29,32 @@ public class AccountController {
 
     @Autowired
     private AccountService accountService;
+
+    @Operation(summary = "accountDeposit", description = "Deposits the specified amount into the customer's account.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Deposit successful"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+    })
+    @PostMapping("/balanceIn/{accountNumber}")
+    public ResponseEntity accountDeposit(@RequestBody AccountUpdate update,
+            @PathVariable String accountNumber) {
+        accountService.accountDeposit(update, accountNumber);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("o valor de R$" + update.currentBalance() +
+                " foi depositado na sua conta com sucesso consulte seu extrato para mais detalhes.");
+    }
+
+    @Operation(summary = "accountCashOut", description = "Withdraws the specified amount from the customer's account.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Withdrawal successful"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+    })
+    @PostMapping("/balanceOut/{accountNumber}")
+    public ResponseEntity accountCashOut(@RequestBody AccountUpdate update,
+            @PathVariable String accountNumber) {
+        accountService.accountCashOut(update, accountNumber);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("o valor de R$" + update.currentBalance() +
+                " foi sacado da sua conta com sucesso consulte seu extrato para mais detalhes.");
+    }
 
     @Operation(summary = "createAccount", description = "Creates a new bank account for an existing customer")
     @ApiResponses(value = {

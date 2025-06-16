@@ -24,17 +24,17 @@ public class TransactionService {
 
     public TransactionResponse createTransaction(TransactionRequest request, String originAccoutNumber) {
         var accountO = accountRepository.findByAccountNumber(originAccoutNumber)
-                .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));;
+                .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
         var accountD = accountRepository.findByAccountNumber(request.destinyAccountnumber())
-                .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));;
+                .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
         var transaction = new Transaction(
                 null,
                 request.amount(),
                 accountD,
                 accountO,
                 null,
+               null,
                 LocalDate.now()
-
         );
         transactionRepository.save(transaction);
 
@@ -42,7 +42,9 @@ public class TransactionService {
        accountService.credit(accountD.getAccountNumber(),transaction.getAmount());
 
         return new TransactionResponse(transaction.getAmount(),
-                transaction.getDestinyAccount().getCustomer().getName(), transaction.getTransactionDate());
+                transaction.getOriginAccount().getCustomer().getName(),
+                transaction.getOriginAccount().getCustomer().getName(),
+                transaction.getTransactionDate());
     }
 
     public TransactionResponse getTransactionById(Long id) {
@@ -50,6 +52,7 @@ public class TransactionService {
                 -> new EntityNotFoundException("não há nenhuma transação para esse id"));
         return new TransactionResponse(transaction.getAmount(),
                 transaction.getDestinyAccount().getCustomer().getName(),
+                transaction.getOriginAccount().getCustomer().getName(),
                 transaction.getTransactionDate());
     }
 

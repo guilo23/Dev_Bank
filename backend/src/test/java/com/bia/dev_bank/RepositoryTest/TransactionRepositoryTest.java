@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -55,9 +56,10 @@ public class TransactionRepositoryTest {
     void shouldfindAndSaveAccount() {
         var transaction = new Transaction(
                 null,
-                100.00,
+                BigDecimal.valueOf(100.00),
                 originAccount,
                 destinyAccount,
+                null,
                 null,
                 LocalDate.now()
         );
@@ -66,7 +68,7 @@ public class TransactionRepositoryTest {
         var found = transactionRepository.findById(transaction.getId()).orElse(null);
         assertNotNull(found);
         assertEquals("Carlos", found.getDestinyAccount().getCustomer().getName());
-        assertEquals(100.00, found.getAmount());
+        assertEquals(BigDecimal.valueOf(100.00), found.getAmount());
         assertEquals("Maria", found.getOriginAccount().getCustomer().getName());
     }
 
@@ -74,9 +76,10 @@ public class TransactionRepositoryTest {
     void ShouldDeleteAccount() {
         var transaction = new Transaction(
                 null,
-                100.00,
+                BigDecimal.valueOf(100.00),
                 originAccount,
                 destinyAccount,
+                null,
                 null,
                 LocalDate.now()
         );

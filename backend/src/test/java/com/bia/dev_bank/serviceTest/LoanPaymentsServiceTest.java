@@ -7,6 +7,7 @@ import com.bia.dev_bank.entity.Account;
 import com.bia.dev_bank.entity.Customer;
 import com.bia.dev_bank.entity.LoanPayments;
 import com.bia.dev_bank.entity.Transaction;
+import com.bia.dev_bank.entity.enums.AccountType;
 import com.bia.dev_bank.entity.enums.PayedStatus;
 import com.bia.dev_bank.repository.AccountRepository;
 import com.bia.dev_bank.repository.LoanPaymentsRepository;
@@ -43,9 +44,34 @@ class LoanPaymentsServiceTest {
     @Mock
     private AccountRepository accountRepository;
 
+    private Customer customer1;
+    private Account account1;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        customer1 = new Customer(
+                1L,
+                "Maria da Silva",
+                "joao@email.com",
+                "senha123",
+                "1985-01-01",
+                "111.222.333-44",
+                "11999999999",
+                List.of()
+        );
+
+
+        account1 = new Account(
+                "12345678-9",
+                customer1,
+                AccountType.CHECKING,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                BigDecimal.valueOf(500.0),
+                LocalDate.now()
+        );
     }
 
     @Test
@@ -71,14 +97,14 @@ class LoanPaymentsServiceTest {
     @Test
     void shouldUpdatePaidAmountAndStatus() {
         Transaction t1 = new Transaction();
-        t1.setAmount(50.0);
+        t1.setAmount(BigDecimal.valueOf(50.0));
         Transaction t2 = new Transaction();
-        t2.setAmount(100.0);
+        t2.setAmount(BigDecimal.valueOf(100.0));
 
         LoanPayments payment = new LoanPayments();
         payment.setLoanPaymentId(1L);
         payment.setTransactions(List.of(t1, t2));
-        payment.setPaymentAmount(new BigDecimal("150.00"));
+        payment.setPaymentAmount(new BigDecimal(150.00));
         payment.setScheduledPaymentDate(LocalDate.now().minusDays(1));
 
         when(loanPaymentsRepository.findById(1L)).thenReturn(Optional.of(payment));
@@ -86,7 +112,7 @@ class LoanPaymentsServiceTest {
 
         LoanPayments result = loanPaymentsService.updatePaidAmount(1L);
 
-        assertEquals(new BigDecimal("150"), result.getPaidAmount());
+        assertEquals(BigDecimal.valueOf(150.0), result.getPaidAmount());
         assertEquals(PayedStatus.PAYED, result.getPayedStatus());
         assertEquals(LocalDate.now(), result.getPaidDate());
     }
@@ -95,7 +121,7 @@ class LoanPaymentsServiceTest {
     void shouldAddTransactionToLoanPayment() {
 
         Long loanPaymentId = 1L;
-        TransactionRequest request = new TransactionRequest(100.00, "12345",String.valueOf(1L));
+        TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(100.00), "12345",1L);
 
         Customer customer = new Customer();
         customer.setName("João da Silva");
@@ -112,15 +138,16 @@ class LoanPaymentsServiceTest {
         when(accountRepository.findByAccountNumber("12345")).thenReturn(Optional.of(account));
 
         Transaction savedTransaction = new Transaction();
-        savedTransaction.setAmount(100.00);
-        savedTransaction.setDestinyAccount(account);
+        savedTransaction.setAmount(BigDecimal.valueOf(100.00));
+        savedTransaction.setOriginAccount(account);
+        savedTransaction.setDestinyAccount(account1);
         savedTransaction.setTransactionDate(LocalDate.now());
 
         when(transactionRepository.save(any(Transaction.class))).thenReturn(savedTransaction);
 
         TransactionResponse response = loanPaymentsService.addTransactionToLoanPayment(loanPaymentId, request);
 
-        assertEquals(100.00, response.amount());
-        assertEquals("João da Silva", response.name());
+        assertEquals(BigDecimal.valueOf(100.00), response.amount());
+        assertEquals("Maria da Silva", response.ReceiverName());
     }
 }

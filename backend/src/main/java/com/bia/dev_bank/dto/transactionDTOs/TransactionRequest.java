@@ -1,6 +1,8 @@
 package com.bia.dev_bank.dto.transactionDTOs;
 
-public record TransactionRequest(Double amount,
+import java.math.BigDecimal;
+
+public record TransactionRequest(BigDecimal amount,
                                  String destinyAccountnumber,
-                                 String loanPaymentsId) {
+                                 Long loanPaymentsId) {
 }

@@ -1,11 +1,24 @@
 [![CI - Dev_Bank](https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml/badge.svg)](https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml)
 # Dev_Bank
 
+## 💻 Sobre o projeto
 Um projeto desenvolvido com a ideia de simular um sistema bancario onde se pode registrar clientes, criar contas fazer transações entre contas "pedir" emprestimos e gerar ordens de pagamento
 
-## 🚀 Começando
+## ⚙️ Funcionalidades
 
-Essas instruções permitirão que você obtenha uma cópia do projeto em operação na sua máquina local para fins de desenvolvimento e teste.
+- [x] Criar conta bancária
+- [x] Listar contas bancárias
+- [x] Atualizar os dados do usuário da conta bancária
+- [x] Excluir uma conta bancária
+- [x] Depósitar em uma conta bancária
+- [x] Sacar de uma conta bancária
+- [x] Transferir valores entre contas bancárias
+- [x] Consultar saldo da conta bancária
+- [x] Emitir extrato bancário
+---
+## 🛣️ Como executar o projeto
+
+💡Este projeto consiste apenas no Backend(no momento).
 
 ### 📋 Pré-requisitos
 
@@ -42,13 +55,16 @@ Para rodar os testes unitários/localmente, certifique-se de que:
 
 ### 🔧 Instalação
 
-Uma série de exemplos passo-a-passo que informam o que você deve executar para ter um ambiente de desenvolvimento em execução:
+#### 🎲 Rodando o Backend (servidor)
 
-    git clone https://github.com/seu-usuario/nome-do-projeto.git
+```bash
+    git clone git@github.com:guilo23/Dev_Bank.git
+    Acesse a pasta do projeto no terminal/cmd
+    cd Dev_Bank/backend
     
 deve rodar o projeto e acessar:
     
-    http://localhost:8080
+    http://localhost:8080/bia
 ## ⚙️ Executando os testes
 
 Explicar como executar os testes automatizados para este sistema.
@@ -71,7 +87,7 @@ Dar exemplos
 
 ## 🛠️ Construído com
 
-Java Sprongboot, maven como gerenciador de projetos, e banco de dados baseado em PostgreSQL
+Java Springboot, maven como gerenciador de projetos, e banco de dados baseado em PostgreSQL
 
 * [NextJs](https://nextjs.org/docs)) - O framework web usado
 * [Maven](https://maven.apache.org/) - Gerente de Dependência
