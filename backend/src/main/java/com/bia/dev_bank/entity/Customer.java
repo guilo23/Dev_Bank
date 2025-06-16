@@ -1,12 +1,11 @@
 package com.bia.dev_bank.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Table(name = "tb_customer")
@@ -16,26 +15,24 @@ import java.util.List;
 @Setter
 public class Customer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String name;
+  private String name;
 
-    @Column(unique = true)
-    private String email;
+  @Column(unique = true)
+  private String email;
 
-    private String password;
+  private String password;
 
-    private String birthday;
+  private String birthday;
 
-    @Column(unique = true)
-    private String CPF;
+  @Column(unique = true)
+  private String CPF;
 
-    private String phoneNumber;
+  private String phoneNumber;
 
-    @OneToMany(mappedBy = "customer",
-            cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Account> accounts;
-
+  @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private List<Account> accounts;
 }
