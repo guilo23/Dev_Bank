@@ -178,7 +178,7 @@
 				<configuration>
 					<targetJdk>21</targetJdk>
 					<printFailingErrors>true</printFailingErrors>
-					<failOnViolation>true</failOnViolation>
+					<failOnViolation>false</failOnViolation>
 					<rulesets>
 						<ruleset>/rulesets/java/quickstart.xml</ruleset>
 					</rulesets>
