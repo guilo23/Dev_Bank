@@ -32,6 +32,7 @@ public class CardRepositoryTest {
                BigDecimal.ONE,
                BigDecimal.ONE,
                new ArrayList<>(),
+               new ArrayList<>(),
                account
        );
        var saved = cardRepository.save(card);
@@ -46,6 +47,7 @@ public class CardRepositoryTest {
                 CardType.DEBIT,
                 BigDecimal.ONE,
                 BigDecimal.ONE,
+                new ArrayList<>(),
                 new ArrayList<>(),
                 account
         );

@@ -40,6 +40,7 @@ public class CardPayments {
     private LocalDate dueDate;
 
     private LocalDate paymentDate;
+
     @Enumerated(EnumType.STRING)
     private PayedStatus PAID;
 
