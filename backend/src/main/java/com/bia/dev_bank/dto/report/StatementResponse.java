@@ -1,4 +1,4 @@
-package com.bia.dev_bank.dto.reportDTOs;
+package com.bia.dev_bank.dto.report;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

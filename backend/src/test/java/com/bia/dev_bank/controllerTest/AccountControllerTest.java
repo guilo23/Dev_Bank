@@ -9,9 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.bia.dev_bank.controller.AccountController;
-import com.bia.dev_bank.dto.accountDTOs.AccountRequest;
-import com.bia.dev_bank.dto.accountDTOs.AccountResponse;
-import com.bia.dev_bank.dto.accountDTOs.AccountUpdate;
+import com.bia.dev_bank.dto.account.AccountRequest;
+import com.bia.dev_bank.dto.account.AccountResponse;
+import com.bia.dev_bank.dto.account.AccountUpdate;
 import com.bia.dev_bank.entity.enums.AccountType;
 import com.bia.dev_bank.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;

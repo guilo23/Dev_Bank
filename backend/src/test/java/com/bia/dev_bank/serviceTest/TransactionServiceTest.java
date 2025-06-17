@@ -3,9 +3,9 @@ package com.bia.dev_bank.serviceTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.bia.dev_bank.dto.reportDTOs.StatementResponse;
-import com.bia.dev_bank.dto.transactionDTOs.TransactionRequest;
-import com.bia.dev_bank.dto.transactionDTOs.TransactionResponse;
+import com.bia.dev_bank.dto.report.StatementResponse;
+import com.bia.dev_bank.dto.transaction.TransactionRequest;
+import com.bia.dev_bank.dto.transaction.TransactionResponse;
 import com.bia.dev_bank.entity.Account;
 import com.bia.dev_bank.entity.Customer;
 import com.bia.dev_bank.entity.Transaction;

@@ -3,8 +3,8 @@ package com.bia.dev_bank.serviceTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.bia.dev_bank.dto.CardPaymentsDTOs.CardPaymentsResponse;
-import com.bia.dev_bank.dto.transactionDTOs.TransactionResponse;
+import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
+import com.bia.dev_bank.dto.transaction.TransactionResponse;
 import com.bia.dev_bank.entity.*;
 import com.bia.dev_bank.entity.enums.PayedStatus;
 import com.bia.dev_bank.repository.AccountRepository;

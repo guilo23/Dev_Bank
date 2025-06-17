@@ -25,13 +25,10 @@ public class PaymentController {
   @Operation(
       summary = "getLoanPaymentByID",
       description = "Retrieves loan payment details for the specified loan payment ID.")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Loan payment details retrieved successfully"),
-        @ApiResponse(responseCode = "404", description = "Loan payment not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Loan payment details retrieved successfully"),
+    @ApiResponse(responseCode = "404", description = "Loan payment not found")
+  })
   @GetMapping("/loan")
   public ResponseEntity getLoanPaymentById(Long loanPaymentId) {
     var loan = loanPaymentsService.getLoanPaymentsById(loanPaymentId);
@@ -41,13 +38,10 @@ public class PaymentController {
   @Operation(
       summary = "getCardPaymentByID",
       description = "Retrieves card payment details for the specified card payment ID.")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Card payment details retrieved successfully"),
-        @ApiResponse(responseCode = "404", description = "Card payment not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Card payment details retrieved successfully"),
+    @ApiResponse(responseCode = "404", description = "Card payment not found")
+  })
   @GetMapping("/card")
   public ResponseEntity getCardPaymentById(Long cardPaymentId) {
     var card = cardPaymentsService.getCardPaymentsById(cardPaymentId);

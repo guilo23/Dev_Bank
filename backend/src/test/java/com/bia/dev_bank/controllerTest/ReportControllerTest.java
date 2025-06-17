@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.bia.dev_bank.controller.ReportController;
-import com.bia.dev_bank.dto.reportDTOs.StatementResponse;
+import com.bia.dev_bank.dto.report.StatementResponse;
 import com.bia.dev_bank.service.CardService;
 import com.bia.dev_bank.service.ReportService;
 import com.bia.dev_bank.service.TransactionService;

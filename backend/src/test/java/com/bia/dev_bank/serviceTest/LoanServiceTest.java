@@ -3,8 +3,8 @@ package com.bia.dev_bank.serviceTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.bia.dev_bank.dto.loanDTOs.LoanRequest;
-import com.bia.dev_bank.dto.loanDTOs.LoanResponse;
+import com.bia.dev_bank.dto.loan.LoanRequest;
+import com.bia.dev_bank.dto.loan.LoanResponse;
 import com.bia.dev_bank.entity.Customer;
 import com.bia.dev_bank.entity.Loan;
 import com.bia.dev_bank.entity.enums.LoanType;

@@ -1,6 +1,6 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.reportDTOs.StatementResponse;
+import com.bia.dev_bank.dto.report.StatementResponse;
 import com.bia.dev_bank.entity.enums.CardType;
 import java.util.ArrayList;
 import java.util.List;

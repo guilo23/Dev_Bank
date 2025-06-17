@@ -1,8 +1,8 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.reportDTOs.StatementResponse;
-import com.bia.dev_bank.dto.transactionDTOs.TransactionRequest;
-import com.bia.dev_bank.dto.transactionDTOs.TransactionResponse;
+import com.bia.dev_bank.dto.report.StatementResponse;
+import com.bia.dev_bank.dto.transaction.TransactionRequest;
+import com.bia.dev_bank.dto.transaction.TransactionResponse;
 import com.bia.dev_bank.entity.Transaction;
 import com.bia.dev_bank.repository.AccountRepository;
 import com.bia.dev_bank.repository.TransactionRepository;

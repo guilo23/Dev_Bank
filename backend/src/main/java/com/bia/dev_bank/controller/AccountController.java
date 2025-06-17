@@ -1,7 +1,7 @@
 package com.bia.dev_bank.controller;
 
-import com.bia.dev_bank.dto.accountDTOs.AccountRequest;
-import com.bia.dev_bank.dto.accountDTOs.AccountUpdate;
+import com.bia.dev_bank.dto.account.AccountRequest;
+import com.bia.dev_bank.dto.account.AccountUpdate;
 import com.bia.dev_bank.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,11 +30,10 @@ public class AccountController {
   @Operation(
       summary = "accountDeposit",
       description = "Deposits the specified amount into the customer's account.")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "202", description = "Deposit successful"),
-        @ApiResponse(responseCode = "400", description = "Invalid input data"),
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "202", description = "Deposit successful"),
+    @ApiResponse(responseCode = "400", description = "Invalid input data"),
+  })
   @PostMapping("/balanceIn/{accountNumber}")
   public ResponseEntity accountDeposit(
       @RequestBody AccountUpdate update, @PathVariable String accountNumber) {
@@ -49,11 +48,10 @@ public class AccountController {
   @Operation(
       summary = "accountCashOut",
       description = "Withdraws the specified amount from the customer's account.")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "202", description = "Withdrawal successful"),
-        @ApiResponse(responseCode = "400", description = "Invalid input data"),
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "202", description = "Withdrawal successful"),
+    @ApiResponse(responseCode = "400", description = "Invalid input data"),
+  })
   @PostMapping("/balanceOut/{accountNumber}")
   public ResponseEntity accountCashOut(
       @RequestBody AccountUpdate update, @PathVariable String accountNumber) {
@@ -68,14 +66,13 @@ public class AccountController {
   @Operation(
       summary = "createAccount",
       description = "Creates a new bank account for an existing customer")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Account sucessfully created",
-            content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Account sucessfully created",
+        content = @Content(mediaType = "application/json")),
+    @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
+  })
   @PostMapping("/{customerId}")
   public ResponseEntity createAccount(
       @RequestBody AccountRequest request, @PathVariable Long customerId) {
@@ -87,11 +84,10 @@ public class AccountController {
   @Operation(
       summary = "getAccountByNumber",
       description = "Retrieves account details by account number")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Account found"),
-        @ApiResponse(responseCode = "404", description = "Account not found", content = @Content)
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Account found"),
+    @ApiResponse(responseCode = "404", description = "Account not found", content = @Content)
+  })
   @GetMapping("/{accountNumber}")
   public ResponseEntity getAccountByNumber(@PathVariable String accountNumber) {
     var account = accountService.getAccountById(accountNumber);
@@ -101,10 +97,9 @@ public class AccountController {
   @Operation(
       summary = "getAllAccountByCustomerID",
       description = "Retrieves all accounts associated with a specific customer")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Accounts list retrieved successfully")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Accounts list retrieved successfully")
+  })
   @GetMapping("/list/{customerId}")
   public ResponseEntity getAllAccountByCostumerId(@PathVariable Long customerId) {
     var accounts = accountService.getAllAccountByCostumerId(customerId);
@@ -112,11 +107,10 @@ public class AccountController {
   }
 
   @Operation(summary = "accountUpdate", description = "Updates the details of an existing account")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Account updated successfully"),
-        @ApiResponse(responseCode = "404", description = "Account not found", content = @Content)
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Account updated successfully"),
+    @ApiResponse(responseCode = "404", description = "Account not found", content = @Content)
+  })
   @PutMapping("/{accountNumber}")
   public ResponseEntity accountUpdate(
       @PathVariable String accountNumber, @RequestBody AccountUpdate update) {
@@ -125,11 +119,10 @@ public class AccountController {
   }
 
   @Operation(summary = "accountDelete", description = "Deletes an account by its number")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Account deleted successfully"),
-        @ApiResponse(responseCode = "404", description = "Account not found", content = @Content)
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Account deleted successfully"),
+    @ApiResponse(responseCode = "404", description = "Account not found", content = @Content)
+  })
   @DeleteMapping("/{accountNumber}")
   public ResponseEntity accountDelete(@PathVariable String accountNumber) {
     accountService.accountDelete(accountNumber);

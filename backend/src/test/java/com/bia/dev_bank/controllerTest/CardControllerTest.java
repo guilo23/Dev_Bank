@@ -6,9 +6,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bia.dev_bank.controller.CardController;
-import com.bia.dev_bank.dto.cardDTOs.CardRequest;
-import com.bia.dev_bank.dto.cardDTOs.CardResponse;
-import com.bia.dev_bank.dto.cardDTOs.CardUpdate;
+import com.bia.dev_bank.dto.card.CardRequest;
+import com.bia.dev_bank.dto.card.CardResponse;
+import com.bia.dev_bank.dto.card.CardUpdate;
 import com.bia.dev_bank.entity.enums.CardType;
 import com.bia.dev_bank.service.CardPaymentsService;
 import com.bia.dev_bank.service.CardService;

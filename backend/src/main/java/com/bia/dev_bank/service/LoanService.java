@@ -1,7 +1,7 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.loanDTOs.LoanRequest;
-import com.bia.dev_bank.dto.loanDTOs.LoanResponse;
+import com.bia.dev_bank.dto.loan.LoanRequest;
+import com.bia.dev_bank.dto.loan.LoanResponse;
 import com.bia.dev_bank.entity.Customer;
 import com.bia.dev_bank.entity.Loan;
 import com.bia.dev_bank.entity.LoanPayments;
@@ -68,13 +68,13 @@ public class LoanService {
     for (int i = 0; i < term; i++) {
       LoanPayments payment = new LoanPayments();
       payment.setLoan(loan);
-      payment.setInterestAmount(new BigDecimal(0.2));
+      payment.setInterestAmount(BigDecimal.valueOf(0.2));
       payment.setScheduledPaymentDate(currentDate.plusMonths(i));
       payment.setPaymentAmount(
           monthlyAmount.add(monthlyAmount.multiply(payment.getInterestAmount())));
       payment.setPrincipalAmount(monthlyAmount);
       payment.setPayedStatus(PayedStatus.TO_PAY);
-      payment.setPaidAmount(new BigDecimal(0));
+      payment.setPaidAmount(BigDecimal.ZERO);
       payments.add(payment);
     }
 
