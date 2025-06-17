@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.bia.dev_bank.dto.reportDTOs.StatementResponse;
+import com.bia.dev_bank.dto.report.StatementResponse;
 import com.bia.dev_bank.entity.Card;
 import com.bia.dev_bank.entity.enums.CardType;
 import com.bia.dev_bank.service.CardService;

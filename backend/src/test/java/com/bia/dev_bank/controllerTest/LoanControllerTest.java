@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bia.dev_bank.controller.LoanController;
-import com.bia.dev_bank.dto.loanDTOs.LoanRequest;
-import com.bia.dev_bank.dto.loanDTOs.LoanResponse;
+import com.bia.dev_bank.dto.loan.LoanRequest;
+import com.bia.dev_bank.dto.loan.LoanResponse;
 import com.bia.dev_bank.entity.Customer;
 import com.bia.dev_bank.entity.enums.LoanType;
 import com.bia.dev_bank.service.LoanService;

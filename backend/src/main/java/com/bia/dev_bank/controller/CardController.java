@@ -1,9 +1,9 @@
 package com.bia.dev_bank.controller;
 
-import com.bia.dev_bank.dto.CardPaymentsDTOs.CardPaymentsRequest;
-import com.bia.dev_bank.dto.CardPaymentsDTOs.CardPaymentsResponse;
-import com.bia.dev_bank.dto.cardDTOs.CardRequest;
-import com.bia.dev_bank.dto.cardDTOs.CardUpdate;
+import com.bia.dev_bank.dto.card.CardRequest;
+import com.bia.dev_bank.dto.card.CardUpdate;
+import com.bia.dev_bank.dto.payments.CardPaymentsRequest;
+import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
 import com.bia.dev_bank.service.CardPaymentsService;
 import com.bia.dev_bank.service.CardService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,12 +35,11 @@ public class CardController {
   @Operation(
       summary = "Create a new card for an account",
       description = "Creates a new card associated with the specified account number.")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "201", description = "Card created successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid input data"),
-        @ApiResponse(responseCode = "404", description = "Account not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "201", description = "Card created successfully"),
+    @ApiResponse(responseCode = "400", description = "Invalid input data"),
+    @ApiResponse(responseCode = "404", description = "Account not found")
+  })
   @PostMapping("/add/{accountNumber}")
   public ResponseEntity createCard(
       @RequestBody CardRequest request, @PathVariable String accountNumber) {
@@ -51,12 +50,11 @@ public class CardController {
   @Operation(
       summary = "Add a credit card purchase",
       description = "Registers a new purchase on the credit card and updates the card balance.")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Credit card purchase added successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid purchase details"),
-        @ApiResponse(responseCode = "404", description = "Card not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Credit card purchase added successfully"),
+    @ApiResponse(responseCode = "400", description = "Invalid purchase details"),
+    @ApiResponse(responseCode = "404", description = "Card not found")
+  })
   @PostMapping("/credit")
   public ResponseEntity addCreditBuying(@RequestBody CardPaymentsRequest request) {
     var card = cardService.addCreditCardPayment(request);
@@ -67,12 +65,11 @@ public class CardController {
       summary = "Add a debit card purchase",
       description =
           "Registers a new purchase using the debit card, deducting the amount from the linked account.")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Debit card purchase added successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid purchase details"),
-        @ApiResponse(responseCode = "404", description = "Card or account not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Debit card purchase added successfully"),
+    @ApiResponse(responseCode = "400", description = "Invalid purchase details"),
+    @ApiResponse(responseCode = "404", description = "Card or account not found")
+  })
   @PostMapping("/debit")
   public ResponseEntity addDebitBuying(@RequestBody CardPaymentsRequest request) {
     var card = cardService.addDebitCardPayment(request);
@@ -81,11 +78,10 @@ public class CardController {
   }
 
   @Operation(summary = "getCardByID", description = "Retrieves card details by card ID")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Card found"),
-        @ApiResponse(responseCode = "404", description = "Card not found", content = @Content)
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Card found"),
+    @ApiResponse(responseCode = "404", description = "Card not found", content = @Content)
+  })
   @GetMapping("/{cardId}")
   public ResponseEntity getCardById(@PathVariable Long cardId) {
     var card = cardService.getCardById(cardId);
@@ -95,10 +91,9 @@ public class CardController {
   @Operation(
       summary = "getListAllCardByAccount",
       description = "Retrieves all cards linked to a specific account")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "List of cards retrieved successfully")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "List of cards retrieved successfully")
+  })
   @GetMapping("/list/{accountNumber}")
   public ResponseEntity getAllCardByAccount(@PathVariable String accountNumber) {
     var cards = cardService.getAllCardByAccountNumber(accountNumber);
@@ -106,25 +101,23 @@ public class CardController {
   }
 
   @Operation(summary = "cardUpdate", description = "Updates card details by card ID")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Card updated successfully"),
-        @ApiResponse(responseCode = "404", description = "Card not found", content = @Content)
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Card updated successfully"),
+    @ApiResponse(responseCode = "404", description = "Card not found", content = @Content)
+  })
   @PutMapping("/{id}")
-  public ResponseEntity CardUpdate(@PathVariable Long id, @RequestBody CardUpdate update) {
+  public ResponseEntity cardUpdate(@PathVariable Long id, @RequestBody CardUpdate update) {
     var card = cardService.cardUpdate(update, id);
     return ResponseEntity.status(HttpStatus.OK).body(card);
   }
 
   @Operation(summary = "cardDelete", description = "Deletes a card by its ID")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Card deleted successfully"),
-        @ApiResponse(responseCode = "404", description = "Card not found", content = @Content)
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Card deleted successfully"),
+    @ApiResponse(responseCode = "404", description = "Card not found", content = @Content)
+  })
   @DeleteMapping("/{id}")
-  public ResponseEntity CardDelete(@PathVariable Long id) {
+  public ResponseEntity cardDelete(@PathVariable Long id) {
     cardService.cardDelete(id);
     return ResponseEntity.status(HttpStatus.OK).body("cartão deletado com sucesso");
   }

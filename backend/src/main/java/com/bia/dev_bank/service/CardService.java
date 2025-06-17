@@ -1,11 +1,11 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.CardPaymentsDTOs.CardPaymentsRequest;
-import com.bia.dev_bank.dto.CardPaymentsDTOs.CardPaymentsResponse;
-import com.bia.dev_bank.dto.cardDTOs.CardRequest;
-import com.bia.dev_bank.dto.cardDTOs.CardResponse;
-import com.bia.dev_bank.dto.cardDTOs.CardUpdate;
-import com.bia.dev_bank.dto.reportDTOs.StatementResponse;
+import com.bia.dev_bank.dto.card.CardRequest;
+import com.bia.dev_bank.dto.card.CardResponse;
+import com.bia.dev_bank.dto.card.CardUpdate;
+import com.bia.dev_bank.dto.payments.CardPaymentsRequest;
+import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
+import com.bia.dev_bank.dto.report.StatementResponse;
 import com.bia.dev_bank.entity.Card;
 import com.bia.dev_bank.entity.CardPayments;
 import com.bia.dev_bank.entity.CreditPurchase;
@@ -161,13 +161,10 @@ public class CardService {
   }
 
   public List<Card> getAllCardForReport(String accountNumber) {
-    var cards =
-        cardRepository
-            .findAllCardsByAccountAccountNumber(accountNumber)
-            .orElseThrow(
-                () -> new EntityNotFoundException("Não há cartões Registrados para essa conta:"));
-
-    return cards;
+    return cardRepository
+        .findAllCardsByAccountAccountNumber(accountNumber)
+        .orElseThrow(
+            () -> new EntityNotFoundException("Não há cartões Registrados para essa conta:"));
   }
 
   @Transactional
@@ -194,7 +191,6 @@ public class CardService {
             .findCardByCardNumber(request.cardNumber())
             .orElseThrow(
                 () -> new EntityNotFoundException("nenhum cartão registrado com esse numero"));
-    List<CardPayments> payments = new ArrayList<>();
     CardPayments payment =
         new CardPayments(
             null,

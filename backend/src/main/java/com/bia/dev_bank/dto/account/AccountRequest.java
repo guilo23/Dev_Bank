@@ -1,4 +1,4 @@
-package com.bia.dev_bank.dto.accountDTOs;
+package com.bia.dev_bank.dto.account;
 
 import com.bia.dev_bank.entity.enums.AccountType;
 import java.math.BigDecimal;

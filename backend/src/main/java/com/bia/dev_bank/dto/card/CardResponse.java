@@ -1,4 +1,4 @@
-package com.bia.dev_bank.dto.cardDTOs;
+package com.bia.dev_bank.dto.card;
 
 import com.bia.dev_bank.entity.Card;
 import java.math.BigDecimal;

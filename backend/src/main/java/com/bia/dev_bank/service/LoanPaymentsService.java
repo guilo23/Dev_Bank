@@ -1,7 +1,7 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.transactionDTOs.TransactionRequest;
-import com.bia.dev_bank.dto.transactionDTOs.TransactionResponse;
+import com.bia.dev_bank.dto.transaction.TransactionRequest;
+import com.bia.dev_bank.dto.transaction.TransactionResponse;
 import com.bia.dev_bank.entity.LoanPayments;
 import com.bia.dev_bank.entity.Transaction;
 import com.bia.dev_bank.entity.enums.PayedStatus;
@@ -22,11 +22,9 @@ public class LoanPaymentsService {
   private final AccountRepository accountRepository;
 
   public LoanPayments getLoanPaymentsById(Long id) {
-    var loan =
-        loanPaymentsRepository
-            .findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Recebibo de pagamento não gerado"));
-    return loan;
+    return loanPaymentsRepository
+        .findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Recebibo de pagamento não gerado"));
   }
 
   public LoanPayments updatePaidAmount(Long loanPaymentId) {

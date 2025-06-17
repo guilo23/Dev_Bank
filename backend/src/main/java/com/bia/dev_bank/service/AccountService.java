@@ -1,8 +1,8 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.accountDTOs.AccountRequest;
-import com.bia.dev_bank.dto.accountDTOs.AccountResponse;
-import com.bia.dev_bank.dto.accountDTOs.AccountUpdate;
+import com.bia.dev_bank.dto.account.AccountRequest;
+import com.bia.dev_bank.dto.account.AccountResponse;
+import com.bia.dev_bank.dto.account.AccountUpdate;
 import com.bia.dev_bank.entity.Account;
 import com.bia.dev_bank.repository.AccountRepository;
 import com.bia.dev_bank.repository.CustomerRepository;
@@ -27,7 +27,6 @@ public class AccountService {
         accountRepository
             .findByAccountNumber(accountNumber)
             .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
-    ;
 
     if (account.getCurrentBalance().compareTo(amount) == -1) {
       throw new IllegalArgumentException("Saldo insuficiente.");
@@ -106,7 +105,6 @@ public class AccountService {
         accountRepository
             .findByAccountNumber(accountNumber)
             .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
-    ;
 
     return new AccountResponse(
         account.getAccountNumber(),

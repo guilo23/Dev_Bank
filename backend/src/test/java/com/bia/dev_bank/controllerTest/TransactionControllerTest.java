@@ -6,8 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bia.dev_bank.controller.TransactionController;
-import com.bia.dev_bank.dto.transactionDTOs.TransactionRequest;
-import com.bia.dev_bank.dto.transactionDTOs.TransactionResponse;
+import com.bia.dev_bank.dto.transaction.TransactionRequest;
+import com.bia.dev_bank.dto.transaction.TransactionResponse;
 import com.bia.dev_bank.service.LoanPaymentsService;
 import com.bia.dev_bank.service.TransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;

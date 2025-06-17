@@ -3,12 +3,12 @@ package com.bia.dev_bank.serviceTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.bia.dev_bank.dto.CardPaymentsDTOs.CardPaymentsRequest;
-import com.bia.dev_bank.dto.CardPaymentsDTOs.CardPaymentsResponse;
-import com.bia.dev_bank.dto.cardDTOs.CardRequest;
-import com.bia.dev_bank.dto.cardDTOs.CardResponse;
-import com.bia.dev_bank.dto.cardDTOs.CardUpdate;
-import com.bia.dev_bank.dto.reportDTOs.StatementResponse;
+import com.bia.dev_bank.dto.card.CardRequest;
+import com.bia.dev_bank.dto.card.CardResponse;
+import com.bia.dev_bank.dto.card.CardUpdate;
+import com.bia.dev_bank.dto.payments.CardPaymentsRequest;
+import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
+import com.bia.dev_bank.dto.report.StatementResponse;
 import com.bia.dev_bank.entity.*;
 import com.bia.dev_bank.entity.enums.AccountType;
 import com.bia.dev_bank.entity.enums.CardType;

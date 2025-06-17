@@ -1,4 +1,4 @@
-package com.bia.dev_bank.dto.loanDTOs;
+package com.bia.dev_bank.dto.loan;
 
 import com.bia.dev_bank.entity.Loan;
 import java.math.BigDecimal;

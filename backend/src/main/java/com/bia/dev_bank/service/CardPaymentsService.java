@@ -1,7 +1,7 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.CardPaymentsDTOs.CardPaymentsResponse;
-import com.bia.dev_bank.dto.transactionDTOs.TransactionResponse;
+import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
+import com.bia.dev_bank.dto.transaction.TransactionResponse;
 import com.bia.dev_bank.entity.CardPayments;
 import com.bia.dev_bank.entity.Transaction;
 import com.bia.dev_bank.entity.enums.PayedStatus;
@@ -11,8 +11,6 @@ import com.bia.dev_bank.repository.TransactionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,7 +56,6 @@ public class CardPaymentsService {
         accountRepository
             .findByAccountNumber(payment.getCard().getAccount().getAccountNumber())
             .orElseThrow(() -> new EntityNotFoundException("NOT FOUND"));
-    List<Transaction> transactionList = new ArrayList<>();
     var transaction =
         new Transaction(
             null, payment.getTotalBuying(), null, account, null, payment, LocalDate.now());
@@ -80,9 +77,6 @@ public class CardPaymentsService {
     BigDecimal paid = payment.getPaidAmount() != null ? payment.getPaidAmount() : BigDecimal.ZERO;
 
     LocalDate today = LocalDate.now();
-    LocalDate scheduledDate = payment.getDueDate();
-
-    System.out.println(paid);
 
     if (paid.compareTo(expected) >= 0) {
       payment.setPAID(PayedStatus.PAYED);

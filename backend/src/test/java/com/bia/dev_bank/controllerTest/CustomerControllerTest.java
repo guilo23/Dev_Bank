@@ -6,16 +6,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bia.dev_bank.controller.CustomerController;
-import com.bia.dev_bank.dto.costumerDTOs.CustomerRequest;
-import com.bia.dev_bank.dto.costumerDTOs.CustomerResponse;
-import com.bia.dev_bank.dto.costumerDTOs.CustomerUpdate;
+import com.bia.dev_bank.dto.costumer.CustomerRequest;
+import com.bia.dev_bank.dto.costumer.CustomerResponse;
+import com.bia.dev_bank.dto.costumer.CustomerUpdate;
 import com.bia.dev_bank.service.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
