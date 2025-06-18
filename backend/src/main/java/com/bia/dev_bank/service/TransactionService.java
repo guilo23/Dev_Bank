@@ -25,11 +25,11 @@ public class TransactionService {
     var accountO =
         accountRepository
             .findByAccountNumber(originAccoutNumber)
-            .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
+            .orElseThrow(() -> new EntityNotFoundException("account not found."));
     var accountD =
         accountRepository
-            .findByAccountNumber(request.destinyAccountnumber())
-            .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
+            .findByAccountNumber(request.destinyAccountNumber())
+            .orElseThrow(() -> new EntityNotFoundException("account not found."));
     var transaction =
         new Transaction(null, request.amount(), accountD, accountO, null, null, LocalDate.now());
     transactionRepository.save(transaction);
@@ -56,19 +56,22 @@ public class TransactionService {
                 description =
                     String.format(
                         new Locale("pt", "BR"),
-                        "Transferência de R$%.2f para %s",
+                        "Transaction of R$%.2f to %s",
                         tx.getAmount(),
                         tx.getDestinyAccount().getCustomer().getName());
               } else {
                 description =
                     String.format(
                         new Locale("pt", "BR"),
-                        "Transferência de R$%.2f para conta desconhecida",
+                        "Transaction of R$%.2f to unknow account",
                         tx.getAmount());
               }
 
               return new StatementResponse(
-                  "Transação entre contas", tx.getAmount(), tx.getTransactionDate(), description);
+                  "Transaction between accounts",
+                  tx.getAmount(),
+                  tx.getTransactionDate(),
+                  description);
             })
         .toList();
   }
@@ -78,7 +81,8 @@ public class TransactionService {
         transactionRepository
             .findById(id)
             .orElseThrow(
-                () -> new EntityNotFoundException("não há nenhuma transação para esse id"));
+                () ->
+                    new EntityNotFoundException("there is no transactions registered to this id"));
     return new TransactionResponse(
         transaction.getAmount(),
         transaction.getDestinyAccount().getCustomer().getName(),

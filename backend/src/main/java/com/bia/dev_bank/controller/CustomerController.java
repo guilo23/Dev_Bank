@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class CustomerController {
     @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
   })
   @PostMapping
-  public ResponseEntity createCustomer(@RequestBody CustomerRequest request) {
+  public ResponseEntity createCustomer(@RequestBody @Valid CustomerRequest request) {
     var customer = customerService.createCustomer(request);
     return ResponseEntity.ok()
         .body(
@@ -52,7 +53,7 @@ public class CustomerController {
   })
   @PutMapping("/{customerId}")
   public ResponseEntity customerUpdate(
-      @PathVariable Long customerId, @RequestBody CustomerUpdate request) {
+      @PathVariable Long customerId, @RequestBody @Valid CustomerUpdate request) {
     var updated = customerService.customerUpdate(customerId, request);
     return ResponseEntity.ok().body(updated);
   }

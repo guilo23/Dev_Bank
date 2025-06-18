@@ -1,8 +1,8 @@
 package com.bia.dev_bank.service;
 
-import com.bia.dev_bank.dto.card.CardRequest;
 import com.bia.dev_bank.dto.card.CardResponse;
-import com.bia.dev_bank.dto.card.CardUpdate;
+import com.bia.dev_bank.dto.card.CreditRequest;
+import com.bia.dev_bank.dto.card.CreditUpdate;
 import com.bia.dev_bank.dto.payments.CardPaymentsRequest;
 import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
 import com.bia.dev_bank.dto.report.StatementResponse;
@@ -32,7 +32,7 @@ public class CardService {
   private final AccountRepository accountRepository;
   private final CardPaymentsRepository cardPaymentsRepository;
 
-  public CardResponse cardCreate(CardRequest request, String accountNumber) {
+  public CardResponse cardCreate(CreditRequest request, String accountNumber) {
     var account =
         accountRepository
             .findByAccountNumber(accountNumber)
@@ -168,7 +168,7 @@ public class CardService {
   }
 
   @Transactional
-  public CardResponse cardUpdate(CardUpdate update, Long id) {
+  public CardResponse cardUpdate(CreditUpdate update, Long id) {
     var card =
         cardRepository
             .findById(id)

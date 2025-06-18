@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class LoanController {
   })
   @PostMapping("/{customerId}")
   public ResponseEntity<LoanResponse> createLoan(
-      @PathVariable Long customerId, @RequestBody LoanRequest loan) {
+      @PathVariable Long customerId, @RequestBody @Valid LoanRequest loan) {
     var createdLoan = loanService.createLoan(loan, customerId);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdLoan);
   }

@@ -113,7 +113,7 @@ class LoanPaymentsServiceTest {
   void shouldAddTransactionToLoanPayment() {
 
     Long loanPaymentId = 1L;
-    TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(100.00), "12345", 1L);
+    TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(100.00), "12345");
 
     Customer customer = new Customer();
     customer.setName("João da Silva");
@@ -141,6 +141,6 @@ class LoanPaymentsServiceTest {
         loanPaymentsService.addTransactionToLoanPayment(loanPaymentId, request);
 
     assertEquals(BigDecimal.valueOf(100.00), response.amount());
-    assertEquals("Maria da Silva", response.ReceiverName());
+    assertEquals("Maria da Silva", response.receiverName());
   }
 }

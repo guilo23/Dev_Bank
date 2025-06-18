@@ -61,7 +61,7 @@ public class TransactionServiceTest {
 
   @Test
   void shouldCreateTransactionSuccessfully() {
-    TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(100.00), "456", null);
+    TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(100.00), "456");
     Transaction savedTransaction =
         new Transaction(
             1L,
@@ -79,7 +79,7 @@ public class TransactionServiceTest {
     TransactionResponse response = transactionService.createTransaction(request, "123");
 
     assertEquals(BigDecimal.valueOf(100.00), response.amount());
-    assertEquals("Carlos", response.ReceiverName());
+    assertEquals("Carlos", response.receiverName());
     assertNotNull(response.transactionDate());
 
     verify(accountService).debit("123", BigDecimal.valueOf(100.00));
@@ -89,7 +89,7 @@ public class TransactionServiceTest {
 
   @Test
   void shouldThrowExceptionWhenOriginAccountNotFound() {
-    TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(50.00), "456", null);
+    TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(50.00), "456");
 
     when(accountRepository.findByAccountNumber("123")).thenReturn(Optional.empty());
 
@@ -117,7 +117,7 @@ public class TransactionServiceTest {
     TransactionResponse response = transactionService.getTransactionById(1L);
 
     assertEquals(BigDecimal.valueOf(75.00), response.amount());
-    assertEquals("Maria", response.ReceiverName());
+    assertEquals("Maria", response.receiverName());
   }
 
   @Test
@@ -164,10 +164,10 @@ public class TransactionServiceTest {
 
     assertEquals(1, responses.size());
     StatementResponse response = responses.get(0);
-    assertEquals("Transação entre contas", response.type());
+    assertEquals("Transaction between accounts", response.type());
     assertEquals(new BigDecimal("200.00"), response.amount());
     assertEquals(LocalDate.of(2025, 6, 10), response.timeStamp());
-    assertEquals("Transferência de R$200,00 para João", response.description());
+    assertEquals("Transaction of R$200,00 to João", response.description());
   }
 
   @Test
@@ -187,10 +187,10 @@ public class TransactionServiceTest {
 
     assertEquals(1, responses.size());
     StatementResponse response = responses.get(0);
-    assertEquals("Transação entre contas", response.type());
+    assertEquals("Transaction between accounts", response.type());
     assertEquals(new BigDecimal("150.00"), response.amount());
     assertEquals(LocalDate.of(2025, 6, 11), response.timeStamp());
-    assertEquals("Transferência de R$150,00 para conta desconhecida", response.description());
+    assertEquals("Transaction of R$150,00 to unknow account", response.description());
   }
 
   @Test
@@ -210,7 +210,7 @@ public class TransactionServiceTest {
     List<TransactionResponse> responses = transactionService.getAllTransactions();
 
     assertEquals(1, responses.size());
-    assertEquals("Maria", responses.get(0).ReceiverName());
+    assertEquals("Maria", responses.get(0).receiverName());
   }
 
   @Test
