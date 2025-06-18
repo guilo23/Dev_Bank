@@ -46,10 +46,7 @@ class CustomerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
-        .andExpect(
-            content()
-                .string(
-                    "congratulations Maria, you are a bia customer now "));
+        .andExpect(content().string("congratulations Maria, you are a bia customer now "));
   }
 
   @Test

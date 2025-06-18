@@ -36,8 +36,7 @@ public class CardService {
     var account =
         accountRepository
             .findByAccountNumber(accountNumber)
-            .orElseThrow(
-                () -> new EntityNotFoundException("account not found"));
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
     BigDecimal limit =
         request.cardType() == CardType.CREDIT ? request.cardLimit() : account.getCurrentBalance();
 
@@ -60,8 +59,7 @@ public class CardService {
     var card =
         cardRepository
             .findCardByCardNumber(request.cardNumber())
-            .orElseThrow(
-                () -> new EntityNotFoundException("Card not found"));
+            .orElseThrow(() -> new EntityNotFoundException("Card not found"));
     var currentDate = LocalDate.now();
     List<CardPayments> payments = new ArrayList<>();
     for (int i = 0; i < request.installmentNumber(); i++) {
@@ -145,8 +143,7 @@ public class CardService {
     var card =
         cardRepository
             .findById(id)
-            .orElseThrow(
-                () -> new EntityNotFoundException("card not found"));
+            .orElseThrow(() -> new EntityNotFoundException("card not found"));
     return new CardResponse(card);
   }
 
@@ -154,8 +151,7 @@ public class CardService {
     var cards =
         cardRepository
             .findAllCardsByAccountAccountNumber(accountNumber)
-            .orElseThrow(
-                () -> new EntityNotFoundException("card not found"));
+            .orElseThrow(() -> new EntityNotFoundException("card not found"));
 
     return cards.stream().map(CardResponse::new).collect(Collectors.toList());
   }
@@ -163,8 +159,7 @@ public class CardService {
   public List<Card> getAllCardForReport(String accountNumber) {
     return cardRepository
         .findAllCardsByAccountAccountNumber(accountNumber)
-        .orElseThrow(
-            () -> new EntityNotFoundException("card not found"));
+        .orElseThrow(() -> new EntityNotFoundException("card not found"));
   }
 
   @Transactional
@@ -172,16 +167,13 @@ public class CardService {
     var card =
         cardRepository
             .findById(id)
-            .orElseThrow(
-                () -> new EntityNotFoundException("card not found"));
+            .orElseThrow(() -> new EntityNotFoundException("card not found"));
     card.setCardLimit(update.cardLimit());
     return new CardResponse(card);
   }
 
   public void cardDelete(Long id) {
-    cardRepository
-        .findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("card not found"));
+    cardRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("card not found"));
     cardRepository.deleteById(id);
   }
 
@@ -189,8 +181,7 @@ public class CardService {
     var card =
         cardRepository
             .findCardByCardNumber(request.cardNumber())
-            .orElseThrow(
-                () -> new EntityNotFoundException("card not found"));
+            .orElseThrow(() -> new EntityNotFoundException("card not found"));
     CardPayments payment =
         new CardPayments(
             null,

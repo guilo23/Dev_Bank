@@ -69,10 +69,7 @@ public class AccountControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(update)))
         .andExpect(status().isAccepted())
-        .andExpect(
-            content()
-                .string(
-                    "the value 50.0 has been deposited in your account "));
+        .andExpect(content().string("the value 50.0 has been deposited in your account "));
   }
 
   @Test
@@ -91,10 +88,7 @@ public class AccountControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(update)))
         .andExpect(status().isAccepted())
-        .andExpect(
-            content()
-                .string(
-                    "the value 50.0 has been debit of your account"));
+        .andExpect(content().string("the value 50.0 has been debit of your account"));
   }
 
   @Test
@@ -146,7 +140,6 @@ public class AccountControllerTest {
     mockMvc
         .perform(delete("/bia/account/12345678-9"))
         .andExpect(status().isOk())
-        .andExpect(
-            content().string(":( your account has been deleted"));
+        .andExpect(content().string(":( your account has been deleted"));
   }
 }

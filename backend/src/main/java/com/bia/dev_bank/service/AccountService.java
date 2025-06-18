@@ -75,10 +75,7 @@ public class AccountService {
     var customer =
         customerRepository
             .findById(customerId)
-            .orElseThrow(
-                () ->
-                    new EntityNotFoundException(
-                        "customer not found  " + customerId));
+            .orElseThrow(() -> new EntityNotFoundException("customer not found  " + customerId));
 
     var accountNumberWithDv = generateAccountNumberWithCheckDigit();
 

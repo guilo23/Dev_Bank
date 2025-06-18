@@ -54,10 +54,7 @@ class TransactionControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
-        .andExpect(
-            content()
-                .string(
-                    org.hamcrest.Matchers.containsString("Maria")));
+        .andExpect(content().string(org.hamcrest.Matchers.containsString("Maria")));
   }
 
   @Test
@@ -108,9 +105,7 @@ class TransactionControllerTest {
         .perform(delete("/bia/transactions/1"))
         .andExpect(status().isOk())
         .andExpect(
-            content()
-                .string(
-                    org.hamcrest.Matchers.containsString("Transaction has been deleted")));
+            content().string(org.hamcrest.Matchers.containsString("Transaction has been deleted")));
   }
 
   @Test

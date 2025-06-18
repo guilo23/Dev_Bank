@@ -40,10 +40,7 @@ public class AccountController {
       @RequestBody @Valid AccountUpdate update, @PathVariable String accountNumber) {
     accountService.accountDeposit(update, accountNumber);
     return ResponseEntity.status(HttpStatus.ACCEPTED)
-        .body(
-            "the value "
-                + update.currentBalance()
-                + " has been deposited in your account ");
+        .body("the value " + update.currentBalance() + " has been deposited in your account ");
   }
 
   @Operation(
@@ -58,10 +55,7 @@ public class AccountController {
       @RequestBody @Valid AccountUpdate update, @PathVariable String accountNumber) {
     accountService.accountCashOut(update, accountNumber);
     return ResponseEntity.status(HttpStatus.ACCEPTED)
-        .body(
-            "the value "
-                + update.currentBalance()
-                + " has been debit of your account");
+        .body("the value " + update.currentBalance() + " has been debit of your account");
   }
 
   @Operation(
@@ -127,7 +121,6 @@ public class AccountController {
   @DeleteMapping("/{accountNumber}")
   public ResponseEntity accountDelete(@PathVariable String accountNumber) {
     accountService.accountDelete(accountNumber);
-    return ResponseEntity.ok()
-        .body(":( your account has been deleted");
+    return ResponseEntity.ok().body(":( your account has been deleted");
   }
 }

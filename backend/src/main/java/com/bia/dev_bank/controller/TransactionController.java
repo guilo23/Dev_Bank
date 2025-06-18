@@ -102,7 +102,6 @@ public class TransactionController {
   @DeleteMapping("/{id}")
   public ResponseEntity transactionsDelete(@PathVariable Long id) {
     transactionService.transactionDelete(id);
-    return ResponseEntity.ok()
-        .body("Transaction has been deleted");
+    return ResponseEntity.ok().body("Transaction has been deleted");
   }
 }
