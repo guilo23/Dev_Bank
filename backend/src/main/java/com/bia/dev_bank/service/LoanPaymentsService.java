@@ -24,7 +24,7 @@ public class LoanPaymentsService {
   public LoanPayments getLoanPaymentsById(Long id) {
     return loanPaymentsRepository
         .findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Recebibo de pagamento não gerado"));
+        .orElseThrow(() -> new EntityNotFoundException("Report not found"));
   }
 
   public LoanPayments updatePaidAmount(Long loanPaymentId) {

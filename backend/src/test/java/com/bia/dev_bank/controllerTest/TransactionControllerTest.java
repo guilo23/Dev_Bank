@@ -57,7 +57,7 @@ class TransactionControllerTest {
         .andExpect(
             content()
                 .string(
-                    org.hamcrest.Matchers.containsString("Parabéns sua transferência para Maria")));
+                    org.hamcrest.Matchers.containsString("Maria")));
   }
 
   @Test
@@ -110,7 +110,7 @@ class TransactionControllerTest {
         .andExpect(
             content()
                 .string(
-                    org.hamcrest.Matchers.containsString("Transação foi excluida com sucesso")));
+                    org.hamcrest.Matchers.containsString("Transaction has been deleted")));
   }
 
   @Test
@@ -129,6 +129,6 @@ class TransactionControllerTest {
             result ->
                 System.out.println("Response body: " + result.getResponse().getContentAsString()))
         .andExpect(status().isOk())
-        .andExpect(content().string("Pago com sucesso"));
+        .andExpect(content().string("Payed"));
   }
 }

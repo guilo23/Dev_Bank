@@ -49,7 +49,7 @@ class CustomerControllerTest {
         .andExpect(
             content()
                 .string(
-                    "Parabéns Maria seu cadastro foi feito com sucesso. Agora você é uma cliente da BIA"));
+                    "congratulations Maria, you are a bia customer now "));
   }
 
   @Test

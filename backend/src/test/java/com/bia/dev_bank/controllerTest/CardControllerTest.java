@@ -98,7 +98,7 @@ class CardControllerTest {
     mockMvc
         .perform(delete("/bia/cards/1"))
         .andExpect(status().isOk())
-        .andExpect(content().string("cartão deletado com sucesso"));
+        .andExpect(content().string("card has been deleted"));
 
     Mockito.verify(cardService).cardDelete(1L);
   }

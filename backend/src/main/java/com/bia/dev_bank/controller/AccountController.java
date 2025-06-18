@@ -41,9 +41,9 @@ public class AccountController {
     accountService.accountDeposit(update, accountNumber);
     return ResponseEntity.status(HttpStatus.ACCEPTED)
         .body(
-            "o valor de R$"
+            "the value "
                 + update.currentBalance()
-                + " foi depositado na sua conta com sucesso consulte seu extrato para mais detalhes.");
+                + " has been deposited in your account ");
   }
 
   @Operation(
@@ -59,9 +59,9 @@ public class AccountController {
     accountService.accountCashOut(update, accountNumber);
     return ResponseEntity.status(HttpStatus.ACCEPTED)
         .body(
-            "o valor de R$"
+            "the value "
                 + update.currentBalance()
-                + " foi sacado da sua conta com sucesso consulte seu extrato para mais detalhes.");
+                + " has been debit of your account");
   }
 
   @Operation(
@@ -79,7 +79,7 @@ public class AccountController {
       @RequestBody @Valid AccountRequest request, @PathVariable Long customerId) {
     var account = accountService.createAccount(request, customerId);
     return ResponseEntity.ok()
-        .body(account.accountNumber() + " Parabéns sua conta foi criada com sucesso");
+        .body(account.accountNumber() + " congratulation your account has been created");
   }
 
   @Operation(
@@ -116,7 +116,7 @@ public class AccountController {
   public ResponseEntity accountUpdate(
       @PathVariable String accountNumber, @RequestBody @Valid AccountUpdate update) {
     accountService.accountUpdate(accountNumber, update);
-    return ResponseEntity.ok().body("Parabéns sua BIA account foi atualizado com sucesso");
+    return ResponseEntity.ok().body("your account has been updated");
   }
 
   @Operation(summary = "accountDelete", description = "Deletes an account by its number")
@@ -128,6 +128,6 @@ public class AccountController {
   public ResponseEntity accountDelete(@PathVariable String accountNumber) {
     accountService.accountDelete(accountNumber);
     return ResponseEntity.ok()
-        .body(":( Sua conta foi deletada, espero " + "que continue sendo nosso cliente");
+        .body(":( your account has been deleted");
   }
 }

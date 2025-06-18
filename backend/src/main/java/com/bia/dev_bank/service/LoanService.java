@@ -91,7 +91,7 @@ public class LoanService {
     var loan =
         loanRepository
             .findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Emprestimo inexistente para esse id:"));
+            .orElseThrow(() -> new EntityNotFoundException("no loan for this id"));
     return new LoanResponse(loan);
   }
 }

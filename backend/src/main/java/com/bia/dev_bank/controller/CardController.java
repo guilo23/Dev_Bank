@@ -113,6 +113,6 @@ public class CardController {
   @DeleteMapping("/{id}")
   public ResponseEntity cardDelete(@PathVariable Long id) {
     cardService.cardDelete(id);
-    return ResponseEntity.status(HttpStatus.OK).body("cartão deletado com sucesso");
+    return ResponseEntity.status(HttpStatus.OK).body("card has been deleted");
   }
 }

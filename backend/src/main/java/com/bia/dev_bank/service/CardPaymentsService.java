@@ -51,7 +51,7 @@ public class CardPaymentsService {
     var payment =
         cardPaymentsRepository
             .findById(cardPaymentId)
-            .orElseThrow(() -> new EntityNotFoundException("Recebibo de pagamento não gerado"));
+            .orElseThrow(() -> new EntityNotFoundException("Report not found"));
     var account =
         accountRepository
             .findByAccountNumber(payment.getCard().getAccount().getAccountNumber())
