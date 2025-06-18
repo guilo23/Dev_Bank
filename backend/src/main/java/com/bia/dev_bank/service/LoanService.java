@@ -33,7 +33,7 @@ public class LoanService {
         customerRepository
             .findById(customerId)
             .orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado com ID: " + customerId));
+                () -> new RuntimeException("customer not found for this id: " + customerId));
 
     var loan =
         new Loan(

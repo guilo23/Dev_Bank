@@ -164,10 +164,10 @@ public class TransactionServiceTest {
 
     assertEquals(1, responses.size());
     StatementResponse response = responses.get(0);
-    assertEquals("Transaction between accounts", response.type());
+    assertEquals("transaction between accounts", response.type());
     assertEquals(new BigDecimal("200.00"), response.amount());
     assertEquals(LocalDate.of(2025, 6, 10), response.timeStamp());
-    assertEquals("Transaction of R$200,00 to João", response.description());
+    assertEquals("transaction of R$200,00 to João", response.description());
   }
 
   @Test
@@ -187,10 +187,10 @@ public class TransactionServiceTest {
 
     assertEquals(1, responses.size());
     StatementResponse response = responses.get(0);
-    assertEquals("Transaction between accounts", response.type());
+    assertEquals("transaction between accounts", response.type());
     assertEquals(new BigDecimal("150.00"), response.amount());
     assertEquals(LocalDate.of(2025, 6, 11), response.timeStamp());
-    assertEquals("Transaction of R$150,00 to unknow account", response.description());
+    assertEquals("transaction of R$150,00 to unknow account", response.description());
   }
 
   @Test

@@ -40,7 +40,7 @@ public class AccountController {
       @RequestBody @Valid AccountUpdate update, @PathVariable String accountNumber) {
     accountService.accountDeposit(update, accountNumber);
     return ResponseEntity.status(HttpStatus.ACCEPTED)
-        .body("the value " + update.currentBalance() + " has been deposited in your account ");
+        .body("the value " + update.currentBalance() + " has been deposited in your account");
   }
 
   @Operation(

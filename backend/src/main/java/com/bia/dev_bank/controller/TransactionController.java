@@ -91,7 +91,7 @@ public class TransactionController {
   public ResponseEntity transactionAddLoanPayments(
       @PathVariable Long loanPaymentsId, @RequestBody @Valid TransactionRequest request) {
     loanPaymentsService.addTransactionToLoanPayment(loanPaymentsId, request);
-    return ResponseEntity.ok().body("Payed");
+    return ResponseEntity.ok().body("payed");
   }
 
   @Operation(summary = "transactionsDelete", description = "Deletes a transaction by its ID")
@@ -102,6 +102,6 @@ public class TransactionController {
   @DeleteMapping("/{id}")
   public ResponseEntity transactionsDelete(@PathVariable Long id) {
     transactionService.transactionDelete(id);
-    return ResponseEntity.ok().body("Transaction has been deleted");
+    return ResponseEntity.ok().body("transaction has been deleted");
   }
 }

@@ -77,7 +77,7 @@ class LoanServiceTest {
     RuntimeException exception =
         assertThrows(RuntimeException.class, () -> loanService.createLoan(request, customerId));
 
-    assertTrue(exception.getMessage().contains("Cliente não encontrado"));
+    assertTrue(exception.getMessage().contains("customer not found for this id: "));
   }
 
   @Test

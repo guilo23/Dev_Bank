@@ -69,7 +69,7 @@ public class AccountControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(update)))
         .andExpect(status().isAccepted())
-        .andExpect(content().string("the value 50.0 has been deposited in your account "));
+        .andExpect(content().string("the value 50.0 has been deposited in your account"));
   }
 
   @Test

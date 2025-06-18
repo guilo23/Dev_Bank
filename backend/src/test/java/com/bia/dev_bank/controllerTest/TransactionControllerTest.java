@@ -105,7 +105,7 @@ class TransactionControllerTest {
         .perform(delete("/bia/transactions/1"))
         .andExpect(status().isOk())
         .andExpect(
-            content().string(org.hamcrest.Matchers.containsString("Transaction has been deleted")));
+            content().string(org.hamcrest.Matchers.containsString("transaction has been deleted")));
   }
 
   @Test
@@ -124,6 +124,6 @@ class TransactionControllerTest {
             result ->
                 System.out.println("Response body: " + result.getResponse().getContentAsString()))
         .andExpect(status().isOk())
-        .andExpect(content().string("Payed"));
+        .andExpect(content().string("payed"));
   }
 }

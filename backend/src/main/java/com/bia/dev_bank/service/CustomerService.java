@@ -35,7 +35,7 @@ public class CustomerService {
         customerRepository
             .findById(costumerId)
             .orElseThrow(
-                () -> new EntityNotFoundException("Customer not found with id: " + costumerId));
+                () -> new EntityNotFoundException("customer not found with id: " + costumerId));
 
     return new CustomerResponse(
         customer.getName(), customer.getEmail(), customer.getCPF(), customer.getPhoneNumber());
@@ -45,7 +45,7 @@ public class CustomerService {
     var customer =
         customerRepository
             .findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Customer not found with id: " + id));
+            .orElseThrow(() -> new EntityNotFoundException("customer not found with id: " + id));
     customer.setEmail(update.email());
     customer.setPassword(update.password());
     customer.setPhoneNumber(update.phoneNumber());

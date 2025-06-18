@@ -59,7 +59,7 @@ public class CardService {
     var card =
         cardRepository
             .findCardByCardNumber(request.cardNumber())
-            .orElseThrow(() -> new EntityNotFoundException("Card not found"));
+            .orElseThrow(() -> new EntityNotFoundException("card not found"));
     var currentDate = LocalDate.now();
     List<CardPayments> payments = new ArrayList<>();
     for (int i = 0; i < request.installmentNumber(); i++) {
@@ -101,16 +101,16 @@ public class CardService {
           .map(
               px ->
                   new StatementResponse(
-                      "Pagamento no cartão de débito",
+                      "debit payment",
                       px.getTotalBuying(),
                       px.getPaymentDate(),
-                      String.format("Compra no débito de de um %s", px.getProductName())))
+                      String.format("debit payment %s of", px.getProductName())))
           .toList();
     } else {
       List<StatementResponse> returns = new ArrayList<>();
       returns.add(
           new StatementResponse(
-              "TIPO_DESCONHECIDO", BigDecimal.ZERO, LocalDate.now(), "card type invalid"));
+              "type unknow", BigDecimal.ZERO, LocalDate.now(), "card type invalid"));
       return returns;
     }
   }
@@ -126,10 +126,10 @@ public class CardService {
           .map(
               px ->
                   new StatementResponse(
-                      "Pagamento no cartão de Crédito",
+                      "credit payment",
                       px.getAmount(),
                       px.getPurchaseDate(),
-                      String.format("Compra no credito de de um %s", px.getProductName())))
+                      String.format("buy of one %s", px.getProductName())))
           .toList();
     } else {
       List<StatementResponse> returns = new ArrayList<>();
