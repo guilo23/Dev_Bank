@@ -6,9 +6,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bia.dev_bank.controller.CardController;
-import com.bia.dev_bank.dto.card.CardRequest;
 import com.bia.dev_bank.dto.card.CardResponse;
-import com.bia.dev_bank.dto.card.CardUpdate;
+import com.bia.dev_bank.dto.card.CreditRequest;
+import com.bia.dev_bank.dto.card.CreditUpdate;
 import com.bia.dev_bank.entity.enums.CardType;
 import com.bia.dev_bank.service.CardPaymentsService;
 import com.bia.dev_bank.service.CardService;
@@ -38,10 +38,11 @@ class CardControllerTest {
 
   @Test
   void shouldCreateCard() throws Exception {
-    CardRequest request = new CardRequest(CardType.DEBIT, "1111222233334444", BigDecimal.ZERO);
+    CreditRequest request = new CreditRequest(CardType.DEBIT, "1111222233334444", BigDecimal.ZERO);
     CardResponse response = new CardResponse("1111222233334444", BigDecimal.ZERO, "Maria");
 
-    Mockito.when(cardService.cardCreate(any(CardRequest.class), eq("123456"))).thenReturn(response);
+    Mockito.when(cardService.cardCreate(any(CreditRequest.class), eq("123456")))
+        .thenReturn(response);
 
     mockMvc
         .perform(
@@ -78,10 +79,10 @@ class CardControllerTest {
 
   @Test
   void shouldUpdateCard() throws Exception {
-    CardUpdate update = new CardUpdate(BigDecimal.valueOf(2000));
+    CreditUpdate update = new CreditUpdate(BigDecimal.valueOf(2000));
     CardResponse response = new CardResponse("1111222233334444", BigDecimal.valueOf(2000), "Maria");
 
-    Mockito.when(cardService.cardUpdate(any(CardUpdate.class), eq(1L))).thenReturn(response);
+    Mockito.when(cardService.cardUpdate(any(CreditUpdate.class), eq(1L))).thenReturn(response);
 
     mockMvc
         .perform(

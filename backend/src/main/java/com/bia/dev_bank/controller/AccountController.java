@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class AccountController {
   })
   @PostMapping("/balanceIn/{accountNumber}")
   public ResponseEntity accountDeposit(
-      @RequestBody AccountUpdate update, @PathVariable String accountNumber) {
+      @RequestBody @Valid AccountUpdate update, @PathVariable String accountNumber) {
     accountService.accountDeposit(update, accountNumber);
     return ResponseEntity.status(HttpStatus.ACCEPTED)
         .body(
@@ -54,7 +55,7 @@ public class AccountController {
   })
   @PostMapping("/balanceOut/{accountNumber}")
   public ResponseEntity accountCashOut(
-      @RequestBody AccountUpdate update, @PathVariable String accountNumber) {
+      @RequestBody @Valid AccountUpdate update, @PathVariable String accountNumber) {
     accountService.accountCashOut(update, accountNumber);
     return ResponseEntity.status(HttpStatus.ACCEPTED)
         .body(
@@ -75,7 +76,7 @@ public class AccountController {
   })
   @PostMapping("/{customerId}")
   public ResponseEntity createAccount(
-      @RequestBody AccountRequest request, @PathVariable Long customerId) {
+      @RequestBody @Valid AccountRequest request, @PathVariable Long customerId) {
     var account = accountService.createAccount(request, customerId);
     return ResponseEntity.ok()
         .body(account.accountNumber() + " Parabéns sua conta foi criada com sucesso");
@@ -113,7 +114,7 @@ public class AccountController {
   })
   @PutMapping("/{accountNumber}")
   public ResponseEntity accountUpdate(
-      @PathVariable String accountNumber, @RequestBody AccountUpdate update) {
+      @PathVariable String accountNumber, @RequestBody @Valid AccountUpdate update) {
     accountService.accountUpdate(accountNumber, update);
     return ResponseEntity.ok().body("Parabéns sua BIA account foi atualizado com sucesso");
   }

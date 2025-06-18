@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record TransactionResponse(
-    BigDecimal amount, String ReceiverName, String SenderName, LocalDate transactionDate) {
+    BigDecimal amount, String receiverName, String senderName, LocalDate transactionDate) {
   public TransactionResponse(Transaction transaction) {
     this(
         transaction.getAmount(),

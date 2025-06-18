@@ -2,6 +2,7 @@ package com.bia.dev_bank.controllerTest;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -14,8 +15,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -29,19 +30,22 @@ class TransactionControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
+  @Autowired private ObjectMapper objectMapper;
+
   @MockitoBean private TransactionService transactionService;
 
   @MockitoBean private LoanPaymentsService loanPaymentsService;
 
-  @Autowired private ObjectMapper objectMapper;
+  @BeforeEach
+  public void setup() {}
 
   @Test
   void shouldCreateTransactionSuccessfully() throws Exception {
-    TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(100.0), "456", null);
+    TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(100.0), "456");
     TransactionResponse response =
         new TransactionResponse(BigDecimal.valueOf(100.0), "Maria", "joão", LocalDate.now());
 
-    Mockito.when(transactionService.createTransaction(any(TransactionRequest.class), eq("123")))
+    when(transactionService.createTransaction(any(TransactionRequest.class), eq("123")))
         .thenReturn(response);
 
     mockMvc
@@ -61,13 +65,13 @@ class TransactionControllerTest {
     TransactionResponse response =
         new TransactionResponse(BigDecimal.valueOf(200.0), "João", "Maria", LocalDate.now());
 
-    Mockito.when(transactionService.getTransactionById(1L)).thenReturn(response);
+    when(transactionService.getTransactionById(1L)).thenReturn(response);
 
     mockMvc
         .perform(get("/bia/transactions/1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.amount").value(200.0))
-        .andExpect(jsonPath("$.ReceiverName").value("João"));
+        .andExpect(jsonPath("$.receiverName").value("João"));
   }
 
   @Test
@@ -76,7 +80,7 @@ class TransactionControllerTest {
         List.of(
             new TransactionResponse(BigDecimal.valueOf(50.0), "Maria", "João", LocalDate.now()));
 
-    Mockito.when(transactionService.getTransactionByAccountNumber("123")).thenReturn(responses);
+    when(transactionService.getTransactionByAccountNumber("123")).thenReturn(responses);
 
     mockMvc
         .perform(get("/bia/transactions/account/123"))
@@ -90,12 +94,12 @@ class TransactionControllerTest {
         List.of(
             new TransactionResponse(BigDecimal.valueOf(75.0), "Carlos", "João", LocalDate.now()));
 
-    Mockito.when(transactionService.getAllTransactions()).thenReturn(responses);
+    when(transactionService.getAllTransactions()).thenReturn(responses);
 
     mockMvc
         .perform(get("/bia/transactions/list"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].ReceiverName").value("Carlos"));
+        .andExpect(jsonPath("$[0].receiverName").value("Carlos"));
   }
 
   @Test
@@ -111,13 +115,19 @@ class TransactionControllerTest {
 
   @Test
   void shouldAddTransactionToLoanPayments() throws Exception {
-    TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(90.0), "456", null);
+    Long loanPaymentsId = 5L;
+    TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(90.0), "456");
+    System.out.println(objectMapper.writeValueAsString(request));
 
     mockMvc
         .perform(
             post("/bia/transactions/loanPayments/5")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
+        .andDo(result -> System.out.println("Response status: " + result.getResponse().getStatus()))
+        .andDo(
+            result ->
+                System.out.println("Response body: " + result.getResponse().getContentAsString()))
         .andExpect(status().isOk())
         .andExpect(content().string("Pago com sucesso"));
   }

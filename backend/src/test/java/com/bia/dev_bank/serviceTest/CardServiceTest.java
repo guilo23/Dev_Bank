@@ -3,9 +3,9 @@ package com.bia.dev_bank.serviceTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.bia.dev_bank.dto.card.CardRequest;
 import com.bia.dev_bank.dto.card.CardResponse;
-import com.bia.dev_bank.dto.card.CardUpdate;
+import com.bia.dev_bank.dto.card.CreditRequest;
+import com.bia.dev_bank.dto.card.CreditUpdate;
 import com.bia.dev_bank.dto.payments.CardPaymentsRequest;
 import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
 import com.bia.dev_bank.dto.report.StatementResponse;
@@ -84,7 +84,7 @@ public class CardServiceTest {
 
   @Test
   void shouldCreateDebitCardSuccessfully() {
-    CardRequest request = new CardRequest(CardType.DEBIT, "1111222233334444", BigDecimal.ZERO);
+    CreditRequest request = new CreditRequest(CardType.DEBIT, "1111222233334444", BigDecimal.ZERO);
 
     when(accountRepository.findByAccountNumber("123456")).thenReturn(Optional.of(account));
     when(cardRepository.save(any(Card.class))).thenAnswer(i -> i.getArguments()[0]);
@@ -98,8 +98,8 @@ public class CardServiceTest {
 
   @Test
   void shouldCreateCreditCardSuccessfully() {
-    CardRequest request =
-        new CardRequest(CardType.CREDIT, "5555666677778888", BigDecimal.valueOf(2000));
+    CreditRequest request =
+        new CreditRequest(CardType.CREDIT, "5555666677778888", BigDecimal.valueOf(2000));
 
     when(accountRepository.findByAccountNumber("123456")).thenReturn(Optional.of(account));
     when(cardRepository.save(any(Card.class))).thenAnswer(i -> i.getArguments()[0]);
@@ -196,7 +196,7 @@ public class CardServiceTest {
 
   @Test
   void shouldThrowExceptionWhenAccountNotFoundOnCreate() {
-    CardRequest request = new CardRequest(CardType.DEBIT, "0000111122223333", BigDecimal.ZERO);
+    CreditRequest request = new CreditRequest(CardType.DEBIT, "0000111122223333", BigDecimal.ZERO);
     when(accountRepository.findByAccountNumber("000000")).thenReturn(Optional.empty());
 
     assertThrows(
@@ -248,7 +248,7 @@ public class CardServiceTest {
   void shouldUpdateCardLimitSuccessfully() {
     when(cardRepository.findById(1L)).thenReturn(Optional.of(card));
 
-    CardUpdate update = new CardUpdate(BigDecimal.valueOf(5000));
+    CreditUpdate update = new CreditUpdate(BigDecimal.valueOf(5000));
     CardResponse response = cardService.cardUpdate(update, 1L);
 
     assertEquals(BigDecimal.valueOf(5000), response.cardLimit());

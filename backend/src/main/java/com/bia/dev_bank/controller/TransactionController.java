@@ -3,27 +3,25 @@ package com.bia.dev_bank.controller;
 import com.bia.dev_bank.dto.transaction.TransactionRequest;
 import com.bia.dev_bank.service.LoanPaymentsService;
 import com.bia.dev_bank.service.TransactionService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/bia/transactions")
+@Validated
 @Tag(name = "Transaction", description = "Endpoints for managing transactions and loan payments")
 public class TransactionController {
-
+  private final ObjectMapper objectMapper;
   private final TransactionService transactionService;
   private final LoanPaymentsService loanPaymentsService;
 
@@ -36,12 +34,13 @@ public class TransactionController {
   })
   @PostMapping("/{originAccountNumber}")
   public ResponseEntity createTransaction(
-      @RequestBody TransactionRequest request, @PathVariable String originAccountNumber) {
+      @RequestBody @Valid TransactionRequest request, @PathVariable String originAccountNumber) {
     var transaction = transactionService.createTransaction(request, originAccountNumber);
+    System.out.println(request);
     return ResponseEntity.ok()
         .body(
             ":) Parabéns sua transferência para "
-                + transaction.ReceiverName()
+                + transaction.receiverName()
                 + " foi concretizada com sucesso");
   }
 
@@ -90,7 +89,7 @@ public class TransactionController {
   })
   @PostMapping("/loanPayments/{loanPaymentsId}")
   public ResponseEntity transactionAddLoanPayments(
-      @PathVariable Long loanPaymentsId, @RequestBody TransactionRequest request) {
+      @PathVariable Long loanPaymentsId, @RequestBody @Valid TransactionRequest request) {
     loanPaymentsService.addTransactionToLoanPayment(loanPaymentsId, request);
     return ResponseEntity.ok().body("Pago com sucesso");
   }

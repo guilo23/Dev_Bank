@@ -122,7 +122,7 @@ class CardPaymentsServiceTest {
     TransactionResponse response = cardPaymentsService.addTransactionToCardPayments(1L);
 
     assertEquals(payment.getTotalBuying(), response.amount());
-    assertEquals("João", response.SenderName());
+    assertEquals("João", response.senderName());
     verify(accountService).debit(account.getAccountNumber(), payment.getTotalBuying());
   }
 }

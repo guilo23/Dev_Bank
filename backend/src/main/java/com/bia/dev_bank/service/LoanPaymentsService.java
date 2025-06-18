@@ -45,7 +45,7 @@ public class LoanPaymentsService {
     var payment = getLoanPaymentsById(loanPaymentId);
     var account =
         accountRepository
-            .findByAccountNumber(request.destinyAccountnumber())
+            .findByAccountNumber(request.destinyAccountNumber())
             .orElseThrow(() -> new EntityNotFoundException("NOT FOUND"));
     var transaction =
         new Transaction(null, request.amount(), null, account, null, null, LocalDate.now());
