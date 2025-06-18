@@ -106,7 +106,7 @@ jobs:
   docker-compose-build:
     name: Docker - Build Only
     runs-on: ubuntu-latest
-    needs: backend-test
+    needs: [backend-test, backend-spotless, backend-pmd]
 
     steps:
       - name: Checkout code
