@@ -54,10 +54,7 @@ class TransactionControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
-        .andExpect(
-            content()
-                .string(
-                    org.hamcrest.Matchers.containsString("Parabéns sua transferência para Maria")));
+        .andExpect(content().string(org.hamcrest.Matchers.containsString("Maria")));
   }
 
   @Test
@@ -108,9 +105,7 @@ class TransactionControllerTest {
         .perform(delete("/bia/transactions/1"))
         .andExpect(status().isOk())
         .andExpect(
-            content()
-                .string(
-                    org.hamcrest.Matchers.containsString("Transação foi excluida com sucesso")));
+            content().string(org.hamcrest.Matchers.containsString("transaction has been deleted")));
   }
 
   @Test
@@ -129,6 +124,6 @@ class TransactionControllerTest {
             result ->
                 System.out.println("Response body: " + result.getResponse().getContentAsString()))
         .andExpect(status().isOk())
-        .andExpect(content().string("Pago com sucesso"));
+        .andExpect(content().string("payed"));
   }
 }

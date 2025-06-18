@@ -27,7 +27,7 @@ public class CardPaymentsService {
     var payment =
         cardPaymentsRepository
             .findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Recebibo de pagamento não gerado"));
+            .orElseThrow(() -> new EntityNotFoundException("report not found"));
     return new CardPaymentsResponse(payment);
   }
 
@@ -35,7 +35,7 @@ public class CardPaymentsService {
     var payment =
         cardPaymentsRepository
             .findById(cardPaymentId)
-            .orElseThrow(() -> new EntityNotFoundException("Recebibo de pagamento não gerado"));
+            .orElseThrow(() -> new EntityNotFoundException("report not found"));
     BigDecimal totalPaid =
         payment.getTransactions().stream()
             .map(t -> t.getAmount() != null ? t.getAmount() : BigDecimal.ZERO)
@@ -51,11 +51,11 @@ public class CardPaymentsService {
     var payment =
         cardPaymentsRepository
             .findById(cardPaymentId)
-            .orElseThrow(() -> new EntityNotFoundException("Recebibo de pagamento não gerado"));
+            .orElseThrow(() -> new EntityNotFoundException("report not found"));
     var account =
         accountRepository
             .findByAccountNumber(payment.getCard().getAccount().getAccountNumber())
-            .orElseThrow(() -> new EntityNotFoundException("NOT FOUND"));
+            .orElseThrow(() -> new EntityNotFoundException("not found"));
     var transaction =
         new Transaction(
             null, payment.getTotalBuying(), null, account, null, payment, LocalDate.now());

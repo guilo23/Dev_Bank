@@ -39,9 +39,9 @@ public class TransactionController {
     System.out.println(request);
     return ResponseEntity.ok()
         .body(
-            ":) Parabéns sua transferência para "
+            ":) congratulations transaction to "
                 + transaction.receiverName()
-                + " foi concretizada com sucesso");
+                + " has been successful");
   }
 
   @Operation(
@@ -91,7 +91,7 @@ public class TransactionController {
   public ResponseEntity transactionAddLoanPayments(
       @PathVariable Long loanPaymentsId, @RequestBody @Valid TransactionRequest request) {
     loanPaymentsService.addTransactionToLoanPayment(loanPaymentsId, request);
-    return ResponseEntity.ok().body("Pago com sucesso");
+    return ResponseEntity.ok().body("payed");
   }
 
   @Operation(summary = "transactionsDelete", description = "Deletes a transaction by its ID")
@@ -102,7 +102,6 @@ public class TransactionController {
   @DeleteMapping("/{id}")
   public ResponseEntity transactionsDelete(@PathVariable Long id) {
     transactionService.transactionDelete(id);
-    return ResponseEntity.ok()
-        .body("Transação foi excluida com sucesso a policia não vai te pegar :)");
+    return ResponseEntity.ok().body("transaction has been deleted");
   }
 }

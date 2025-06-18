@@ -56,19 +56,19 @@ public class TransactionService {
                 description =
                     String.format(
                         new Locale("pt", "BR"),
-                        "Transaction of R$%.2f to %s",
+                        "transaction of R$%.2f to %s",
                         tx.getAmount(),
                         tx.getDestinyAccount().getCustomer().getName());
               } else {
                 description =
                     String.format(
                         new Locale("pt", "BR"),
-                        "Transaction of R$%.2f to unknow account",
+                        "transaction of R$%.2f to unknow account",
                         tx.getAmount());
               }
 
               return new StatementResponse(
-                  "Transaction between accounts",
+                  "transaction between accounts",
                   tx.getAmount(),
                   tx.getTransactionDate(),
                   description);

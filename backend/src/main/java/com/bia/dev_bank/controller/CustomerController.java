@@ -29,10 +29,7 @@ public class CustomerController {
   public ResponseEntity createCustomer(@RequestBody @Valid CustomerRequest request) {
     var customer = customerService.createCustomer(request);
     return ResponseEntity.ok()
-        .body(
-            "Parabéns "
-                + customer.name()
-                + " seu cadastro foi feito com sucesso. Agora você é uma cliente da BIA");
+        .body("congratulations " + customer.name() + ", you are a bia customer now");
   }
 
   @Operation(summary = "customerByID", description = "Retrieves customer details by customer ID")

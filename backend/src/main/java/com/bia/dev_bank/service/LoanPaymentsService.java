@@ -24,7 +24,7 @@ public class LoanPaymentsService {
   public LoanPayments getLoanPaymentsById(Long id) {
     return loanPaymentsRepository
         .findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Recebibo de pagamento não gerado"));
+        .orElseThrow(() -> new EntityNotFoundException("report not found"));
   }
 
   public LoanPayments updatePaidAmount(Long loanPaymentId) {
@@ -46,7 +46,7 @@ public class LoanPaymentsService {
     var account =
         accountRepository
             .findByAccountNumber(request.destinyAccountNumber())
-            .orElseThrow(() -> new EntityNotFoundException("NOT FOUND"));
+            .orElseThrow(() -> new EntityNotFoundException("not found"));
     var transaction =
         new Transaction(null, request.amount(), null, account, null, null, LocalDate.now());
     transaction.setLoanPayment(payment);

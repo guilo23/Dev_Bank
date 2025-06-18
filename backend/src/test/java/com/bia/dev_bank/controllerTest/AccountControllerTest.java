@@ -50,7 +50,7 @@ public class AccountControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
-        .andExpect(content().string("12345678-9 Parabéns sua conta foi criada com sucesso"));
+        .andExpect(content().string("12345678-9 congratulation your account has been created"));
   }
 
   @Test
@@ -69,10 +69,7 @@ public class AccountControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(update)))
         .andExpect(status().isAccepted())
-        .andExpect(
-            content()
-                .string(
-                    "o valor de R$50.0 foi depositado na sua conta com sucesso consulte seu extrato para mais detalhes."));
+        .andExpect(content().string("the value 50.0 has been deposited in your account"));
   }
 
   @Test
@@ -91,10 +88,7 @@ public class AccountControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(update)))
         .andExpect(status().isAccepted())
-        .andExpect(
-            content()
-                .string(
-                    "o valor de R$50.0 foi sacado da sua conta com sucesso consulte seu extrato para mais detalhes."));
+        .andExpect(content().string("the value 50.0 has been debit of your account"));
   }
 
   @Test
@@ -136,7 +130,7 @@ public class AccountControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(update)))
         .andExpect(status().isOk())
-        .andExpect(content().string("Parabéns sua BIA account foi atualizado com sucesso"));
+        .andExpect(content().string("your account has been updated"));
   }
 
   @Test
@@ -146,7 +140,6 @@ public class AccountControllerTest {
     mockMvc
         .perform(delete("/bia/account/12345678-9"))
         .andExpect(status().isOk())
-        .andExpect(
-            content().string(":( Sua conta foi deletada, espero que continue sendo nosso cliente"));
+        .andExpect(content().string(":( your account has been deleted"));
   }
 }

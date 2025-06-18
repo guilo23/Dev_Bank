@@ -191,7 +191,7 @@ public class CardServiceTest {
     List<StatementResponse> result = cardService.cardsCreditPaymentsReport("999888");
 
     assertEquals(1, result.size());
-    assertEquals("Teclado", result.get(0).description().split("um ")[1]);
+    assertEquals("one Teclado", result.get(0).description().split("of ")[1]);
   }
 
   @Test

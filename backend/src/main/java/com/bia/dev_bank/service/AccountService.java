@@ -26,10 +26,10 @@ public class AccountService {
     var account =
         accountRepository
             .findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
 
     if (account.getCurrentBalance().compareTo(amount) == -1) {
-      throw new IllegalArgumentException("Saldo insuficiente.");
+      throw new IllegalArgumentException("balance  not enough");
     }
     account.setCurrentBalance(account.getCurrentBalance().subtract(amount));
     accountRepository.save(account);
@@ -39,7 +39,7 @@ public class AccountService {
     var account =
         accountRepository
             .findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
 
     account.setCurrentBalance(account.getCurrentBalance().add(amount));
     accountRepository.save(account);
@@ -49,7 +49,7 @@ public class AccountService {
     var account =
         accountRepository
             .findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new EntityNotFoundException("numero de conta não encontrado"));
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
     credit(account.getAccountNumber(), update.currentBalance());
     return new AccountResponse(
         accountNumber,
@@ -62,7 +62,7 @@ public class AccountService {
     var account =
         accountRepository
             .findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new EntityNotFoundException("numero de conta não encontrado"));
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
     debit(account.getAccountNumber(), update.currentBalance());
     return new AccountResponse(
         accountNumber,
@@ -75,10 +75,7 @@ public class AccountService {
     var customer =
         customerRepository
             .findById(customerId)
-            .orElseThrow(
-                () ->
-                    new EntityNotFoundException(
-                        "Não foi encontrado nenhum cliente com o id:  " + customerId));
+            .orElseThrow(() -> new EntityNotFoundException("customer not found  " + customerId));
 
     var accountNumberWithDv = generateAccountNumberWithCheckDigit();
 
@@ -104,7 +101,7 @@ public class AccountService {
     var account =
         accountRepository
             .findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
 
     return new AccountResponse(
         account.getAccountNumber(),
@@ -123,7 +120,7 @@ public class AccountService {
     var account =
         accountRepository
             .findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
 
     account.setCurrentBalance(update.currentBalance());
     account.setAccountType(update.AccountType());
@@ -134,7 +131,7 @@ public class AccountService {
     var account =
         accountRepository
             .findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada."));
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
     accountRepository.delete(account);
   }
 
