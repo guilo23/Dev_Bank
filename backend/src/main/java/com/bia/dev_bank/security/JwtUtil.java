@@ -4,16 +4,17 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
-import java.util.Date;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Date;
 
 @Component
 public class JwtUtil {
 
   private final String SECRET_KEY = "01234567890123456789012345678901";
-  private final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 horas
+  private final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 hours
 
   private Key getSignKey() {
     return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
