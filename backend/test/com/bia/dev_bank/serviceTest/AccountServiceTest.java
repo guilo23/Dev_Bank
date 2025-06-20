@@ -1,8 +1,5 @@
 package com.bia.dev_bank.serviceTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.bia.dev_bank.dto.account.AccountRequest;
 import com.bia.dev_bank.dto.account.AccountResponse;
 import com.bia.dev_bank.dto.account.AccountUpdate;
@@ -13,11 +10,6 @@ import com.bia.dev_bank.repository.AccountRepository;
 import com.bia.dev_bank.repository.CustomerRepository;
 import com.bia.dev_bank.service.AccountService;
 import jakarta.persistence.EntityNotFoundException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +17,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -46,6 +49,7 @@ public class AccountServiceTest {
             "João da Silva",
             "joao@email.com",
             "senha123",
+            "USER",
             "1985-01-01",
             "111.222.333-44",
             "11999999999",

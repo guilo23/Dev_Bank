@@ -1,19 +1,21 @@
 package com.bia.dev_bank.RepositoryTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.bia.dev_bank.entity.Customer;
 import com.bia.dev_bank.entity.Loan;
 import com.bia.dev_bank.entity.enums.LoanType;
 import com.bia.dev_bank.repository.CustomerRepository;
 import com.bia.dev_bank.repository.LoanRepository;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -27,7 +29,7 @@ public class LoanRepositoryTest {
   void shouldSaveLoan() {
     Customer customer =
         new Customer(
-            null, "Ana", "ana@mail.com", "1234", "1990-01-01", "11111111111", "11999999999", null);
+            null, "Ana", "ana@mail.com", "1234","USER", "1990-01-01", "11111111111", "11999999999", null);
     customer = customerRepository.save(customer);
 
     Loan loan =
@@ -54,7 +56,7 @@ public class LoanRepositoryTest {
   void shouldDeleteLoan() {
     Customer customer =
         new Customer(
-            null, "Ana", "ana@mail.com", "1234", "1990-01-01", "11111111111", "11999999999", null);
+            null, "Ana", "ana@mail.com", "1234","USER", "1990-01-01", "11111111111", "11999999999", null);
     customer = customerRepository.save(customer);
 
     Loan loan =

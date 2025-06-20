@@ -34,7 +34,6 @@ public class LoanService {
             .findById(customerId)
             .orElseThrow(
                 () -> new RuntimeException("customer not found for this id: " + customerId));
-
     var loan =
         new Loan(
             null,

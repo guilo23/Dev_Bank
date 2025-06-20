@@ -1,21 +1,22 @@
 package com.bia.dev_bank.RepositoryTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.bia.dev_bank.entity.Account;
 import com.bia.dev_bank.entity.Customer;
 import com.bia.dev_bank.entity.enums.AccountType;
 import com.bia.dev_bank.repository.AccountRepository;
 import com.bia.dev_bank.repository.CustomerRepository;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -37,6 +38,7 @@ public class AccountRepositoryTest {
             "1985-01-01",
             "111.222.333-44",
             "11999999999",
+            "USER",
             List.of());
     customer = customerRepository.save(customer);
   }

@@ -6,6 +6,7 @@ import com.bia.dev_bank.dto.card.CreditUpdate;
 import com.bia.dev_bank.dto.payments.CardPaymentsRequest;
 import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
 import com.bia.dev_bank.dto.report.StatementResponse;
+import com.bia.dev_bank.entity.Account;
 import com.bia.dev_bank.entity.Card;
 import com.bia.dev_bank.entity.CardPayments;
 import com.bia.dev_bank.entity.CreditPurchase;
@@ -14,6 +15,7 @@ import com.bia.dev_bank.entity.enums.PayedStatus;
 import com.bia.dev_bank.repository.AccountRepository;
 import com.bia.dev_bank.repository.CardPaymentsRepository;
 import com.bia.dev_bank.repository.CardRepository;
+import com.bia.dev_bank.utils.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,15 +34,24 @@ public class CardService {
   private final CardRepository cardRepository;
   private final AccountRepository accountRepository;
   private final CardPaymentsRepository cardPaymentsRepository;
+  private final SecurityUtil securityUtil;
 
   public CardResponse cardCreate(CreditRequest request, String accountNumber) {
+    var custumerId = securityUtil.getCurrentUserId();
+    Account acc =
+        accountRepository
+            .findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+
+    if (!acc.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
     var account =
         accountRepository
             .findByAccountNumber(accountNumber)
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
     BigDecimal limit =
         request.cardType() == CardType.CREDIT ? request.cardLimit() : account.getCurrentBalance();
-
     var card =
         new Card(
             null,
@@ -56,6 +68,16 @@ public class CardService {
 
   @Transactional
   public CardPaymentsResponse addCreditCardPayment(CardPaymentsRequest request) {
+    var cardVerify = cardRepository.findCardByCardNumber(request.cardNumber());
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(cardVerify.get().getAccount().getAccountNumber())
+            .orElseThrow(() -> new EntityNotFoundException("acount not found"));
+
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
     var card =
         cardRepository
             .findCardByCardNumber(request.cardNumber())
@@ -91,6 +113,15 @@ public class CardService {
   }
 
   public List<StatementResponse> cardsDebitPaymentsReport(String cardNumber) {
+    var cardVerify = cardRepository.findCardByCardNumber(cardNumber);
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(cardVerify.get().getAccount().getAccountNumber())
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
     var card =
         cardRepository
             .findCardByCardNumber(cardNumber)
@@ -116,6 +147,15 @@ public class CardService {
   }
 
   public List<StatementResponse> cardsCreditPaymentsReport(String cardNumber) {
+    var cardVerify = cardRepository.findCardByCardNumber(cardNumber);
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(cardVerify.get().getAccount().getAccountNumber())
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
     var card =
         cardRepository
             .findCardByCardNumber(cardNumber)
@@ -140,6 +180,15 @@ public class CardService {
   }
 
   public CardResponse getCardById(Long id) {
+    var cardVerify = cardRepository.findById(id);
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(cardVerify.get().getAccount().getAccountNumber())
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
     var card =
         cardRepository
             .findById(id)
@@ -148,6 +197,15 @@ public class CardService {
   }
 
   public List<CardResponse> getAllCardByAccountNumber(String accountNumber) {
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
+
     var cards =
         cardRepository
             .findAllCardsByAccountAccountNumber(accountNumber)
@@ -164,6 +222,15 @@ public class CardService {
 
   @Transactional
   public CardResponse cardUpdate(CreditUpdate update, Long id) {
+    var cardVerify = cardRepository.findById(id);
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(cardVerify.get().getAccount().getAccountNumber())
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
     var card =
         cardRepository
             .findById(id)
@@ -173,11 +240,33 @@ public class CardService {
   }
 
   public void cardDelete(Long id) {
+    var cardVerify =
+        cardRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("card not found"));
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(cardVerify.getAccount().getAccountNumber())
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
+
     cardRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("card not found"));
     cardRepository.deleteById(id);
   }
 
   public CardPayments addDebitCardPayment(CardPaymentsRequest request) {
+    var cardVerify = cardRepository.findCardByCardNumber(request.cardNumber());
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(cardVerify.get().getAccount().getAccountNumber())
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
     var card =
         cardRepository
             .findCardByCardNumber(request.cardNumber())

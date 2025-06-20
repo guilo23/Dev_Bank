@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,8 +43,8 @@ public class PaymentController {
     @ApiResponse(responseCode = "200", description = "Card payment details retrieved successfully"),
     @ApiResponse(responseCode = "404", description = "Card payment not found")
   })
-  @GetMapping("/card")
-  public ResponseEntity getCardPaymentById(Long cardPaymentId) {
+  @GetMapping("/card/{cardPaymentId}")
+  public ResponseEntity getCardPaymentById(@PathVariable Long cardPaymentId) {
     var card = cardPaymentsService.getCardPaymentsById(cardPaymentId);
     return ResponseEntity.status(HttpStatus.OK).body(card);
   }
