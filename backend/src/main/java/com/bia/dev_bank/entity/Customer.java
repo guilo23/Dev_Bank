@@ -26,6 +26,8 @@ public class Customer {
 
   private String password;
 
+  private String role;
+
   private String birthday;
 
   @Column(unique = true)

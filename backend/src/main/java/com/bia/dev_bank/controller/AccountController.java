@@ -12,14 +12,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/bia/account")
@@ -68,6 +62,7 @@ public class AccountController {
         content = @Content(mediaType = "application/json")),
     @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
   })
+  @PreAuthorize("#account.customer.id == principal.id")
   @PostMapping("/{customerId}")
   public ResponseEntity createAccount(
       @RequestBody @Valid AccountRequest request, @PathVariable Long customerId) {
@@ -95,6 +90,7 @@ public class AccountController {
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Accounts list retrieved successfully")
   })
+  @PreAuthorize("#account.customer.id == principal.id")
   @GetMapping("/list/{customerId}")
   public ResponseEntity getAllAccountByCostumerId(@PathVariable Long customerId) {
     var accounts = accountService.getAllAccountByCostumerId(customerId);

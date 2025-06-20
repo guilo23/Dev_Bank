@@ -13,12 +13,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/bia/loans")
@@ -33,6 +29,7 @@ public class LoanController {
     @ApiResponse(responseCode = "201", description = "Loan created successfully"),
     @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
   })
+  @PreAuthorize("#account.customer.id == principal.id")
   @PostMapping("/{customerId}")
   public ResponseEntity<LoanResponse> createLoan(
       @PathVariable Long customerId, @RequestBody @Valid LoanRequest loan) {
@@ -54,6 +51,7 @@ public class LoanController {
     @ApiResponse(responseCode = "200", description = "Loan found"),
     @ApiResponse(responseCode = "404", description = "Loan not found", content = @Content)
   })
+  @PreAuthorize("#account.customer.id == principal.id")
   @GetMapping("/{id}")
   public ResponseEntity<LoanResponse> getLoanById(@PathVariable Long id) {
     var loan = loanService.findLoanById(id);

@@ -3,15 +3,18 @@ package com.bia.dev_bank.service;
 import com.bia.dev_bank.dto.report.StatementResponse;
 import com.bia.dev_bank.dto.transaction.TransactionRequest;
 import com.bia.dev_bank.dto.transaction.TransactionResponse;
+import com.bia.dev_bank.entity.Account;
 import com.bia.dev_bank.entity.Transaction;
 import com.bia.dev_bank.repository.AccountRepository;
 import com.bia.dev_bank.repository.TransactionRepository;
+import com.bia.dev_bank.utils.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,12 +22,22 @@ public class TransactionService {
   @Autowired private TransactionRepository transactionRepository;
   @Autowired private AccountRepository accountRepository;
   @Autowired private AccountService accountService;
+  @Autowired private SecurityUtil securityUtil;
 
   public TransactionResponse createTransaction(
-      TransactionRequest request, String originAccoutNumber) {
+      TransactionRequest request, String originAccountNumber) {
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(originAccountNumber)
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
     var accountO =
         accountRepository
-            .findByAccountNumber(originAccoutNumber)
+            .findByAccountNumber(originAccountNumber)
             .orElseThrow(() -> new EntityNotFoundException("account not found."));
     var accountD =
         accountRepository
@@ -45,6 +58,16 @@ public class TransactionService {
   }
 
   public List<StatementResponse> getStatementByAccountNumber(String accountNumber) {
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
+
     List<Transaction> transactions =
         transactionRepository.findTransactionsByOriginAccountAccountNumber(accountNumber);
 
@@ -77,6 +100,16 @@ public class TransactionService {
   }
 
   public TransactionResponse getTransactionById(Long id) {
+    var verify = transactionRepository.findById(id);
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(verify.get().getOriginAccount().getAccountNumber())
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
     var transaction =
         transactionRepository
             .findById(id)
@@ -91,6 +124,16 @@ public class TransactionService {
   }
 
   public List<TransactionResponse> getTransactionByAccountNumber(String accountNumber) {
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
+
     var transactions =
         transactionRepository.findTransactionsByOriginAccountAccountNumber(accountNumber);
 
@@ -103,6 +146,15 @@ public class TransactionService {
   }
 
   public void transactionDelete(Long id) {
+    var verify = transactionRepository.findById(id);
+    var custumerId = securityUtil.getCurrentUserId();
+    Account account =
+        accountRepository
+            .findByAccountNumber(verify.get().getOriginAccount().getAccountNumber())
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+    if (!account.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
     transactionRepository.deleteById(id);
   }
 }

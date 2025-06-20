@@ -2,6 +2,7 @@ package com.bia.dev_bank.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -19,6 +20,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+@SuppressWarnings("PMD.LooseCoupling")
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -89,6 +91,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   public ResponseEntity<Object> handleGenericException(Exception ex) {
     return buildErrorResponse(
         ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .body(
+            Map.of(
+                "status", HttpStatus.FORBIDDEN.value(),
+                "error", "Access Denied",
+                "message", ex.getMessage()));
   }
 
   private ResponseEntity<Object> buildErrorResponse(

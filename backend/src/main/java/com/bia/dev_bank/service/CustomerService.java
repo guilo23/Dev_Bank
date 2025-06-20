@@ -8,11 +8,13 @@ import com.bia.dev_bank.repository.CustomerRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CustomerService {
   @Autowired private CustomerRepository customerRepository;
+  @Autowired private PasswordEncoder passwordEncoder;
 
   public CustomerResponse createCustomer(CustomerRequest request) {
     var costumer =
@@ -20,7 +22,8 @@ public class CustomerService {
             null,
             request.name(),
             request.email(),
-            request.password(),
+            passwordEncoder.encode(request.password()),
+            "USER",
             request.birthday(),
             request.CPF(),
             request.phoneNumber(),
@@ -47,7 +50,7 @@ public class CustomerService {
             .findById(id)
             .orElseThrow(() -> new EntityNotFoundException("customer not found with id: " + id));
     customer.setEmail(update.email());
-    customer.setPassword(update.password());
+    customer.setPassword(passwordEncoder.encode(update.password()));
     customer.setPhoneNumber(update.phoneNumber());
     customerRepository.save(customer);
 

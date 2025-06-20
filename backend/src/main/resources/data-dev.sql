@@ -1,14 +1,16 @@
-INSERT INTO tb_customer (id, name, email, password, birthday, CPF, phone_number) VALUES (1, 'João Silva', 'joao@email.com', 'senhaSegura123', '1990-01-15', '12345678900', '11999998888');
-INSERT INTO tb_customer (id, name, email, password, birthday, CPF, phone_number) VALUES (2, 'Maria Oliveira', 'maria.o@email.com', 'maria123', '1985-06-22', '98765432100', '11988887777');
-INSERT INTO tb_customer (id, name, email, password, birthday, CPF, phone_number) VALUES (3, 'Carlos Pereira', 'carlos.p@email.com', 'carlos456', '1992-03-10', '45678912300', '11977776666');
-INSERT INTO tb_customer (id, name, email, password, birthday, CPF, phone_number) VALUES (4, 'Ana Costa', 'ana.costa@email.com', 'ana789', '1995-12-05', '32165498700', '11966665555');
-INSERT INTO tb_customer (id, name, email, password, birthday, CPF, phone_number) VALUES (5, 'Pedro Santos', 'pedro@email.com', 'pedro321', '1988-08-19', '74185296300', '11955554444');
-INSERT INTO tb_customer (id, name, email, password, birthday, CPF, phone_number) VALUES (6, 'Juliana Rocha', 'juliana@email.com', 'juliana654', '1993-07-30', '36925814700', '11944443333');
-INSERT INTO tb_customer (id, name, email, password, birthday, CPF, phone_number) VALUES (7, 'Bruno Lima', 'bruno@email.com', 'bruno111', '1991-09-17', '85274196300', '11933332222');
-INSERT INTO tb_customer (id, name, email, password, birthday, CPF, phone_number) VALUES (8, 'Fernanda Souza', 'fernanda@email.com', 'fernanda222', '1987-11-23', '96385274100', '11922221111');
-INSERT INTO tb_customer (id, name, email, password, birthday, CPF, phone_number) VALUES (9, 'Lucas Martins', 'lucas@email.com', 'lucas333', '1996-02-14', '14725836900', '11911110000');
-INSERT INTO tb_customer (id, name, email, password, birthday, CPF, phone_number) VALUES (10, 'Patrícia Mendes', 'patricia@email.com', 'patricia444', '1994-04-09', '25836914700', '11900009999');
-INSERT INTO tb_customer (id, name, email, password, birthday, CPF, phone_number) VALUES (11, 'André Barbosa', 'andre@email.com', 'andre555', '1990-10-01', '15975348600', '11888887777');
+CREATE ALIAS IF NOT EXISTS BCRYPT FOR "com.bia.dev_bank.utils.PasswordUtils.bcrypt";
+
+INSERT INTO tb_customer ( name, email, password, birthday, CPF, phone_number,role) VALUES ( 'João Silva', 'joao@email.com', BCRYPT('senhaSegura123'),'1990-01-15', '12345678900', '11999998888','USER');
+INSERT INTO tb_customer ( name, email, password, birthday, CPF, phone_number,role) VALUES ( 'Maria Oliveira', 'maria.o@email.com', BCRYPT('maria123'),'1985-06-22', '98765432100', '11988887777','USER');
+INSERT INTO tb_customer ( name, email, password, birthday, CPF, phone_number,role) VALUES ( 'Carlos Pereira', 'carlos.p@email.com', BCRYPT('carlos456'),'1992-03-10', '45678912300', '11977776666','USER');
+INSERT INTO tb_customer ( name, email, password, birthday, CPF, phone_number,role) VALUES ( 'Ana Costa', 'ana.costa@email.com', BCRYPT('ana789'),'1995-12-05','32165498700', '11966665555','USER');
+INSERT INTO tb_customer ( name, email, password, birthday, CPF, phone_number,role) VALUES ( 'Pedro Santos', 'pedro@email.com', BCRYPT('pedro321'), '1988-08-19','74185296300', '11955554444','USER');
+INSERT INTO tb_customer ( name, email, password, birthday, CPF, phone_number,role) VALUES ( 'Juliana Rocha', 'juliana@email.com', BCRYPT('juliana654'), '1993-07-30','36925814700', '11944443333','USER');
+INSERT INTO tb_customer ( name, email, password, birthday, CPF, phone_number,role) VALUES ( 'Bruno Lima', 'bruno@email.com', BCRYPT('bruno111'), '1991-09-17', '85274196300', '11933332222','USER');
+INSERT INTO tb_customer ( name, email, password, birthday, CPF, phone_number,role) VALUES ( 'Fernanda Souza', 'fernanda@email.com', BCRYPT('fernanda222'), '1987-11-23', '96385274100', '11922221111','USER');
+INSERT INTO tb_customer ( name, email, password, birthday, CPF, phone_number,role) VALUES ( 'Lucas Martins', 'lucas@email.com', BCRYPT('lucas333'), '1996-02-14', '14725836900', '11911110000','USER');
+INSERT INTO tb_customer ( name, email, password, birthday, CPF, phone_number,role) VALUES ( 'Patrícia Mendes', 'patricia@email.com', BCRYPT('patricia444'), '1994-04-09', '25836914700', '11900009999','USER');
+INSERT INTO tb_customer ( name, email, password, birthday, CPF, phone_number,role) VALUES ( 'André Barbosa', 'andre@email.com', BCRYPT('andre555'), '1990-10-01', '15975348600', '11888887777','USER');
 
 INSERT INTO tb_account (account_number, customer_id, account_type, current_balance, date_opened) VALUES ('000001', 1, 'CHECKING', 2500.00, '2022-01-10');
 INSERT INTO tb_account (account_number, customer_id, account_type, current_balance, date_opened) VALUES ('000002', 2, 'SAVINGS', 3800.75, '2023-02-15');

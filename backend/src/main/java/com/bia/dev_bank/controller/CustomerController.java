@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,6 +38,7 @@ public class CustomerController {
     @ApiResponse(responseCode = "200", description = "Customer found"),
     @ApiResponse(responseCode = "404", description = "Customer not found", content = @Content)
   })
+  @PreAuthorize("#account.customer.id == principal.id")
   @GetMapping("/{customerId}")
   public ResponseEntity customerById(@PathVariable Long customerId) {
     var customer = customerService.getCostumerById(customerId);
@@ -48,6 +50,7 @@ public class CustomerController {
     @ApiResponse(responseCode = "200", description = "Customer updated successfully"),
     @ApiResponse(responseCode = "404", description = "Customer not found", content = @Content)
   })
+  @PreAuthorize("#account.customer.id == principal.id")
   @PutMapping("/{customerId}")
   public ResponseEntity customerUpdate(
       @PathVariable Long customerId, @RequestBody @Valid CustomerUpdate request) {
@@ -60,6 +63,7 @@ public class CustomerController {
     @ApiResponse(responseCode = "204", description = "Customer deleted successfully"),
     @ApiResponse(responseCode = "404", description = "Customer not found", content = @Content)
   })
+  @PreAuthorize("#account.customer.id == principal.id")
   @DeleteMapping("/{customerId}")
   public ResponseEntity customerDelete(@PathVariable Long customerId) {
     customerService.customerDelete(customerId);

@@ -2,16 +2,19 @@ package com.bia.dev_bank.service;
 
 import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
 import com.bia.dev_bank.dto.transaction.TransactionResponse;
+import com.bia.dev_bank.entity.Account;
 import com.bia.dev_bank.entity.CardPayments;
 import com.bia.dev_bank.entity.Transaction;
 import com.bia.dev_bank.entity.enums.PayedStatus;
 import com.bia.dev_bank.repository.AccountRepository;
 import com.bia.dev_bank.repository.CardPaymentsRepository;
 import com.bia.dev_bank.repository.TransactionRepository;
+import com.bia.dev_bank.utils.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,7 @@ public class CardPaymentsService {
   private final TransactionRepository transactionRepository;
   private final AccountRepository accountRepository;
   private final AccountService accountService;
+  private final SecurityUtil securityUtil;
 
   public CardPaymentsResponse getCardPaymentsById(Long id) {
     var payment =
@@ -48,6 +52,18 @@ public class CardPaymentsService {
 
   @Transactional
   public TransactionResponse addTransactionToCardPayments(Long cardPaymentId) {
+    var cardVerify = cardPaymentsRepository.findById(cardPaymentId);
+    var accountNumber = cardVerify.get().getCard().getAccount().getAccountNumber();
+    var custumerId = securityUtil.getCurrentUserId();
+    Account acc =
+        accountRepository
+            .findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new EntityNotFoundException("account not found"));
+
+    if (!acc.getCustomer().getId().equals(custumerId)) {
+      throw new AccessDeniedException("permission denied");
+    }
+
     var payment =
         cardPaymentsRepository
             .findById(cardPaymentId)
