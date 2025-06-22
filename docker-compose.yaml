@@ -31,7 +31,17 @@ services:
         condition: service_healthy
     networks:
       - app-network
-      
+
+  web:
+    build:
+      context: ./frontend
+    depends_on:
+      - app
+    ports:
+      - 3000:3000
+    networks:
+      - app-network
+
 networks:
   app-network:
 
