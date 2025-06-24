@@ -1,23 +1,25 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
+import type React from "react";
+import { useState } from "react";
 
 const LoginPageComponente: React.FC = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     //console.log("Login attempt", { email, password })
-  }
+  };
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>Login</h2>
-        <p style={styles.description}>Entre com suas credenciais para acessar sua conta</p>
+        <p style={styles.description}>
+          Entre com suas credenciais para acessar sua conta
+        </p>
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.inputGroup}>
             <label htmlFor="email" style={styles.label}>
@@ -46,7 +48,11 @@ const LoginPageComponente: React.FC = () => {
                 style={styles.input}
                 required
               />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} style={styles.togglePassword}>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={styles.togglePassword}
+              >
                 {showPassword ? "Ocultar" : "Mostrar"}
               </button>
             </div>
@@ -60,8 +66,8 @@ const LoginPageComponente: React.FC = () => {
         </a>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const styles = {
   container: {
@@ -143,7 +149,6 @@ const styles = {
     marginTop: "20px",
     textDecoration: "none",
   },
-}
+};
 
-export default LoginPageComponente
-
+export default LoginPageComponente;

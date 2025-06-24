@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  output: "standalone",
   images: {
     localPatterns: [
       {
-        pathname: '/public/images/**',
-        search: '',
+        pathname: "/public/images/**",
+        search: "",
       },
     ],
   },
