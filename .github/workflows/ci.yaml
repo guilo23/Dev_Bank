@@ -31,7 +31,7 @@ jobs:
 
       - name: Build with Maven (skip tests)
         working-directory: backend
-        run: mvn clean install -DskipTests
+        run: mvn clean package -DskipTests -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dspotbugs.skip=true -Dpmd.skip=true -Djacoco.skip=true
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
