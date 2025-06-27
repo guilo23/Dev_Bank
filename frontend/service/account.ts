@@ -1,10 +1,16 @@
 import { accountRequest, accountResponse } from '@/types/account';
 
 const API_BASE_URL = 'http://localhost:8080';
-const token = localStorage.getItem("token");
 
-export const registerAccount = async (registerRequest: accountRequest, customerId: number): Promise<accountResponse> => {
+export const registerAccount = async (
+  registerRequest: accountRequest,
+  customerId: number
+): Promise<accountResponse> => {
   try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("No authentication token found.");
+    }
     const response = await fetch(`${API_BASE_URL}/bia/account/${customerId}`, {
       method: 'POST',
       headers: {
@@ -14,14 +20,18 @@ export const registerAccount = async (registerRequest: accountRequest, customerI
       body: JSON.stringify(registerRequest),
     });
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || `Failed to authenticate customer (status ${response.status})`);
+      let errorMessage = `Failed to create account (status ${response.status})`;
+      try {
+        const error = await response.json();
+        errorMessage = error.message || errorMessage;
+      } catch {
+      }
+      throw new Error(errorMessage);
     }
     const data: accountResponse = await response.json();
     return data;
   } catch (error: any) {
-    console.error("error to create account", error);
+    console.error("Error creating account:", error);
     throw error;
   }
 };
-
