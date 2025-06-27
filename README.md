@@ -1,5 +1,19 @@
-[![CI - Dev_Bank](https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml/badge.svg)](https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml)
-# Dev_Bank
+<p align="center">
+  <a href="https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml">
+    <img src="https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml/badge.svg" alt="CI - Dev_Bank"/>
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java"/>
+  <img src="https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white" alt="Spring"/>
+  <img src="https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens" alt="jwt">
+  <img src="https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next JS"/>
+  <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="postgres">
+</p>
+
+
+<h1 align="center">Dev_Bank</h1>
 
 ## 💻 Sobre o projeto
 Um projeto desenvolvido com a ideia de simular um sistema bancario onde se pode registrar clientes, criar contas fazer transações entre contas "pedir" emprestimos e gerar ordens de pagamento
