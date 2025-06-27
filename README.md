@@ -1,10 +1,10 @@
-<h1 align="center">Dev_Bank</h1>
-
-<p>
+<p align="center">
   <a href="https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml">
     <img src="https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml/badge.svg" alt="CI - Dev_Bank"/>
   </a>
 </p>
+
+<h1 align="center">Dev_Bank</h1>
 
 ## 💻 Sobre o projeto
 
