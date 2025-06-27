@@ -1,5 +1,9 @@
 package com.bia.dev_bank.serviceTest;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
+
 import com.bia.dev_bank.dto.transaction.TransactionRequest;
 import com.bia.dev_bank.dto.transaction.TransactionResponse;
 import com.bia.dev_bank.entity.Account;
@@ -12,6 +16,11 @@ import com.bia.dev_bank.repository.LoanPaymentsRepository;
 import com.bia.dev_bank.repository.TransactionRepository;
 import com.bia.dev_bank.service.LoanPaymentsService;
 import jakarta.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,16 +28,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 class LoanPaymentsServiceTest {
@@ -145,14 +144,13 @@ class LoanPaymentsServiceTest {
     savedTransaction.setDestinyAccount(account1);
     savedTransaction.setTransactionDate(LocalDate.now());
 
-
     when(loanPaymentsRepository.findById(loanPaymentId)).thenReturn(Optional.of(loanPayments));
     when(accountRepository.findByAccountNumber("12345")).thenReturn(Optional.of(account));
     when(transactionRepository.save(any(Transaction.class))).thenReturn(savedTransaction);
     when(securityUtil.getCurrentUserId()).thenReturn(1L);
 
-
-    TransactionResponse response = loanPaymentsService.addTransactionToLoanPayment(loanPaymentId, request);
+    TransactionResponse response =
+        loanPaymentsService.addTransactionToLoanPayment(loanPaymentId, request);
 
     assertEquals(BigDecimal.valueOf(100.00), response.amount());
   }

@@ -1,5 +1,8 @@
 package com.bia.dev_bank.serviceTest;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.bia.dev_bank.dto.report.StatementResponse;
 import com.bia.dev_bank.dto.transaction.TransactionRequest;
 import com.bia.dev_bank.dto.transaction.TransactionResponse;
@@ -11,6 +14,10 @@ import com.bia.dev_bank.repository.TransactionRepository;
 import com.bia.dev_bank.service.AccountService;
 import com.bia.dev_bank.service.TransactionService;
 import com.bia.dev_bank.utils.SecurityUtil;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,14 +25,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -70,7 +69,15 @@ public class TransactionServiceTest {
   @Test
   void shouldCreateTransactionSuccessfully() {
     TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(100.00), "456");
-    Transaction savedTransaction = new Transaction(1L, BigDecimal.valueOf(100.00), destinyAccount, originAccount, null, null, LocalDate.now());
+    Transaction savedTransaction =
+        new Transaction(
+            1L,
+            BigDecimal.valueOf(100.00),
+            destinyAccount,
+            originAccount,
+            null,
+            null,
+            LocalDate.now());
 
     when(accountRepository.findByAccountNumber("123")).thenReturn(Optional.of(originAccount));
     when(accountRepository.findByAccountNumber("456")).thenReturn(Optional.of(destinyAccount));
@@ -93,14 +100,23 @@ public class TransactionServiceTest {
 
     when(accountRepository.findByAccountNumber("123")).thenReturn(Optional.empty());
 
-    assertThrows(RuntimeException.class, () -> transactionService.createTransaction(request, "123"));
+    assertThrows(
+        RuntimeException.class, () -> transactionService.createTransaction(request, "123"));
   }
 
   @Test
   void shouldReturnTransactionById() {
-    when(transactionRepository.findById(1L)).thenReturn(Optional.of(
-            new Transaction(1L, BigDecimal.valueOf(75.00), destinyAccount, originAccount, null, null, LocalDate.now())
-    ));
+    when(transactionRepository.findById(1L))
+        .thenReturn(
+            Optional.of(
+                new Transaction(
+                    1L,
+                    BigDecimal.valueOf(75.00),
+                    destinyAccount,
+                    originAccount,
+                    null,
+                    null,
+                    LocalDate.now())));
     when(accountRepository.findByAccountNumber("123")).thenReturn(Optional.of(originAccount));
 
     TransactionResponse response = transactionService.getTransactionById(1L);
@@ -113,7 +129,16 @@ public class TransactionServiceTest {
   void shouldReturnTransactionsByAccountNumber() {
     when(accountRepository.findByAccountNumber("123")).thenReturn(Optional.of(originAccount));
     when(transactionRepository.findTransactionsByOriginAccountAccountNumber("123"))
-            .thenReturn(List.of(new Transaction(1L, BigDecimal.valueOf(30.00), destinyAccount, originAccount, null, null, LocalDate.now())));
+        .thenReturn(
+            List.of(
+                new Transaction(
+                    1L,
+                    BigDecimal.valueOf(30.00),
+                    destinyAccount,
+                    originAccount,
+                    null,
+                    null,
+                    LocalDate.now())));
 
     List<TransactionResponse> responses = transactionService.getTransactionByAccountNumber("123");
 
@@ -143,11 +168,13 @@ public class TransactionServiceTest {
     transaction.setTransactionDate(LocalDate.of(2025, 6, 10));
     transaction.setDestinyAccount(destinyAccount);
 
-    when(accountRepository.findByAccountNumber(accountNumber)).thenReturn(Optional.of(originAccount));
+    when(accountRepository.findByAccountNumber(accountNumber))
+        .thenReturn(Optional.of(originAccount));
     when(transactionRepository.findTransactionsByOriginAccountAccountNumber(accountNumber))
-            .thenReturn(List.of(transaction));
+        .thenReturn(List.of(transaction));
 
-    List<StatementResponse> responses = transactionService.getStatementByAccountNumber(accountNumber);
+    List<StatementResponse> responses =
+        transactionService.getStatementByAccountNumber(accountNumber);
 
     assertEquals(1, responses.size());
     StatementResponse response = responses.get(0);
@@ -173,9 +200,10 @@ public class TransactionServiceTest {
 
     when(accountRepository.findByAccountNumber(accountNumber)).thenReturn(Optional.of(account));
     when(transactionRepository.findTransactionsByOriginAccountAccountNumber(accountNumber))
-            .thenReturn(List.of(transaction));
+        .thenReturn(List.of(transaction));
 
-    List<StatementResponse> responses = transactionService.getStatementByAccountNumber(accountNumber);
+    List<StatementResponse> responses =
+        transactionService.getStatementByAccountNumber(accountNumber);
 
     assertEquals(1, responses.size());
     StatementResponse response = responses.get(0);
@@ -187,9 +215,17 @@ public class TransactionServiceTest {
 
   @Test
   void shouldReturnAllTransactions() {
-    when(transactionRepository.findAll()).thenReturn(List.of(
-            new Transaction(1L, BigDecimal.valueOf(10.00), destinyAccount, originAccount, null, null, LocalDate.now())
-    ));
+    when(transactionRepository.findAll())
+        .thenReturn(
+            List.of(
+                new Transaction(
+                    1L,
+                    BigDecimal.valueOf(10.00),
+                    destinyAccount,
+                    originAccount,
+                    null,
+                    null,
+                    LocalDate.now())));
 
     List<TransactionResponse> responses = transactionService.getAllTransactions();
 
@@ -199,9 +235,17 @@ public class TransactionServiceTest {
 
   @Test
   void shouldDeleteTransactionById() {
-    when(transactionRepository.findById(1L)).thenReturn(Optional.of(
-            new Transaction(1L, BigDecimal.valueOf(50.00), destinyAccount, originAccount, null, null, LocalDate.now())
-    ));
+    when(transactionRepository.findById(1L))
+        .thenReturn(
+            Optional.of(
+                new Transaction(
+                    1L,
+                    BigDecimal.valueOf(50.00),
+                    destinyAccount,
+                    originAccount,
+                    null,
+                    null,
+                    LocalDate.now())));
     when(accountRepository.findByAccountNumber("123")).thenReturn(Optional.of(originAccount));
 
     transactionService.transactionDelete(1L);

@@ -13,24 +13,25 @@ import org.springframework.security.web.SecurityFilterChain;
 @TestConfiguration
 public class TestSecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable()) // nova forma de desabilitar o CSRF
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
-        return http.build();
-    }
-    @Bean
-    public JwtAuthFilter jwtAuthFilter() {
-        return Mockito.mock(JwtAuthFilter.class);
-    }
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.csrf(csrf -> csrf.disable()) // nova forma de desabilitar o CSRF
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+    return http.build();
+  }
 
-    @Bean
-    public CustomDetailService customDetailService() {
-        return Mockito.mock(CustomDetailService.class);
-    }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public JwtAuthFilter jwtAuthFilter() {
+    return Mockito.mock(JwtAuthFilter.class);
+  }
+
+  @Bean
+  public CustomDetailService customDetailService() {
+    return Mockito.mock(CustomDetailService.class);
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 }

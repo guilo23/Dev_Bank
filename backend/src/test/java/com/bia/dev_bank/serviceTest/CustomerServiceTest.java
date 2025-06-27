@@ -1,5 +1,9 @@
 package com.bia.dev_bank.serviceTest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+
 import com.bia.dev_bank.dto.costumer.CustomerRequest;
 import com.bia.dev_bank.dto.costumer.CustomerResponse;
 import com.bia.dev_bank.dto.costumer.CustomerUpdate;
@@ -7,6 +11,8 @@ import com.bia.dev_bank.entity.Customer;
 import com.bia.dev_bank.repository.CustomerRepository;
 import com.bia.dev_bank.service.CustomerService;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,13 +21,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -38,28 +37,28 @@ public class CustomerServiceTest {
   @BeforeEach
   void setup() {
     customer =
-            new Customer(
-                    1L,
-                    "Maria Silva",
-                    "maria@email.com",
-                    "encodedSenha123",
-                    "USER",
-                    "1990-05-20",
-                    "123.456.789-00",
-                    "11999999999",
-                    List.of());
+        new Customer(
+            1L,
+            "Maria Silva",
+            "maria@email.com",
+            "encodedSenha123",
+            "USER",
+            "1990-05-20",
+            "123.456.789-00",
+            "11999999999",
+            List.of());
   }
 
   @Test
   void shouldCreateCustomerSuccessfully() {
     CustomerRequest request =
-            new CustomerRequest(
-                    "Maria Silva",
-                    "maria@email.com",
-                    "senha123",
-                    "1990-05-20",
-                    "123.456.789-00",
-                    "11999999999");
+        new CustomerRequest(
+            "Maria Silva",
+            "maria@email.com",
+            "senha123",
+            "1990-05-20",
+            "123.456.789-00",
+            "11999999999");
 
     when(passwordEncoder.encode("senha123")).thenReturn("encodedSenha123");
     when(customerRepository.save(any(Customer.class))).thenReturn(customer);
@@ -114,4 +113,3 @@ public class CustomerServiceTest {
     verify(customerRepository).deleteById(1L);
   }
 }
-

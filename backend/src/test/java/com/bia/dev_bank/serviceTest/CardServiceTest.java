@@ -1,4 +1,8 @@
 package com.bia.dev_bank.serviceTest;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.bia.dev_bank.dto.card.CardResponse;
 import com.bia.dev_bank.dto.card.CreditRequest;
 import com.bia.dev_bank.dto.card.CreditUpdate;
@@ -15,6 +19,12 @@ import com.bia.dev_bank.repository.CardRepository;
 import com.bia.dev_bank.service.CardService;
 import com.bia.dev_bank.utils.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,16 +32,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -53,18 +53,39 @@ public class CardServiceTest {
 
   @BeforeEach
   void setup() {
-    customer = new Customer(
-            1L, "João da Silva", "joao@email.com", "senha123", "USER",
-            "1985-01-01", "111.222.333-44", "11999999999", List.of());
+    customer =
+        new Customer(
+            1L,
+            "João da Silva",
+            "joao@email.com",
+            "senha123",
+            "USER",
+            "1985-01-01",
+            "111.222.333-44",
+            "11999999999",
+            List.of());
 
-    account = new Account(
-            "123456", customer, AccountType.CHECKING,
-            new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-            BigDecimal.valueOf(500.0), LocalDate.now());
+    account =
+        new Account(
+            "123456",
+            customer,
+            AccountType.CHECKING,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            new ArrayList<>(),
+            BigDecimal.valueOf(500.0),
+            LocalDate.now());
 
-    card = new Card(
-            1L, "1111222233334444", CardType.DEBIT, BigDecimal.ZERO, BigDecimal.ZERO,
-            new ArrayList<>(), new ArrayList<>(), account);
+    card =
+        new Card(
+            1L,
+            "1111222233334444",
+            CardType.DEBIT,
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            account);
   }
 
   @Test
@@ -84,7 +105,8 @@ public class CardServiceTest {
 
   @Test
   void shouldCreateCreditCardSuccessfully() {
-    CreditRequest request = new CreditRequest(CardType.CREDIT, "5555666677778888", BigDecimal.valueOf(2000));
+    CreditRequest request =
+        new CreditRequest(CardType.CREDIT, "5555666677778888", BigDecimal.valueOf(2000));
 
     when(securityUtil.getCurrentUserId()).thenReturn(1L);
     when(accountRepository.findByAccountNumber("123456")).thenReturn(Optional.of(account));
@@ -107,7 +129,8 @@ public class CardServiceTest {
     acc.setCustomer(customer);
     card.setAccount(acc);
 
-    CardPaymentsRequest request = new CardPaymentsRequest("123456", "Notebook", new BigDecimal("3000.00"), 3);
+    CardPaymentsRequest request =
+        new CardPaymentsRequest("123456", "Notebook", new BigDecimal("3000.00"), 3);
 
     when(securityUtil.getCurrentUserId()).thenReturn(1L);
     when(cardRepository.findCardByCardNumber("123456")).thenReturn(Optional.of(card));
@@ -132,13 +155,32 @@ public class CardServiceTest {
     acc.setCustomer(customer);
     card.setAccount(acc);
 
-    List<CardPayments> payments = List.of(
-            new CardPayments(1L, "Produto A", new BigDecimal("100.00"), 1,
-                    BigDecimal.ZERO, BigDecimal.ZERO, LocalDate.now(), LocalDate.now(),
-                    PayedStatus.TO_PAY, card, new ArrayList<>()),
-            new CardPayments(2L, "Produto B", new BigDecimal("200.00"), 1,
-                    BigDecimal.ZERO, BigDecimal.ZERO, LocalDate.now(), LocalDate.now(),
-                    PayedStatus.TO_PAY, card, new ArrayList<>()));
+    List<CardPayments> payments =
+        List.of(
+            new CardPayments(
+                1L,
+                "Produto A",
+                new BigDecimal("100.00"),
+                1,
+                BigDecimal.ZERO,
+                BigDecimal.ZERO,
+                LocalDate.now(),
+                LocalDate.now(),
+                PayedStatus.TO_PAY,
+                card,
+                new ArrayList<>()),
+            new CardPayments(
+                2L,
+                "Produto B",
+                new BigDecimal("200.00"),
+                1,
+                BigDecimal.ZERO,
+                BigDecimal.ZERO,
+                LocalDate.now(),
+                LocalDate.now(),
+                PayedStatus.TO_PAY,
+                card,
+                new ArrayList<>()));
 
     when(securityUtil.getCurrentUserId()).thenReturn(1L);
     when(cardRepository.findCardByCardNumber("111222")).thenReturn(Optional.of(card));
@@ -160,7 +202,8 @@ public class CardServiceTest {
     acc.setCustomer(customer);
     card.setAccount(acc);
 
-    CreditPurchase purchase = new CreditPurchase(null, "Teclado", new BigDecimal("150.00"), LocalDate.now(), 2, card);
+    CreditPurchase purchase =
+        new CreditPurchase(null, "Teclado", new BigDecimal("150.00"), LocalDate.now(), 2, card);
     card.setPurchases(List.of(purchase));
 
     when(securityUtil.getCurrentUserId()).thenReturn(1L);
@@ -204,7 +247,8 @@ public class CardServiceTest {
   void shouldReturnCardsByAccountNumber() {
     when(securityUtil.getCurrentUserId()).thenReturn(1L);
     when(accountRepository.findByAccountNumber("123456")).thenReturn(Optional.of(account));
-    when(cardRepository.findAllCardsByAccountAccountNumber("123456")).thenReturn(Optional.of(List.of(card)));
+    when(cardRepository.findAllCardsByAccountAccountNumber("123456"))
+        .thenReturn(Optional.of(List.of(card)));
 
     List<CardResponse> responses = cardService.getAllCardByAccountNumber("123456");
 
@@ -214,7 +258,8 @@ public class CardServiceTest {
 
   @Test
   void shouldReturnCardsForReport() {
-    when(cardRepository.findAllCardsByAccountAccountNumber("123456")).thenReturn(Optional.of(List.of(card)));
+    when(cardRepository.findAllCardsByAccountAccountNumber("123456"))
+        .thenReturn(Optional.of(List.of(card)));
 
     List<Card> responses = cardService.getAllCardForReport("123456");
 
