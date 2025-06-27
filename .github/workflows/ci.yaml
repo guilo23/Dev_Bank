@@ -105,12 +105,6 @@ jobs:
           path: backend/target/*.jar
           key: backend-jar-${{ hashFiles('backend/pom.xml') }}
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: backend-build
-          path: backend/target
-
       - name: Run Tests
         working-directory: backend
         run: mvn test
