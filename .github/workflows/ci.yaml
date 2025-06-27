@@ -33,12 +33,6 @@ jobs:
         working-directory: backend
         run: mvn clean install -DskipTests
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-build
-          path: backend/target
-
   backend-quality-checks:
     name: Backend - Quality Checks (Spotless + PMD)
     runs-on: ubuntu-latest
@@ -92,12 +86,6 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('backend/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: backend-build
-          path: backend/target
 
       - name: Run Tests
         working-directory: backend
