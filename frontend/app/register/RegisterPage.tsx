@@ -1,7 +1,8 @@
 "use client";
 
 import type React from "react";
-import { login } from "@/service/customer";
+import { register,login } from "@/service/customer";
+import { registerAccount } from "@/service/account";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -10,8 +11,9 @@ const RegisterPageComponente: React.FC = () => {
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [birthday, setBirthday] = useState("");
-	const [cpf, setCpf] = useState("");
+	const [CPF, setCpf] = useState("");
 	const [name,setName] = useState("");
+	const [currentBalance] = useState<number>(0);
 	const [phoneNumber, setPhoneNumber] = useState("");
 	const [accountType, setAccountType] = useState("");
 	const router = useRouter();
@@ -19,12 +21,15 @@ const RegisterPageComponente: React.FC = () => {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		try {
-			const data = await login({ email, password });
-			localStorage.setItem("token", data.token);
-			//router.push("home");
-			console.log(data.token);
+			const data = await register({name,email, password,birthday,CPF,phoneNumber});
+			if (data.id) {
+				const id = data.id;
+				const credenditial = await login({email,password});
+				localStorage.setItem("token",credenditial.token);
+				await registerAccount({accountType,currentBalance},id);
+			}
 		} catch (error) {
-			alert("email or password is wrong");
+			alert("customer not created");
 		}
 	};
 	return (
@@ -127,7 +132,7 @@ const RegisterPageComponente: React.FC = () => {
 							<input
 								type="cpf"
 								id="cpf"
-								value={cpf}
+								value={CPF}
 								onChange={(e) => setCpf(e.target.value)}
 								style={styles.input}
 								required

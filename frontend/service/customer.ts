@@ -1,4 +1,4 @@
-import { CustomerLogin, LoginData, CustomerAccount } from '@/types/customer';
+import { CustomerLogin, LoginData, CustomerAccount,CustomerResponse } from '@/types/customer';
 
 const API_BASE_URL = 'http://localhost:8080';
 
@@ -22,7 +22,7 @@ export const login = async (loginRequest: CustomerLogin): Promise<LoginData> => 
     throw error;
   }
 };
-export const register = async (registerRequest: CustomerAccount): Promise<CustomerAccount> => {
+export const register = async (registerRequest: CustomerAccount): Promise<CustomerResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/bia/customer`, {
       method: 'POST',
@@ -33,9 +33,9 @@ export const register = async (registerRequest: CustomerAccount): Promise<Custom
     });
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || `Failed to authenticate customer (status ${response.status})`);
+      throw new Error(error.message || `Failed to create customer (status ${response.status})`);
     }
-    const data: CustomerAccount = await response.json();
+    const data: CustomerResponse = await response.json();
     return data;
   } catch (error: any) {
     console.error("error to create user", error);

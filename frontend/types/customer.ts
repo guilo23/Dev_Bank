@@ -10,8 +10,9 @@ export interface CustomerAccount {
   email: string;
   password: string;
   birthday: string;
-  cpf: string;
+  CPF: string;
   phoneNumber: string;
-  accountType: string;
-  currentBalance: number;
+}
+export interface CustomerResponse{
+  id: number;
 }
