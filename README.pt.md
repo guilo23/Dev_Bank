@@ -33,7 +33,7 @@ Dev_Bank é um sistema bancário completo que permite simular operações financ
 - [JUnit](https://junit.org/junit5/) — Framework para testes unitários em Java
 - [Mockito](https://site.mockito.org/) — Framework para criação de mocks em testes Java
 - [Swagger](https://swagger.io/tools/swagger-ui/) — Ferramenta para documentação interativa da API backend
-- [Spotless](https://spotless.io/) — Plugin para formatação automática de código
+- [Spotless](https://github.com/diffplug/spotless) — Plugin para formatação automática de código
 - [PMD](https://pmd.github.io/) — Ferramenta para análise estática de código e detecção de bugs
 - [H2 Database](https://www.h2database.com/html/main.html) — Banco de dados em memória para testes locais
 - [Docker](https://www.docker.com/) — Containerização para facilitar do preview local
