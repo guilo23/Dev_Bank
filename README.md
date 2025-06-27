@@ -1,105 +1,88 @@
-[![CI - Dev_Bank](https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml/badge.svg)](https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml)
-# Dev_Bank
+<a href="https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml">
+  <img src="https://github.com/guilo23/Dev_Bank/actions/workflows/ci.yaml/badge.svg" alt="CI - Dev_Bank"/>
+</a>
 
-## 💻 Sobre o projeto
-Um projeto desenvolvido com a ideia de simular um sistema bancario onde se pode registrar clientes, criar contas fazer transações entre contas "pedir" emprestimos e gerar ordens de pagamento
+<h1 align="center" style="font-size: 3em;">Dev_Bank</h1>
 
-## ⚙️ Funcionalidades
+For the Portuguese version of this document, click [here](README.pt.md).
 
-- [x] Criar conta bancária
-- [x] Listar contas bancárias
-- [x] Atualizar os dados do usuário da conta bancária
-- [x] Excluir uma conta bancária
-- [x] Depósitar em uma conta bancária
-- [x] Sacar de uma conta bancária
-- [x] Transferir valores entre contas bancárias
-- [x] Consultar saldo da conta bancária
-- [x] Emitir extrato bancário
----
-## 🛣️ Como executar o projeto
+## 💻 About the Project
 
-💡Este projeto consiste apenas no Backend(no momento).
+Dev_Bank is a complete banking system that allows simulating common financial operations such as account creation, transfers, loans, payment order issuance, and transaction report generation.
 
-### 📋 Pré-requisitos
+> This project was developed exclusively for educational and learning purposes.
 
-Antes de começar, você vai precisar ter instalado na sua máquina as seguintes ferramentas:
+## ⚙️ Features
 
-    Java 17+
+- Opening and managing bank accounts
+- Updating customer data
+- Making deposits and withdrawals
+- Transfers between accounts
+- Loan requests
+- Issuing payment orders
+- Generating financial transaction reports
+- Checking account balances and statements
 
-        O projeto foi desenvolvido com Java 17. Outras versões podem causar incompatibilidades.
+## 🛠️ Technologies
 
-    Maven 3.8+
+- [Git](https://git-scm.com/) — Source code version control
+- [Maven](https://maven.apache.org/) — Dependency and build manager
+- [Java](https://www.java.com) — Main programming language
+- [Spring Boot](https://spring.io/projects/spring-boot) — Backend development framework
+- [Spring Security](https://spring.io/projects/spring-security) — Security framework for authentication and authorization
+- [JUnit](https://junit.org/junit5/) — Java unit testing framework
+- [Mockito](https://site.mockito.org/) — Framework for creating mocks in Java tests
+- [Swagger](https://swagger.io/tools/swagger-ui/) — Tool for interactive API documentation
+- [Spotless](https://github.com/diffplug/spotless) — Plugin for automatic code formatting
+- [PMD](https://pmd.github.io/) — Static code analysis tool to detect bugs
+- [H2 Database](https://www.h2database.com/html/main.html) — In-memory database for local testing
+- [Docker](https://www.docker.com/) — Containerization for easy local preview
+- [PostgreSQL](https://www.postgresql.org/) — Relational database for production
+- [Next.js](https://nextjs.org/) — React framework for the frontend
 
-        Gerenciador de dependências e build.
+## 📦 How to Run the Project (Preview)
 
-    Git
+### Prerequisites
 
-        Para clonar o repositório.
+- [Docker](https://www.docker.com/get-started) installed on your machine
+- [Docker Compose](https://docs.docker.com/compose/install/) (usually comes with Docker)
 
-    PostgreSQL
+### Steps to Run
 
-        Banco de dados relacional utilizado no projeto.
-        Crie um banco com o nome dev_bank (ou altere no application.properties/application.yml).
+1. Clone the repository and enter the directory:
+    ```bash
+    git clone https://github.com/guilo23/Dev_Bank
+    cd Dev_Bank
+    ```
 
-    Docker (opcional)
+2. Run Docker Compose to start the backend, frontend, and database:
+    ```bash
+    docker-compose up
+    ```
 
-        Caso prefira subir o banco de dados com um container.
+3. Wait for the containers to start. Then, access in your browser:
+    - Frontend: `http://localhost:3000`
+    - Swagger UI (backend API documentation): `http://localhost:8080/swagger-ui.html`
 
-    IDE recomendada: IntelliJ IDEA ou VSCode
+## 🧪 Tests
 
-🧪 Testes
+This project includes automated tests to ensure code quality and stability.
 
-Para rodar os testes unitários/localmente, certifique-se de que:
+### Types of Tests Included
 
-    O banco H2 está configurado como ambiente de teste.
+- Unit tests with JUnit and Mockito
+- ~~Integration tests to validate component workflows~~
 
-### 🔧 Instalação
+### How to Run Tests
 
-#### 🎲 Rodando o Backend (servidor)
+To run all tests, execute the following command inside the `backend` directory:
 
-```bash
-    git clone git@github.com:guilo23/Dev_Bank.git
-    Acesse a pasta do projeto no terminal/cmd
-    cd Dev_Bank/backend
-    
-deve rodar o projeto e acessar:
-    
-    http://localhost:8080/bia
-## ⚙️ Executando os testes
+  ```bash
+  mvn test
+  ```
 
-Explicar como executar os testes automatizados para este sistema.
+## ✒️ Authors
 
-### 🔩 Analise os testes de ponta a ponta
+[Guilherme Alves de Amorim](https://github.com/guilo23)
 
-Explique que eles verificam esses testes e porquê.
-
-```
-Dar exemplos
-```
-
-### ⌨️ E testes de estilo de codificação
-
-Explique que eles verificam esses testes e porquê.
-
-```
-Dar exemplos
-```
-
-## 🛠️ Construído com
-
-Java Springboot, maven como gerenciador de projetos, e banco de dados baseado em PostgreSQL
-
-* [NextJs](https://nextjs.org/docs)) - O framework web usado
-* [Maven](https://maven.apache.org/) - Gerente de Dependência
-
-## ✒️ Autores
-
-Guilherme Alves de Amorim e Reinan Vieira da Mata
-[Reinan]((https://github.com/reinanmat))
-[Guilherme](https://github.com/guilo23)
-
-* Conte a outras pessoas sobre este projeto 📢;
-* Convide alguém da equipe para uma cerveja 🍺;
-* Um agradecimento publicamente 🫂;
-* etc.
-
+[Reinan Vieira](https://github.com/reinanmat)

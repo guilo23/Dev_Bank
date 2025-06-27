@@ -1,5 +1,13 @@
 package com.bia.dev_bank.controllerTest;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.bia.dev_bank.controller.AccountController;
 import com.bia.dev_bank.dto.account.AccountRequest;
 import com.bia.dev_bank.dto.account.AccountResponse;
@@ -9,6 +17,7 @@ import com.bia.dev_bank.security.CustomDetailService;
 import com.bia.dev_bank.security.JwtUtil;
 import com.bia.dev_bank.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,27 +27,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @WebMvcTest(AccountController.class)
 @ActiveProfiles
 public class AccountControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockitoBean
-  private JwtUtil jwtUtil;
+  @MockitoBean private JwtUtil jwtUtil;
 
-  @MockitoBean
-  private CustomDetailService customDetailService;
+  @MockitoBean private CustomDetailService customDetailService;
 
   @MockitoBean private AccountService accountService;
 
@@ -57,7 +54,8 @@ public class AccountControllerTest {
 
     mockMvc
         .perform(
-            post("/bia/account/1").with(csrf())
+            post("/bia/account/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
@@ -79,7 +77,8 @@ public class AccountControllerTest {
 
     mockMvc
         .perform(
-            post("/bia/account/balanceIn/12345678-9").with(csrf())
+            post("/bia/account/balanceIn/12345678-9")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(update)))
         .andExpect(status().isAccepted())
@@ -99,7 +98,8 @@ public class AccountControllerTest {
 
     mockMvc
         .perform(
-            post("/bia/account/balanceOut/12345678-9").with(csrf())
+            post("/bia/account/balanceOut/12345678-9")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(update)))
         .andExpect(status().isAccepted())
@@ -144,7 +144,8 @@ public class AccountControllerTest {
     doNothing().when(accountService).accountUpdate(eq("12345678-9"), any(AccountUpdate.class));
     mockMvc
         .perform(
-            put("/bia/account/12345678-9").with(csrf())
+            put("/bia/account/12345678-9")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(update)))
         .andExpect(status().isOk())
