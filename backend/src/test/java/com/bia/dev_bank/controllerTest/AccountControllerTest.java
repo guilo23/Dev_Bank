@@ -59,9 +59,8 @@ public class AccountControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
-            .andExpect(jsonPath("$.accountNumber").value("12345678-9"))
-            .andExpect(jsonPath("$.customerName").value("Maria"));
-
+        .andExpect(jsonPath("$.accountNumber").value("12345678-9"))
+        .andExpect(jsonPath("$.customerName").value("Maria"));
   }
 
   @Test
