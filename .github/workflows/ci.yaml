@@ -31,13 +31,13 @@ jobs:
 
       - name: Build with Maven (skip tests)
         working-directory: backend
-        run: mvn clean install -DskipTests
+        run: mvn clean package -DskipTests -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dspotbugs.skip=true -Dpmd.skip=true -Djacoco.skip=true
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+      - name: Cache built JAR
+        uses: actions/cache@v4
         with:
-          name: backend-build
-          path: backend/target
+          path: backend/target/*.jar
+          key: backend-jar-${{ hashFiles('backend/pom.xml') }}
 
   backend-quality-checks:
     name: Backend - Quality Checks (Spotless + PMD)
@@ -61,6 +61,12 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('backend/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+
+      - name: Cache built JAR
+        uses: actions/cache@v4
+        with:
+          path: backend/target/*.jar
+          key: backend-jar-${{ hashFiles('backend/pom.xml') }}
 
       - name: Run Spotless Check
         working-directory: backend
@@ -93,11 +99,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
+      - name: Cache built JAR
+        uses: actions/cache@v4
         with:
-          name: backend-build
-          path: backend/target
+          path: backend/target/*.jar
+          key: backend-jar-${{ hashFiles('backend/pom.xml') }}
 
       - name: Run Tests
         working-directory: backend
