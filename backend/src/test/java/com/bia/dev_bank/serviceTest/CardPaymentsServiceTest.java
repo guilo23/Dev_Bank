@@ -1,5 +1,9 @@
 package com.bia.dev_bank.serviceTest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+
 import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
 import com.bia.dev_bank.dto.transaction.TransactionResponse;
 import com.bia.dev_bank.entity.*;
@@ -11,22 +15,17 @@ import com.bia.dev_bank.service.AccountService;
 import com.bia.dev_bank.service.CardPaymentsService;
 import com.bia.dev_bank.utils.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CardPaymentsServiceTest {
@@ -49,7 +48,15 @@ class CardPaymentsServiceTest {
     account.setAccountNumber("000123");
     account.setCustomer(
         new Customer(
-            1L, "João", "email", "senha","USER", "1980-01-01", "12345678900", "11999999999", List.of()));
+            1L,
+            "João",
+            "email",
+            "senha",
+            "USER",
+            "1980-01-01",
+            "12345678900",
+            "11999999999",
+            List.of()));
     account.setCurrentBalance(BigDecimal.valueOf(1000));
 
     card = new Card();
@@ -121,8 +128,10 @@ class CardPaymentsServiceTest {
   @Test
   void shouldAddTransactionToCardPayments() {
     when(cardPaymentsRepository.findById(1L)).thenReturn(Optional.of(payment));
-    when(accountRepository.findByAccountNumber(account.getAccountNumber())).thenReturn(Optional.of(account));
-    when(transactionRepository.save(any(Transaction.class))).thenAnswer(invocation -> invocation.getArgument(0));
+    when(accountRepository.findByAccountNumber(account.getAccountNumber()))
+        .thenReturn(Optional.of(account));
+    when(transactionRepository.save(any(Transaction.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
     when(securityUtil.getCurrentUserId()).thenReturn(1L);
 
     TransactionResponse response = cardPaymentsService.addTransactionToCardPayments(1L);

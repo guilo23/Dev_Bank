@@ -1,5 +1,11 @@
 package com.bia.dev_bank.controllerTest;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.bia.dev_bank.controller.CardController;
 import com.bia.dev_bank.dto.card.CardResponse;
 import com.bia.dev_bank.dto.card.CreditRequest;
@@ -10,6 +16,8 @@ import com.bia.dev_bank.security.JwtUtil;
 import com.bia.dev_bank.service.CardPaymentsService;
 import com.bia.dev_bank.service.CardService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigDecimal;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,27 +28,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @WebMvcTest(CardController.class)
 @ActiveProfiles("test")
 class CardControllerTest {
 
-
   @Autowired private MockMvc mockMvc;
 
-  @MockitoBean
-  private JwtUtil jwtUtil;
+  @MockitoBean private JwtUtil jwtUtil;
 
-  @MockitoBean
-  private CustomDetailService customDetailService;
+  @MockitoBean private CustomDetailService customDetailService;
 
   @MockitoBean private CardService cardService;
 
@@ -61,7 +57,8 @@ class CardControllerTest {
         .perform(
             post("/bia/cards/add/123456")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)).with(csrf()))
+                .content(objectMapper.writeValueAsString(request))
+                .with(csrf()))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.cardNumber").value("1111222233334444"));
   }
@@ -103,7 +100,8 @@ class CardControllerTest {
     mockMvc
         .perform(
             put("/bia/cards/1")
-                .contentType(MediaType.APPLICATION_JSON).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf())
                 .content(objectMapper.writeValueAsString(update)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.cardLimit").value(2000));

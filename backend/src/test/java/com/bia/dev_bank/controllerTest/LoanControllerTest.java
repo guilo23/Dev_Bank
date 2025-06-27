@@ -1,5 +1,13 @@
 package com.bia.dev_bank.controllerTest;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.bia.dev_bank.controller.LoanController;
 import com.bia.dev_bank.dto.loan.LoanRequest;
 import com.bia.dev_bank.dto.loan.LoanResponse;
@@ -9,6 +17,8 @@ import com.bia.dev_bank.security.CustomDetailService;
 import com.bia.dev_bank.security.JwtUtil;
 import com.bia.dev_bank.service.LoanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigDecimal;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,28 +29,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @WebMvcTest(LoanController.class)
 @ActiveProfiles("test")
 class LoanControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockitoBean
-  private JwtUtil jwtUtil;
+  @MockitoBean private JwtUtil jwtUtil;
 
-  @MockitoBean
-  private CustomDetailService customDetailService;
+  @MockitoBean private CustomDetailService customDetailService;
 
   @MockitoBean private LoanService loanService;
 
@@ -68,7 +65,8 @@ class LoanControllerTest {
 
     mockMvc
         .perform(
-            post("/bia/loans/1").with(csrf())
+            post("/bia/loans/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
