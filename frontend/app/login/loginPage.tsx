@@ -4,6 +4,8 @@ import type React from "react";
 import { login } from "@/service/customer";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { setCookie } from 'nookies';
+
 
 const LoginPageComponente: React.FC = () => {
 	const [email, setEmail] = useState("");
@@ -16,6 +18,11 @@ const LoginPageComponente: React.FC = () => {
 		try {
 			const data = await login({ email, password });
 			localStorage.setItem("token", data.token);
+			setCookie(null, 'auth-token', data.token, {
+				path: '/',
+				maxAge: 60 * 60,
+				sameSite: 'lax',
+			});
 			router.push("/");
 		} catch (error) {
 			alert("email or password is wrong");
