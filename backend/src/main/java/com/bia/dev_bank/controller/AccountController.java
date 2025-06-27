@@ -67,8 +67,7 @@ public class AccountController {
   public ResponseEntity createAccount(
       @RequestBody @Valid AccountRequest request, @PathVariable Long customerId) {
     var account = accountService.createAccount(request, customerId);
-    return ResponseEntity.ok()
-        .body(account);
+    return ResponseEntity.ok().body(account);
   }
 
   @Operation(

@@ -61,7 +61,9 @@ public class AccountControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
-        .andExpect(content().string("12345678-9 congratulation your account has been created"));
+            .andExpect(jsonPath("$.accountNumber").value("12345678-9"))
+            .andExpect(jsonPath("$.customerName").value("Maria"));
+
   }
 
   @Test
