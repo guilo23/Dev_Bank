@@ -4,6 +4,8 @@
   </a>
 </p>
 
+<h1 align="center">Dev_Bank</h1>
+
 <p align="center">
   <img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java"/>
   <img src="https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white" alt="Spring"/>
@@ -12,10 +14,8 @@
   <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="postgres">
 </p>
 
-
-<h1 align="center">Dev_Bank</h1>
-
 ## 💻 Sobre o projeto
+
 Um projeto desenvolvido com a ideia de simular um sistema bancario onde se pode registrar clientes, criar contas fazer transações entre contas "pedir" emprestimos e gerar ordens de pagamento
 
 ## ⚙️ Funcionalidades
