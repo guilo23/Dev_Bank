@@ -25,6 +25,7 @@ const LoginPageComponente: React.FC = () => {
 			});
 			router.push("/");
 		} catch (error) {
+			console.error("Erro ao fazer login:", error);
 			alert("email or password is wrong");
 		}
 	};
