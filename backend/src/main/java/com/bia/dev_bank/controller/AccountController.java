@@ -62,13 +62,12 @@ public class AccountController {
         content = @Content(mediaType = "application/json")),
     @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
   })
-  @PreAuthorize("#account.customer.id == principal.id")
+  @PreAuthorize("#customerId == principal.id")
   @PostMapping("/{customerId}")
   public ResponseEntity createAccount(
       @RequestBody @Valid AccountRequest request, @PathVariable Long customerId) {
     var account = accountService.createAccount(request, customerId);
-    return ResponseEntity.ok()
-        .body(account.accountNumber() + " congratulation your account has been created");
+    return ResponseEntity.ok().body(account);
   }
 
   @Operation(
@@ -90,7 +89,7 @@ public class AccountController {
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Accounts list retrieved successfully")
   })
-  @PreAuthorize("#account.customer.id == principal.id")
+  @PreAuthorize("#customerId == principal.id")
   @GetMapping("/list/{customerId}")
   public ResponseEntity getAllAccountByCostumerId(@PathVariable Long customerId) {
     var accounts = accountService.getAllAccountByCostumerId(customerId);

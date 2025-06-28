@@ -29,8 +29,7 @@ public class CustomerController {
   @PostMapping
   public ResponseEntity createCustomer(@RequestBody @Valid CustomerRequest request) {
     var customer = customerService.createCustomer(request);
-    return ResponseEntity.ok()
-        .body("congratulations " + customer.name() + ", you are a bia customer now");
+    return ResponseEntity.ok().body(customer);
   }
 
   @Operation(summary = "customerByID", description = "Retrieves customer details by customer ID")

@@ -45,7 +45,7 @@ class CustomerControllerTest {
         new CustomerRequest(
             "Maria", "maria@email.com", "123456", "1990-01-01", "123.456.789-00", "11999999999");
     CustomerResponse response =
-        new CustomerResponse("Maria", "maria@email.com", "123.456.789-00", "11999999999");
+        new CustomerResponse(1L, "Maria", "maria@email.com", "123.456.789-00", "11999999999");
 
     when(customerService.createCustomer(any())).thenReturn(response);
 
@@ -56,14 +56,15 @@ class CustomerControllerTest {
                 .content(objectMapper.writeValueAsString(request))
                 .with(csrf()))
         .andExpect(status().isOk())
-        .andExpect(content().string("congratulations Maria, you are a bia customer now"));
+        .andExpect(jsonPath("$.name").value("Maria"))
+        .andExpect(jsonPath("$.email").value("maria@email.com"));
   }
 
   @Test
   @WithMockUser
   void shouldGetCustomerById() throws Exception {
     CustomerResponse response =
-        new CustomerResponse("Maria", "maria@email.com", "123.456.789-00", "11999999999");
+        new CustomerResponse(1L, "Maria", "maria@email.com", "123.456.789-00", "11999999999");
 
     when(customerService.getCostumerById(1L)).thenReturn(response);
 
@@ -79,7 +80,7 @@ class CustomerControllerTest {
   void shouldUpdateCustomer() throws Exception {
     CustomerUpdate update = new CustomerUpdate("new@email.com", "newpass", "1188888888");
     CustomerResponse response =
-        new CustomerResponse("Maria", "new@email.com", "123.456.789-00", "1188888888");
+        new CustomerResponse(1L, "Maria", "new@email.com", "123.456.789-00", "1188888888");
 
     when(customerService.customerUpdate(Mockito.eq(1L), any())).thenReturn(response);
 

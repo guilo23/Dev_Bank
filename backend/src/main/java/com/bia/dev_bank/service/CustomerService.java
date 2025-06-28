@@ -17,7 +17,7 @@ public class CustomerService {
   @Autowired private PasswordEncoder passwordEncoder;
 
   public CustomerResponse createCustomer(CustomerRequest request) {
-    var costumer =
+    var customer =
         new Customer(
             null,
             request.name(),
@@ -28,9 +28,13 @@ public class CustomerService {
             request.CPF(),
             request.phoneNumber(),
             List.of());
-    customerRepository.save(costumer);
+    customerRepository.save(customer);
     return new CustomerResponse(
-        costumer.getName(), costumer.getEmail(), costumer.getCPF(), costumer.getPhoneNumber());
+        customer.getId(),
+        customer.getName(),
+        customer.getEmail(),
+        customer.getCPF(),
+        customer.getPhoneNumber());
   }
 
   public CustomerResponse getCostumerById(Long costumerId) {
@@ -41,7 +45,11 @@ public class CustomerService {
                 () -> new EntityNotFoundException("customer not found with id: " + costumerId));
 
     return new CustomerResponse(
-        customer.getName(), customer.getEmail(), customer.getCPF(), customer.getPhoneNumber());
+        customer.getId(),
+        customer.getName(),
+        customer.getEmail(),
+        customer.getCPF(),
+        customer.getPhoneNumber());
   }
 
   public CustomerResponse customerUpdate(Long id, CustomerUpdate update) {
@@ -55,7 +63,11 @@ public class CustomerService {
     customerRepository.save(customer);
 
     return new CustomerResponse(
-        customer.getName(), customer.getEmail(), customer.getCPF(), customer.getPhoneNumber());
+        customer.getId(),
+        customer.getName(),
+        customer.getEmail(),
+        customer.getCPF(),
+        customer.getPhoneNumber());
   }
 
   public void customerDelete(Long id) {
