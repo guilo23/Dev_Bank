@@ -3,6 +3,7 @@ export interface CustomerLogin {
   password: string;
 }
 export interface LoginData {
+  id: number;
   token: string;
 }
 export interface CustomerAccount {

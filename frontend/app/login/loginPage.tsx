@@ -17,7 +17,6 @@ const LoginPageComponente: React.FC = () => {
 		e.preventDefault();
 		try {
 			const data = await login({ email, password });
-			localStorage.setItem("token", data.token);
 			setCookie(null, 'auth-token', data.token, {
 				path: '/',
 				maxAge: 60 * 60,
