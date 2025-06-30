@@ -20,3 +20,6 @@ export interface JwtPayload {
   exp: number;
   iat: number;
 }
+export interface CustomerResponse {
+  id: number;
+}
