@@ -3,6 +3,7 @@ export interface CustomerLogin {
   password: string;
 }
 export interface LoginData {
+  id: number;
   token: string;
 }
 export interface CustomerAccount {
@@ -13,6 +14,12 @@ export interface CustomerAccount {
   CPF: string;
   phoneNumber: string;
 }
-export interface CustomerResponse{
+export interface JwtPayload {
+  customerId: number;
+  sub: string;
+  exp: number;
+  iat: number;
+}
+export interface CustomerResponse {
   id: number;
 }

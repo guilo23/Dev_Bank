@@ -1,4 +1,5 @@
 import { accountRequest, accountResponse } from '@/types/account';
+import { parseCookies } from 'nookies';
 
 const API_BASE_URL = 'http://localhost:8080';
 
@@ -7,10 +8,13 @@ export const registerAccount = async (
   customerId: number
 ): Promise<accountResponse> => {
   try {
-    const token = localStorage.getItem("token");
+    const cookies = parseCookies();
+    const token = cookies.token;
+
     if (!token) {
       throw new Error("No authentication token found.");
     }
+
     const response = await fetch(`${API_BASE_URL}/bia/account/${customerId}`, {
       method: 'POST',
       headers: {
@@ -19,6 +23,7 @@ export const registerAccount = async (
       },
       body: JSON.stringify(registerRequest),
     });
+
     if (!response.ok) {
       let errorMessage = `Failed to create account (status ${response.status})`;
       try {
@@ -28,8 +33,10 @@ export const registerAccount = async (
       }
       throw new Error(errorMessage);
     }
+
     const data: accountResponse = await response.json();
     return data;
+
   } catch (error: any) {
     console.error("Error creating account:", error);
     throw error;
