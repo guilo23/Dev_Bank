@@ -14,6 +14,9 @@ export interface CustomerAccount {
   CPF: string;
   phoneNumber: string;
 }
-export interface CustomerResponse{
-  id: number;
+export interface JwtPayload {
+  customerId: number;
+  sub: string;
+  exp: number;
+  iat: number;
 }

@@ -5,7 +5,8 @@ import { login } from "@/service/customer";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { setCookie } from 'nookies';
-
+import {jwtDecode} from 'jwt-decode';
+import { JwtPayload } from "@/types/customer";
 
 const LoginPageComponente: React.FC = () => {
 	const [email, setEmail] = useState("");
@@ -17,7 +18,13 @@ const LoginPageComponente: React.FC = () => {
 		e.preventDefault();
 		try {
 			const data = await login({ email, password });
+		const decoded: JwtPayload = jwtDecode(data.token)
 			setCookie(null, 'auth-token', data.token, {
+				path: '/',
+				maxAge: 60 * 60,
+				sameSite: 'lax',
+			});
+			setCookie(null, 'customer-id', String(decoded.customerId), {
 				path: '/',
 				maxAge: 60 * 60,
 				sameSite: 'lax',
