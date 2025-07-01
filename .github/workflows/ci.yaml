@@ -109,32 +109,32 @@ jobs:
         working-directory: backend
         run: mvn test
 
-frontend-build:
-  name: Frontend - Build
-  runs-on: ubuntu-latest
+  frontend-build:
+    name: Frontend - Build
+    runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        version: 9.1.0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.1.0
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 22
-        cache: 'pnpm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
 
-    - name: Install dependencies
-      working-directory: frontend
-      run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
 
-    - name: Build frontend
-      working-directory: frontend
-      run: pnpm run build
+      - name: Build frontend
+        working-directory: frontend
+        run: pnpm run build
 
   frontend-lint:
     name: Frontend - Lint
