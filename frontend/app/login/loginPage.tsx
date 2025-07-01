@@ -18,23 +18,25 @@ const LoginPageComponente: React.FC = () => {
 		e.preventDefault();
 		try {
 			const data = await login({ email, password });
-		const decoded: JwtPayload = jwtDecode(data.token)
-			setCookie(null, 'auth-token', data.token, {
-				path: '/',
-				maxAge: 60 * 60,
-				sameSite: 'lax',
-			});
-			setCookie(null, 'customer-id', String(decoded.customerId), {
-				path: '/',
-				maxAge: 60 * 60,
-				sameSite: 'lax',
-			});
-			router.push("/");
-		} catch (error) {
-			console.error("Erro ao fazer login:", error);
-			alert("email or password is wrong");
-		}
-	};
+			const decoded: JwtPayload = jwtDecode(data.token);
+
+		setCookie(null, 'token', data.token, {
+			path: '/',
+			maxAge: 60 * 60,
+			sameSite: 'lax',
+		});
+		setCookie(null, 'customerId', String(decoded.customerId), {
+			path:		'/',
+			maxAge: 60 * 60,
+			sameSite: 'lax',
+		});
+
+		router.push("/accounts");
+	} catch (error) {	
+		console.error("Erro ao fazer login:", error);
+		alert("email or password is wrong");
+	}	
+};
 	return (
 		<div style={styles.container}>
 			<div style={styles.card}>
