@@ -1,5 +1,5 @@
-import Image from "next/image";
-import urubuPic from "@/public/images/urubu-pix.jpg";
+import Image from 'next/image';
+import urubuPic from '@/public/images/urubu-pix.jpg';
 
 export default function Home() {
   return (

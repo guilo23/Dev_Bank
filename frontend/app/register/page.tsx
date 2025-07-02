@@ -1,4 +1,4 @@
-import RegisterPageComponente from "./registerPage";
+import RegisterPageComponente from './registerPage';
 
 function App() {
   return (

@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import type React from "react";
-import { register, login } from "@/service/customer";
-import { registerAccount } from "@/service/account";
-import { useState } from "react";
+import type React from 'react';
+import { register, login } from '@/service/customer';
+import { registerAccount } from '@/service/account';
+import { useState } from 'react';
 
 const RegisterPageComponente: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [birthday, setBirthday] = useState("");
-  const [CPF, setCpf] = useState("");
-  const [name, setName] = useState("");
+  const [birthday, setBirthday] = useState('');
+  const [CPF, setCpf] = useState('');
+  const [name, setName] = useState('');
   const [currentBalance] = useState<number>(0);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [accountType, setAccountType] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [accountType, setAccountType] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,21 +30,19 @@ const RegisterPageComponente: React.FC = () => {
       if (data.id) {
         const id = data.id;
         const credenditial = await login({ email, password });
-        localStorage.setItem("token", credenditial.token);
+        localStorage.setItem('token', credenditial.token);
         await registerAccount({ accountType, currentBalance }, id);
       }
     } catch (error) {
-      console.error("Erro ao fazer login:", error);
-      alert("customer not created");
+      console.error('Erro ao fazer login:', error);
+      alert('customer not created');
     }
   };
   return (
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>Register</h2>
-        <p style={styles.description}>
-          Entre com suas credenciais para acessar sua conta
-        </p>
+        <p style={styles.description}>Entre com suas credenciais para acessar sua conta</p>
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.inputGroup}>
             <label htmlFor="name" style={styles.label}>
@@ -80,7 +78,7 @@ const RegisterPageComponente: React.FC = () => {
             </label>
             <div style={styles.passwordContainer}>
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -92,7 +90,7 @@ const RegisterPageComponente: React.FC = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 style={styles.togglePassword}
               >
-                {showPassword ? "Ocultar" : "Mostrar"}
+                {showPassword ? 'Ocultar' : 'Mostrar'}
               </button>
             </div>
           </div>
@@ -102,7 +100,7 @@ const RegisterPageComponente: React.FC = () => {
             </label>
             <div style={styles.passwordContainer}>
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -114,7 +112,7 @@ const RegisterPageComponente: React.FC = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 style={styles.togglePassword}
               >
-                {showPassword ? "Ocultar" : "Mostrar"}
+                {showPassword ? 'Ocultar' : 'Mostrar'}
               </button>
             </div>
           </div>
@@ -181,107 +179,107 @@ const RegisterPageComponente: React.FC = () => {
 
 const styles = {
   container: {
-    minHeight: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#000",
-    padding: "20px",
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#000',
+    padding: '20px',
   },
   card: {
-    backgroundColor: "#1a1a1a",
-    borderRadius: "10px",
-    padding: "40px 30px",
-    width: "100%",
-    maxWidth: "460px",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+    backgroundColor: '#1a1a1a',
+    borderRadius: '10px',
+    padding: '40px 30px',
+    width: '100%',
+    maxWidth: '460px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
   },
   title: {
-    color: "#ffffff",
-    fontSize: "26px",
-    fontWeight: "bold" as const,
-    textAlign: "center" as const,
-    marginBottom: "10px",
+    color: '#ffffff',
+    fontSize: '26px',
+    fontWeight: 'bold' as const,
+    textAlign: 'center' as const,
+    marginBottom: '10px',
   },
   description: {
-    color: "#c0c0c0",
-    fontSize: "15px",
-    textAlign: "center" as const,
-    marginBottom: "30px",
+    color: '#c0c0c0',
+    fontSize: '15px',
+    textAlign: 'center' as const,
+    marginBottom: '30px',
   },
   form: {
-    display: "flex",
-    flexDirection: "column" as const,
-    gap: "18px",
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '18px',
   },
   inputGroup: {
-    display: "flex",
-    flexDirection: "column" as const,
-    gap: "6px",
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '6px',
   },
   label: {
-    color: "#ffffff",
-    fontSize: "14px",
+    color: '#ffffff',
+    fontSize: '14px',
   },
   input: {
-    width: "100%",
-    padding: "10px 12px",
-    borderRadius: "6px",
-    border: "1px solid #3a3a3a",
-    backgroundColor: "#2a2a2a",
-    color: "#ffffff",
-    fontSize: "15px",
-    outline: "none",
-    transition: "border-color 0.3s",
-    boxSizing: "border-box" as const,
+    width: '100%',
+    padding: '10px 12px',
+    borderRadius: '6px',
+    border: '1px solid #3a3a3a',
+    backgroundColor: '#2a2a2a',
+    color: '#ffffff',
+    fontSize: '15px',
+    outline: 'none',
+    transition: 'border-color 0.3s',
+    boxSizing: 'border-box' as const,
   },
   passwordInput: {
-    width: "100%",
-    padding: "10px 40px 10px 12px",
-    borderRadius: "6px",
-    border: "1px solid #3a3a3a",
-    backgroundColor: "#2a2a2a",
-    color: "#ffffff",
-    fontSize: "15px",
-    outline: "none",
-    boxSizing: "border-box" as const,
+    width: '100%',
+    padding: '10px 40px 10px 12px',
+    borderRadius: '6px',
+    border: '1px solid #3a3a3a',
+    backgroundColor: '#2a2a2a',
+    color: '#ffffff',
+    fontSize: '15px',
+    outline: 'none',
+    boxSizing: 'border-box' as const,
   },
   passwordContainer: {
-    position: "relative" as const,
-    display: "flex",
-    alignItems: "center",
+    position: 'relative' as const,
+    display: 'flex',
+    alignItems: 'center',
   },
   togglePassword: {
-    position: "absolute" as const,
-    right: "10px",
-    top: "50%",
-    transform: "translateY(-50%)",
-    background: "none",
-    border: "none",
-    color: "#a0a0a0",
-    fontSize: "13px",
-    cursor: "pointer",
-    padding: "0",
+    position: 'absolute' as const,
+    right: '10px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'none',
+    border: 'none',
+    color: '#a0a0a0',
+    fontSize: '13px',
+    cursor: 'pointer',
+    padding: '0',
   },
   button: {
-    width: "100%",
-    padding: "12px",
-    borderRadius: "6px",
-    border: "none",
-    backgroundColor: "#ffffff",
-    color: "#000000",
-    fontSize: "16px",
-    fontWeight: "bold" as const,
-    cursor: "pointer",
-    transition: "background 0.3s, transform 0.2s",
+    width: '100%',
+    padding: '12px',
+    borderRadius: '6px',
+    border: 'none',
+    backgroundColor: '#ffffff',
+    color: '#000000',
+    fontSize: '16px',
+    fontWeight: 'bold' as const,
+    cursor: 'pointer',
+    transition: 'background 0.3s, transform 0.2s',
   },
   forgotPassword: {
-    color: "#a0a0a0",
-    textAlign: "center" as const,
-    display: "block",
-    marginTop: "20px",
-    fontSize: "14px",
-    textDecoration: "none",
+    color: '#a0a0a0',
+    textAlign: 'center' as const,
+    display: 'block',
+    marginTop: '20px',
+    fontSize: '14px',
+    textDecoration: 'none',
   },
 };
 

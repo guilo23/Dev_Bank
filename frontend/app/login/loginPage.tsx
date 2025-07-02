@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import type React from "react";
-import { login } from "@/service/customer";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { setCookie } from "nookies";
-import { jwtDecode } from "jwt-decode";
-import { JwtPayload } from "@/types/customer";
+import type React from 'react';
+import { login } from '@/service/customer';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { setCookie } from 'nookies';
+import { jwtDecode } from 'jwt-decode';
+import { JwtPayload } from '@/types/customer';
 
 const LoginPageComponente: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
@@ -20,21 +20,21 @@ const LoginPageComponente: React.FC = () => {
       const data = await login({ email, password });
       const decoded: JwtPayload = jwtDecode(data.token);
 
-      setCookie(null, "token", data.token, {
-        path: "/",
+      setCookie(null, 'token', data.token, {
+        path: '/',
         maxAge: 60 * 60,
-        sameSite: "lax",
+        sameSite: 'lax',
       });
-      setCookie(null, "customerId", String(decoded.customerId), {
-        path: "/",
+      setCookie(null, 'customerId', String(decoded.customerId), {
+        path: '/',
         maxAge: 60 * 60,
-        sameSite: "lax",
+        sameSite: 'lax',
       });
 
-      router.push("/accounts");
+      router.push('/accounts');
     } catch (error) {
-      console.error("Erro ao fazer login:", error);
-      alert("email or password is wrong");
+      console.error('Erro ao fazer login:', error);
+      alert('email or password is wrong');
     }
   };
   return (
@@ -63,7 +63,7 @@ const LoginPageComponente: React.FC = () => {
             </label>
             <div style={styles.passwordContainer}>
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -75,7 +75,7 @@ const LoginPageComponente: React.FC = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 style={styles.togglePassword}
               >
-                {showPassword ? "Ocultar" : "Mostrar"}
+                {showPassword ? 'Ocultar' : 'Mostrar'}
               </button>
             </div>
           </div>
@@ -93,83 +93,83 @@ const LoginPageComponente: React.FC = () => {
 
 const styles = {
   container: {
-    minHeight: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#000",
-    padding: "20px",
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#000',
+    padding: '20px',
   },
   card: {
-    backgroundColor: "#1a1a1a",
-    borderRadius: "8px",
-    padding: "40px",
-    width: "100%",
-    maxWidth: "400px",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    backgroundColor: '#1a1a1a',
+    borderRadius: '8px',
+    padding: '40px',
+    width: '100%',
+    maxWidth: '400px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
   },
   title: {
-    color: "#fff",
-    fontSize: "24px",
-    textAlign: "center" as const,
-    marginBottom: "10px",
+    color: '#fff',
+    fontSize: '24px',
+    textAlign: 'center' as const,
+    marginBottom: '10px',
   },
   description: {
-    color: "#a0a0a0",
-    textAlign: "center" as const,
-    marginBottom: "20px",
+    color: '#a0a0a0',
+    textAlign: 'center' as const,
+    marginBottom: '20px',
   },
   form: {
-    display: "flex",
-    flexDirection: "column" as const,
+    display: 'flex',
+    flexDirection: 'column' as const,
   },
   inputGroup: {
-    marginBottom: "20px",
+    marginBottom: '20px',
   },
   label: {
-    color: "#fff",
-    marginBottom: "5px",
-    display: "block",
+    color: '#fff',
+    marginBottom: '5px',
+    display: 'block',
   },
   input: {
-    width: "100%",
-    padding: "10px",
-    borderRadius: "4px",
-    border: "1px solid #333",
-    backgroundColor: "#2a2a2a",
-    color: "#fff",
-    fontSize: "16px",
+    width: '100%',
+    padding: '10px',
+    borderRadius: '4px',
+    border: '1px solid #333',
+    backgroundColor: '#2a2a2a',
+    color: '#fff',
+    fontSize: '16px',
   },
   passwordContainer: {
-    position: "relative" as const,
+    position: 'relative' as const,
   },
   togglePassword: {
-    position: "absolute" as const,
-    right: "10px",
-    top: "50%",
-    transform: "translateY(-50%)",
-    background: "none",
-    border: "none",
-    color: "#a0a0a0",
-    cursor: "pointer",
+    position: 'absolute' as const,
+    right: '10px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'none',
+    border: 'none',
+    color: '#a0a0a0',
+    cursor: 'pointer',
   },
   button: {
-    width: "100%",
-    padding: "10px",
-    borderRadius: "4px",
-    border: "none",
-    backgroundColor: "#fff",
-    color: "#000",
-    fontSize: "16px",
-    cursor: "pointer",
-    marginTop: "10px",
+    width: '100%',
+    padding: '10px',
+    borderRadius: '4px',
+    border: 'none',
+    backgroundColor: '#fff',
+    color: '#000',
+    fontSize: '16px',
+    cursor: 'pointer',
+    marginTop: '10px',
   },
   forgotPassword: {
-    color: "#a0a0a0",
-    textAlign: "center" as const,
-    display: "block",
-    marginTop: "20px",
-    textDecoration: "none",
+    color: '#a0a0a0',
+    textAlign: 'center' as const,
+    display: 'block',
+    marginTop: '20px',
+    textDecoration: 'none',
   },
 };
 
