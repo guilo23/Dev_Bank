@@ -1,3 +1,9 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript", "prettier"]
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "prettier"],
+  "extends": ["next/core-web-vitals", "next/typescript", "prettier"],
+  "rules": {
+    "prettier/prettier": ["error"]
+  }
 }

@@ -1,4 +1,4 @@
-import AccountSelection from "./accountsComponent";
+import AccountSelection from './accountsComponent';
 
 function App() {
   return (
