@@ -1,9 +1,9 @@
-import LoginPageComponente from './loginPage';
+import AccountOverviewComponent from './accountOverview';
 
 function App() {
   return (
     <div className="App">
-      <LoginPageComponente />
+      <AccountOverviewComponent />
     </div>
   );
 }
