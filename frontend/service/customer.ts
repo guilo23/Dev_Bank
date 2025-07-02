@@ -1,19 +1,29 @@
-import { CustomerLogin, LoginData, CustomerAccount,CustomerResponse } from '@/types/customer';
+import {
+  CustomerLogin,
+  LoginData,
+  CustomerAccount,
+  CustomerResponse,
+} from "@/types/customer";
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = "http://localhost:8080";
 
-export const login = async (loginRequest: CustomerLogin): Promise<LoginData> => {
+export const login = async (
+  loginRequest: CustomerLogin,
+): Promise<LoginData> => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(loginRequest),
     });
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || `Failed to authenticate customer (status ${response.status})`);
+      throw new Error(
+        error.message ||
+          `Failed to authenticate customer (status ${response.status})`,
+      );
     }
     const data: LoginData = await response.json();
     return data;
@@ -22,18 +32,23 @@ export const login = async (loginRequest: CustomerLogin): Promise<LoginData> => 
     throw error;
   }
 };
-export const register = async (registerRequest: CustomerAccount): Promise<CustomerResponse> => {
+export const register = async (
+  registerRequest: CustomerAccount,
+): Promise<CustomerResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/bia/customer`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(registerRequest),
     });
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || `Failed to create customer (status ${response.status})`);
+      throw new Error(
+        error.message ||
+          `Failed to create customer (status ${response.status})`,
+      );
     }
     const data: CustomerResponse = await response.json();
     return data;
@@ -42,4 +57,3 @@ export const register = async (registerRequest: CustomerAccount): Promise<Custom
     throw error;
   }
 };
-

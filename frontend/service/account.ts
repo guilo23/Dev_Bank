@@ -1,11 +1,11 @@
-import { accountRequest, accountResponse } from '@/types/account';
-import { parseCookies } from 'nookies';
+import { accountRequest, accountResponse } from "@/types/account";
+import { parseCookies } from "nookies";
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = "http://localhost:8080";
 
 export const registerAccount = async (
   registerRequest: accountRequest,
-  customerId: number
+  customerId: number,
 ): Promise<accountResponse> => {
   try {
     const cookies = parseCookies();
@@ -16,10 +16,10 @@ export const registerAccount = async (
     }
 
     const response = await fetch(`${API_BASE_URL}/bia/account/${customerId}`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(registerRequest),
     });
@@ -29,14 +29,86 @@ export const registerAccount = async (
       try {
         const error = await response.json();
         errorMessage = error.message || errorMessage;
-      } catch {
-      }
+      } catch {}
       throw new Error(errorMessage);
     }
 
     const data: accountResponse = await response.json();
     return data;
+  } catch (error: any) {
+    console.error("Error creating account:", error);
+    throw error;
+  }
+};
+export const getAccounts = async (): Promise<accountResponse[]> => {
+  try {
+    const cookies = parseCookies();
+    const token = cookies.token;
+    const customerId = cookies.customerId;
 
+    if (!token) {
+      throw new Error("No authentication token found.");
+    }
+
+    const response = await fetch(
+      `${API_BASE_URL}/bia/account/list/${customerId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      let errorMessage = `Failed to create account (status ${response.status})`;
+      try {
+        const error = await response.json();
+        errorMessage = error.message || errorMessage;
+      } catch {}
+      throw new Error(errorMessage);
+    }
+
+    const data: accountResponse[] = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error creating account:", error);
+    throw error;
+  }
+};
+export const getAccountByNumber = async (): Promise<accountResponse> => {
+  try {
+    const cookies = parseCookies();
+    const token = cookies.token;
+    const accountNumber = cookies.accountNumber;
+
+    if (!token) {
+      throw new Error("No authentication token found.");
+    }
+
+    const response = await fetch(
+      `${API_BASE_URL}/bia/account/${accountNumber}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      let errorMessage = `Failed to create account (status ${response.status})`;
+      try {
+        const error = await response.json();
+        errorMessage = error.message || errorMessage;
+      } catch {}
+      throw new Error(errorMessage);
+    }
+
+    const data: accountResponse = await response.json();
+    return data;
   } catch (error: any) {
     console.error("Error creating account:", error);
     throw error;
