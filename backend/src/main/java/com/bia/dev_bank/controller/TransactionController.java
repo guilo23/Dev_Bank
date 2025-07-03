@@ -1,6 +1,8 @@
 package com.bia.dev_bank.controller;
 
 import com.bia.dev_bank.dto.transaction.TransactionRequest;
+import com.bia.dev_bank.dto.transaction.TransactionResponse;
+import com.bia.dev_bank.entity.Transaction;
 import com.bia.dev_bank.service.LoanPaymentsService;
 import com.bia.dev_bank.service.TransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,9 +13,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -92,6 +99,19 @@ public class TransactionController {
       @PathVariable Long loanPaymentsId, @RequestBody @Valid TransactionRequest request) {
     loanPaymentsService.addTransactionToLoanPayment(loanPaymentsId, request);
     return ResponseEntity.ok().body("payed");
+  }
+  @GetMapping("/page")
+  public Page<Transaction> getTransactionsByAccount(
+          @RequestParam String accountNumber,
+          @RequestParam(defaultValue = "0") int page,
+          @RequestParam(defaultValue = "10") int size
+  ) {
+    Pageable pageable = PageRequest.of(page, size);
+    return transactionService.getTransactionsForAccount(accountNumber, pageable);
+  }
+  @GetMapping("/by-account")
+  public List<TransactionResponse> getTransactionsByAccount(@RequestParam String accountNumber) {
+    return transactionService.getAllTransactionsForAccount(accountNumber);
   }
 
   @Operation(summary = "transactionsDelete", description = "Deletes a transaction by its ID")

@@ -13,6 +13,11 @@ import com.bia.dev_bank.dto.transaction.TransactionResponse;
 import com.bia.dev_bank.security.CustomDetailService;
 import com.bia.dev_bank.security.JwtUtil;
 import com.bia.dev_bank.service.LoanPaymentsService;
+import com.bia.dev_bank.entity.Account;
+import com.bia.dev_bank.entity.Customer;
+import com.bia.dev_bank.entity.Transaction;
+import com.bia.dev_bank.entity.enums.AccountType;
+import com.bia.dev_bank.service.LoanPaymentsService;
 import com.bia.dev_bank.service.TransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
@@ -22,6 +27,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -141,5 +149,54 @@ class TransactionControllerTest {
                 System.out.println("Response body: " + result.getResponse().getContentAsString()))
         .andExpect(status().isOk())
         .andExpect(content().string("payed"));
+  }
+
+  @Test
+  @WithMockUser
+  void shouldGetTransactionsByAccountPageable() throws Exception {
+    String accountNumber = "12345";
+    Customer senderCustomer = new Customer();
+    senderCustomer.setName("Sender");
+    Account senderAccount = new Account();
+    senderAccount.setCustomer(senderCustomer);
+
+    Customer receiverCustomer = new Customer();
+    receiverCustomer.setName("Receiver");
+    Account receiverAccount = new Account();
+    receiverAccount.setCustomer(receiverCustomer);
+
+    Transaction transaction = new Transaction();
+    transaction.setId(1L);
+    transaction.setAmount(BigDecimal.valueOf(100));
+    transaction.setOriginAccount(senderAccount);
+    transaction.setDestinyAccount(receiverAccount);
+    transaction.setTransactionDate(LocalDate.now());
+
+    Page<Transaction> transactionPage = new PageImpl<>(List.of(transaction));
+
+    when(transactionService.getTransactionsForAccount(eq(accountNumber), any(Pageable.class)))
+        .thenReturn(transactionPage);
+
+    mockMvc
+        .perform(get("/bia/transactions/page").param("accountNumber", accountNumber).with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content[0].amount").value(100));
+  }
+
+  @Test
+  @WithMockUser
+  void shouldGetTransactionsByAccountList() throws Exception {
+    String accountNumber = "12345";
+    List<TransactionResponse> responses =
+        List.of(
+            new TransactionResponse(
+                BigDecimal.valueOf(150.0), "Another Sender", "Another Receiver", LocalDate.now()));
+
+    when(transactionService.getAllTransactionsForAccount(accountNumber)).thenReturn(responses);
+
+    mockMvc
+        .perform(get("/bia/transactions/by-account").param("accountNumber", accountNumber).with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].amount").value(150.0));
   }
 }
