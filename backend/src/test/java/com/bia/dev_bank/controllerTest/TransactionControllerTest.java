@@ -10,13 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.bia.dev_bank.controller.TransactionController;
 import com.bia.dev_bank.dto.transaction.TransactionRequest;
 import com.bia.dev_bank.dto.transaction.TransactionResponse;
-import com.bia.dev_bank.security.CustomDetailService;
-import com.bia.dev_bank.security.JwtUtil;
-import com.bia.dev_bank.service.LoanPaymentsService;
 import com.bia.dev_bank.entity.Account;
 import com.bia.dev_bank.entity.Customer;
 import com.bia.dev_bank.entity.Transaction;
-import com.bia.dev_bank.entity.enums.AccountType;
+import com.bia.dev_bank.security.CustomDetailService;
+import com.bia.dev_bank.security.JwtUtil;
 import com.bia.dev_bank.service.LoanPaymentsService;
 import com.bia.dev_bank.service.TransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -195,7 +193,8 @@ class TransactionControllerTest {
     when(transactionService.getAllTransactionsForAccount(accountNumber)).thenReturn(responses);
 
     mockMvc
-        .perform(get("/bia/transactions/by-account").param("accountNumber", accountNumber).with(csrf()))
+        .perform(
+            get("/bia/transactions/by-account").param("accountNumber", accountNumber).with(csrf()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].amount").value(150.0));
   }
