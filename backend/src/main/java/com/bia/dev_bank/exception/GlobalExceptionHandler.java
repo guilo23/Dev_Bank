@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.security.sasl.AuthenticationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -101,6 +102,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "status", HttpStatus.FORBIDDEN.value(),
                 "error", "Access Denied",
                 "message", ex.getMessage()));
+  }
+
+  @ExceptionHandler(AuthenticationException.class)
+  public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body(
+            Map.of(
+                "status", HttpStatus.UNAUTHORIZED.value(),
+                "error", "Access Denied",
+                "Unauthorized: ", ex.getMessage()));
   }
 
   private ResponseEntity<Object> buildErrorResponse(

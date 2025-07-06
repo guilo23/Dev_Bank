@@ -1,5 +1,6 @@
 package com.bia.dev_bank.controller;
 
+import com.bia.dev_bank.config.SecurityConfig;
 import com.bia.dev_bank.dto.loan.LoanRequest;
 import com.bia.dev_bank.dto.loan.LoanResponse;
 import com.bia.dev_bank.service.LoanService;
@@ -7,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/bia/loans")
 @RequiredArgsConstructor
 @Tag(name = "Loan", description = "Endpoints for managing loans")
+@SecurityRequirement(name = SecurityConfig.SECURITY)
 public class LoanController {
 
   private final LoanService loanService;
@@ -27,7 +30,13 @@ public class LoanController {
   @Operation(summary = "createLoan", description = "Creates a new loan for a specific customer")
   @ApiResponses({
     @ApiResponse(responseCode = "201", description = "Loan created successfully"),
-    @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
+    @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource")
   })
   @PreAuthorize("#account.customer.id == principal.id")
   @PostMapping("/{customerId}")
@@ -39,7 +48,13 @@ public class LoanController {
 
   @Operation(summary = "getAllLoans", description = "Retrieves a list of all loans in the system")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "List of loans retrieved successfully")
+    @ApiResponse(responseCode = "200", description = "List of loans retrieved successfully"),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource")
   })
   @GetMapping
   public ResponseEntity<List<LoanResponse>> getAllLoans() {
@@ -49,7 +64,13 @@ public class LoanController {
   @Operation(summary = "getLoanByID", description = "Retrieves loan details by loan ID")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Loan found"),
-    @ApiResponse(responseCode = "404", description = "Loan not found", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Loan not found", content = @Content),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource")
   })
   @PreAuthorize("#account.customer.id == principal.id")
   @GetMapping("/{id}")

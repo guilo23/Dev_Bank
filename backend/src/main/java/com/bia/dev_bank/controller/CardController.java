@@ -1,5 +1,6 @@
 package com.bia.dev_bank.controller;
 
+import com.bia.dev_bank.config.SecurityConfig;
 import com.bia.dev_bank.dto.card.CreditRequest;
 import com.bia.dev_bank.dto.card.CreditUpdate;
 import com.bia.dev_bank.dto.payments.CardPaymentsRequest;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/bia/cards")
 @Tag(name = "Card", description = "Endpoints for managing cards")
+@SecurityRequirement(name = SecurityConfig.SECURITY)
 public class CardController {
 
   private final CardService cardService;
@@ -32,7 +35,13 @@ public class CardController {
   @ApiResponses({
     @ApiResponse(responseCode = "201", description = "Card created successfully"),
     @ApiResponse(responseCode = "400", description = "Invalid input data"),
-    @ApiResponse(responseCode = "404", description = "Account not found")
+    @ApiResponse(responseCode = "404", description = "Account not found"),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource")
   })
   @PostMapping("/add/{accountNumber}")
   public ResponseEntity createCard(
@@ -47,7 +56,13 @@ public class CardController {
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Credit card purchase added successfully"),
     @ApiResponse(responseCode = "400", description = "Invalid purchase details"),
-    @ApiResponse(responseCode = "404", description = "Card not found")
+    @ApiResponse(responseCode = "404", description = "Card not found"),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource")
   })
   @PostMapping("/credit")
   public ResponseEntity addCreditBuying(@RequestBody @Valid CardPaymentsRequest request) {
@@ -62,7 +77,13 @@ public class CardController {
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Debit card purchase added successfully"),
     @ApiResponse(responseCode = "400", description = "Invalid purchase details"),
-    @ApiResponse(responseCode = "404", description = "Card or account not found")
+    @ApiResponse(responseCode = "404", description = "Card or account not found"),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource")
   })
   @PostMapping("/debit")
   public ResponseEntity addDebitBuying(@RequestBody @Valid CardPaymentsRequest request) {
@@ -74,7 +95,10 @@ public class CardController {
   @Operation(summary = "getCardByID", description = "Retrieves card details by card ID")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Card found"),
-    @ApiResponse(responseCode = "404", description = "Card not found", content = @Content)
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(responseCode = "404", description = "Card not found", content = @Content),
   })
   @GetMapping("/{cardId}")
   public ResponseEntity getCardById(@PathVariable Long cardId) {
@@ -86,7 +110,10 @@ public class CardController {
       summary = "getListAllCardByAccount",
       description = "Retrieves all cards linked to a specific account")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "List of cards retrieved successfully")
+    @ApiResponse(responseCode = "200", description = "List of cards retrieved successfully"),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
   })
   @GetMapping("/list/{accountNumber}")
   public ResponseEntity getAllCardByAccount(@PathVariable String accountNumber) {
@@ -97,7 +124,10 @@ public class CardController {
   @Operation(summary = "cardUpdate", description = "Updates card details by card ID")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Card updated successfully"),
-    @ApiResponse(responseCode = "404", description = "Card not found", content = @Content)
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(responseCode = "404", description = "Card not found", content = @Content),
   })
   @PutMapping("/{id}")
   public ResponseEntity cardUpdate(@PathVariable Long id, @RequestBody @Valid CreditUpdate update) {
@@ -108,7 +138,10 @@ public class CardController {
   @Operation(summary = "cardDelete", description = "Deletes a card by its ID")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Card deleted successfully"),
-    @ApiResponse(responseCode = "404", description = "Card not found", content = @Content)
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(responseCode = "404", description = "Card not found", content = @Content),
   })
   @DeleteMapping("/{id}")
   public ResponseEntity cardDelete(@PathVariable Long id) {
