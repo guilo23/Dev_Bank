@@ -38,7 +38,7 @@ export default function AccountSelection() {
         maxAge: 60 * 60,
         sameSite: 'lax',
       });
-      router.push('/');
+      router.push('/home');
     }
   };
 
