@@ -1,62 +1,50 @@
 'use client';
-
+import { getTransactions } from '@/service/transaction';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowUpRight, ArrowDownLeft, CreditCard, TrendingUp, Eye, EyeOff } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, CreditCard, Eye, EyeOff } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { getAccountByNumber } from '@/service/account';
 import { accountResponse } from '@/types/account';
+import { transactionResponse } from '@/types/transaction';
 
 export default function AccountOverviewComponent() {
   const [showBalance, setShowBalance] = useState(true);
   const [account, setAccount] = useState<accountResponse>();
   const [loading, setLoading] = useState(true);
+  const [transactions, setTransactions] = useState<transactionResponse[]>([]);
 
   useEffect(() => {
-    const fetchAccount = async () => {
+    const fetchData = async () => {
       try {
-        const response = await getAccountByNumber();
-        setAccount(response);
+        const account = await getAccountByNumber();
+        setAccount(account);
       } catch (error) {
-        console.error('Failed to fetch accounts', error);
+        console.error('Failed to fetch account or transactions', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAccount();
+    fetchData();
   });
 
-  const recentTransactions = [
-    {
-      id: 1,
-      description: 'PIX Transfer - Joaoo Silva',
-      amount: -250.0,
-      date: '2024-01-15',
-      type: 'transfer',
-    },
-    {
-      id: 2,
-      description: 'Salary - Company XYZ',
-      amount: 5500.0,
-      date: '2024-01-14',
-      type: 'income',
-    },
-    {
-      id: 3,
-      description: 'Purchase - ABC Supermarket',
-      amount: -89.5,
-      date: '2024-01-13',
-      type: 'purchase',
-    },
-    {
-      id: 4,
-      description: 'Received Transfer',
-      amount: 150.0,
-      date: '2024-01-12',
-      type: 'income',
-    },
-  ];
+  useEffect(() => {
+    const fetchTransaction = async () => {
+      try {
+        const response = await getTransactions();
+        setTransactions(response.slice(0, 5));
+      } catch (error) {
+        console.error('Failed to fetch account or transactions', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransaction();
+  }, []);
+
+  if (loading) return <p>Loading accounts...</p>;
 
   return (
     <div className="space-y-6">
@@ -123,28 +111,39 @@ export default function AccountOverviewComponent() {
           <CardTitle>Recent Transactions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {recentTransactions.map((transaction) => (
-              <div key={transaction.id} className="flex items-center justify-between">
+          <div key={account?.accountNumber} className="space-y-4">
+            {transactions.map((transaction) => (
+              <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div
-                    className={`p-2 rounded-full ${transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'}`}
+                    className={`p-2 rounded-full ${
+                      account?.customerName === transaction.receiverName
+                        ? 'bg-green-100'
+                        : 'bg-red-100'
+                    }`}
                   >
-                    {transaction.type === 'income' ? (
+                    {account?.customerName === transaction?.receiverName ? (
                       <ArrowDownLeft className="h-4 w-4 text-green-600" />
                     ) : (
                       <ArrowUpRight className="h-4 w-4 text-red-600" />
                     )}
                   </div>
                   <div>
-                    <p className="font-medium">{transaction.description}</p>
-                    <p className="text-sm text-muted-foreground">{transaction.date}</p>
+                    <p className="font-medium">{transaction.receiverName}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {new Date(transaction.transactionDate).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
                 <div
-                  className={`font-bold ${transaction.amount > 0 ? 'text-green-600' : 'text-red-600'}`}
+                  className={`font-bold ${
+                    account?.customerName === transaction.receiverName
+                      ? 'text-green-600'
+                      : 'text-red-600'
+                  }`}
                 >
-                  {transaction.amount > 0 ? '+' : ''}R$ {Math.abs(transaction.amount).toFixed(2)}
+                  {account?.customerName === transaction.receiverName ? '+' : '-'}R${' '}
+                  {transaction.amount.toFixed(2)}
                 </div>
               </div>
             ))}
