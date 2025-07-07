@@ -111,7 +111,7 @@ export default function AccountOverviewComponent() {
           <CardTitle>Recent Transactions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div key={account?.accountNumber} className="space-y-4">
+          <div key={Math.random()} className="space-y-4">
             {transactions.map((transaction) => (
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
