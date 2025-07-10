@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,6 +40,12 @@ public class PaymentController {
   public ResponseEntity getLoanPaymentById(Long loanPaymentId) {
     var loan = loanPaymentsService.getLoanPaymentsById(loanPaymentId);
     return ResponseEntity.status(HttpStatus.OK).body(loan);
+  }
+
+  @GetMapping("/card-payments")
+  public ResponseEntity getCardPaymentsInstallments(@RequestParam Long cardId) {
+    var payments = cardPaymentsService.getCardPaymentsreportByid(cardId);
+    return ResponseEntity.status(HttpStatus.OK).body(payments);
   }
 
   @Operation(

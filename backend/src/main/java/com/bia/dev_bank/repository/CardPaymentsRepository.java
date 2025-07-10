@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CardPaymentsRepository extends JpaRepository<CardPayments, Long> {
   List<CardPayments> findByCardId(Long id);
+
+  List<CardPayments> findAllByCardId(Long id);
 }

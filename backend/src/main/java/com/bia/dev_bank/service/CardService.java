@@ -109,7 +109,8 @@ public class CardService {
         card.getCardNumber(),
         payments.get(0).getProductName(),
         payments.get(0).getInstallmentNumber(),
-        payments.get(0).getInstallmentAmount());
+        payments.get(0).getInstallmentAmount(),
+        payments.get(0).getDueDate());
   }
 
   public List<StatementResponse> cardsDebitPaymentsReport(String cardNumber) {

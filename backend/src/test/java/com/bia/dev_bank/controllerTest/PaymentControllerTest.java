@@ -71,7 +71,8 @@ class PaymentControllerTest {
   void shouldGetCardPaymentById() throws Exception {
     var cardPaymentId = 1L;
     CardPaymentsResponse response =
-        new CardPaymentsResponse("123456", "geladeira", 1, BigDecimal.valueOf(250));
+        new CardPaymentsResponse(
+            "123456", "geladeira", 1, BigDecimal.valueOf(250), LocalDate.now());
 
     when(cardPaymentsService.getCardPaymentsById(cardPaymentId)).thenReturn(response);
 

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "tb_cardPayments")
+@Table(name = "tb_card_payments")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

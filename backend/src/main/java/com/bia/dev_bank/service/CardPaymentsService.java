@@ -13,6 +13,7 @@ import com.bia.dev_bank.utils.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,11 @@ public class CardPaymentsService {
     payment.setPaidAmount(totalPaid);
     updateCardPaymentStatus(payment);
     cardPaymentsRepository.save(payment);
+  }
+
+  public List<CardPaymentsResponse> getCardPaymentsreportByid(Long id) {
+    var payments = cardPaymentsRepository.findAllByCardId(id);
+    return payments.stream().map(CardPaymentsResponse::new).toList();
   }
 
   @Transactional
