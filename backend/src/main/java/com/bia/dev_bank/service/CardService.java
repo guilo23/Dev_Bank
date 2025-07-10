@@ -112,13 +112,7 @@ public class CardService {
         payments.get(0).getInstallmentAmount(),
         payments.get(0).getDueDate());
   }
-
-  public List<CardResponse> getCardsByAccountNumber(String accountNumber) {
-    var cards = cardRepository.findAllCardsByAccountAccountNumber(accountNumber);
-    return cards.get().stream().map(CardResponse::new).toList();
-  }
-
-  public List<StatementResponse> cardsDebitPaymentsReport(String cardNumber) {
+    public List<StatementResponse> cardsDebitPaymentsReport(String cardNumber) {
     var cardVerify = cardRepository.findCardByCardNumber(cardNumber);
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
