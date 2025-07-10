@@ -106,6 +106,12 @@ public class CardController {
     return ResponseEntity.status(HttpStatus.OK).body(card);
   }
 
+  @GetMapping("/list/${accountNumber}")
+  public ResponseEntity getAllcardsByAccountNumber(@PathVariable @Valid String accountNumber) {
+    var cards = cardService.getCardsByAccountNumber(accountNumber);
+    return ResponseEntity.status(HttpStatus.OK).body(cards);
+  }
+
   @Operation(
       summary = "getListAllCardByAccount",
       description = "Retrieves all cards linked to a specific account")
