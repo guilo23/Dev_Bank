@@ -42,8 +42,8 @@ export function CardRequestDialog() {
       setCardNumber('');
       setCardType('');
       setCardLimit(0);
-    } catch (error) {
-      console.error('Error on create card: ');
+    } catch (Error) {
+      console.error('Error on create card: ', Error);
     }
   };
   return (
