@@ -7,12 +7,14 @@ import { useState, useEffect } from 'react';
 import { getAccountByNumber } from '@/service/account';
 import { accountResponse } from '@/types/account';
 import { transactionResponse } from '@/types/transaction';
+import { useRouter } from 'next/navigation';
 
 export default function AccountOverviewComponent() {
   const [showBalance, setShowBalance] = useState(true);
   const [account, setAccount] = useState<accountResponse>();
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState<transactionResponse[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,7 +99,11 @@ export default function AccountOverviewComponent() {
               <ArrowDownLeft className="h-6 w-6" />
               Loan
             </Button>
-            <Button variant="outline" className="h-20 flex-col gap-2">
+            <Button
+              variant="outline"
+              className="h-20 flex-col gap-2"
+              onClick={() => router.push('/card')}
+            >
               <CreditCard className="h-6 w-6" />
               Cards
             </Button>

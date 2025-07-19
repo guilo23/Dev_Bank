@@ -5,8 +5,9 @@ export interface cardRequest {
 }
 export interface cardResponse {
   cardId: string;
+  cardType: string;
   cardNumber: string;
-  cardLimit: string;
+  cardLimit: number;
   customername: string;
 }
 export interface paymentResponse {

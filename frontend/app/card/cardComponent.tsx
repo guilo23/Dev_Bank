@@ -7,44 +7,66 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CreditCard, Eye, EyeOff, Lock, Unlock, Plus, Settings } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getCards } from '@/service/card';
+import { cardResponse } from '@/types/card';
+
+// Extendendo os dados sem alterar cardResponse
+type ExtendedCard = cardResponse & {
+  status: 'active' | 'inactive';
+  locked: boolean;
+  expiry: string;
+  used?: number;
+  available?: number;
+};
 
 export default function CardManagement() {
   const [showCardNumbers, setShowCardNumbers] = useState(false);
-  const [cardLocked, setCardLocked] = useState(false);
+  const [cards, setCards] = useState<ExtendedCard[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const debitCards = [
-    {
-      id: 1,
-      type: 'Debit',
-      number: '1234 5678 9012 3456',
-      holder: 'JOAO DA SILVA',
-      expiry: '12/26',
-      status: 'active',
-      limit: 5000,
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const rawCards: cardResponse[] = await getCards();
 
-  const creditCards = [
-    {
-      id: 1,
-      type: 'Credit',
-      number: '9876 5432 1098 7654',
-      holder: 'JOAO DA SILVA',
-      expiry: '08/27',
-      status: 'active',
-      limit: 15000,
-      used: 3250,
-      available: 11750,
-    },
-  ];
+        const enriched: ExtendedCard[] = rawCards.map((card) => {
+          const isCredit = card.cardType === 'CREDIT';
+          const used = isCredit ? Math.floor(Math.random() * card.cardLimit) : undefined;
 
-  const formatCardNumber = (number: string) => {
-    if (!showCardNumbers) {
-      return '**** **** **** ' + number.slice(-4);
-    }
-    return number;
+          return {
+            ...card,
+            status: Math.random() > 0.2 ? 'active' : 'inactive',
+            locked: false,
+            expiry: `${String(Math.floor(Math.random() * 12 + 1)).padStart(2, '0')}/2${Math.floor(Math.random() * 5 + 5)}`,
+            used,
+            available: isCredit && used !== undefined ? card.cardLimit - used : undefined,
+          };
+        });
+
+        setCards(enriched);
+      } catch (error) {
+        console.error('Failed to fetch cards', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const toggleLock = (id: string) => {
+    setCards((prev) =>
+      prev.map((card) => (card.cardId === id ? { ...card, locked: !card.locked } : card)),
+    );
   };
+
+  const formatCardNumber = (number: string) =>
+    showCardNumbers ? number : '**** **** **** ' + number.slice(-4);
+
+  const debitCards = cards.filter((card) => card.cardType === 'DEBIT');
+  const creditCards = cards.filter((card) => card.cardType === 'CREDIT');
+
+  if (loading) return <p className="text-center">Loading cards...</p>;
 
   return (
     <div className="space-y-6">
@@ -62,16 +84,17 @@ export default function CardManagement() {
           <TabsTrigger value="credit">Credit Cards</TabsTrigger>
         </TabsList>
 
+        {/* DEBIT CARDS */}
         <TabsContent value="debit" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             {debitCards.map((card) => (
-              <Card key={card.id} className="relative overflow-hidden">
+              <Card key={card.cardId} className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-700 opacity-10" />
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
                       <CreditCard className="h-5 w-5" />
-                      {card.type} Card
+                      Debit Card
                     </CardTitle>
                     <Badge variant={card.status === 'active' ? 'default' : 'secondary'}>
                       {card.status === 'active' ? 'Active' : 'Inactive'}
@@ -94,13 +117,13 @@ export default function CardManagement() {
                         )}
                       </Button>
                     </div>
-                    <p className="font-mono text-lg">{formatCardNumber(card.number)}</p>
+                    <p className="font-mono text-lg">{formatCardNumber(card.cardNumber)}</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-muted-foreground">Card Holder</p>
-                      <p className="font-medium">{card.holder}</p>
+                      <p className="font-medium">{card.customername}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Expiry</p>
@@ -110,19 +133,26 @@ export default function CardManagement() {
 
                   <div>
                     <p className="text-sm text-muted-foreground">Daily Limit</p>
-                    <p className="font-medium">R$ {card.limit.toLocaleString()}</p>
+                    <p className="font-medium">R$ {card.cardLimit.toLocaleString()}</p>
                   </div>
 
                   <div className="flex items-center justify-between pt-4 border-t">
                     <div className="flex items-center space-x-2">
                       <Switch
-                        id="card-lock"
-                        checked={!cardLocked}
-                        onCheckedChange={(checked) => setCardLocked(!checked)}
+                        id={`debit-lock-${card.cardId}`}
+                        checked={!card.locked}
+                        onCheckedChange={() => toggleLock(card.cardId)}
                       />
-                      <Label htmlFor="card-lock" className="flex items-center gap-2">
-                        {cardLocked ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
-                        {cardLocked ? 'Locked' : 'Unlocked'}
+                      <Label
+                        htmlFor={`debit-lock-${card.cardId}`}
+                        className="flex items-center gap-2"
+                      >
+                        {card.locked ? (
+                          <Lock className="h-4 w-4" />
+                        ) : (
+                          <Unlock className="h-4 w-4" />
+                        )}
+                        {card.locked ? 'Locked' : 'Unlocked'}
                       </Label>
                     </div>
                     <Button variant="outline" size="sm">
@@ -136,16 +166,17 @@ export default function CardManagement() {
           </div>
         </TabsContent>
 
+        {/* CREDIT CARDS */}
         <TabsContent value="credit" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             {creditCards.map((card) => (
-              <Card key={card.id} className="relative overflow-hidden">
+              <Card key={card.cardId} className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-blue-700 opacity-10" />
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
                       <CreditCard className="h-5 w-5" />
-                      {card.type} Card
+                      Credit Card
                     </CardTitle>
                     <Badge variant={card.status === 'active' ? 'default' : 'secondary'}>
                       {card.status === 'active' ? 'Active' : 'Inactive'}
@@ -168,13 +199,13 @@ export default function CardManagement() {
                         )}
                       </Button>
                     </div>
-                    <p className="font-mono text-lg">{formatCardNumber(card.number)}</p>
+                    <p className="font-mono text-lg">{formatCardNumber(card.cardNumber)}</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-muted-foreground">Card Holder</p>
-                      <p className="font-medium">{card.holder}</p>
+                      <p className="font-medium">{card.customername}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Expiry</p>
@@ -186,13 +217,13 @@ export default function CardManagement() {
                     <div className="flex justify-between">
                       <span className="text-sm text-muted-foreground">Used Limit</span>
                       <span className="text-sm font-medium">
-                        R$ {card.used.toLocaleString()} / R$ {card.limit.toLocaleString()}
+                        R$ {card.used?.toLocaleString() ?? 0} / R$ {card.cardLimit.toLocaleString()}
                       </span>
                     </div>
                     <div className="w-full bg-muted rounded-full h-2">
                       <div
                         className="bg-primary h-2 rounded-full"
-                        style={{ width: `${(card.used / card.limit) * 100}%` }}
+                        style={{ width: `${((card.used ?? 0) / card.cardLimit) * 100}%` }}
                       />
                     </div>
                   </div>
@@ -200,20 +231,27 @@ export default function CardManagement() {
                   <div>
                     <p className="text-sm text-muted-foreground">Available Limit</p>
                     <p className="font-medium text-green-600">
-                      R$ {card.available.toLocaleString()}
+                      R$ {card.available?.toLocaleString() ?? 0}
                     </p>
                   </div>
 
                   <div className="flex items-center justify-between pt-4 border-t">
                     <div className="flex items-center space-x-2">
                       <Switch
-                        id="credit-card-lock"
-                        checked={!cardLocked}
-                        onCheckedChange={(checked) => setCardLocked(!checked)}
+                        id={`credit-lock-${card.cardId}`}
+                        checked={!card.locked}
+                        onCheckedChange={() => toggleLock(card.cardId)}
                       />
-                      <Label htmlFor="credit-card-lock" className="flex items-center gap-2">
-                        {cardLocked ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
-                        {cardLocked ? 'Locked' : 'Unlocked'}
+                      <Label
+                        htmlFor={`credit-lock-${card.cardId}`}
+                        className="flex items-center gap-2"
+                      >
+                        {card.locked ? (
+                          <Lock className="h-4 w-4" />
+                        ) : (
+                          <Unlock className="h-4 w-4" />
+                        )}
+                        {card.locked ? 'Locked' : 'Unlocked'}
                       </Label>
                     </div>
                     <Button variant="outline" size="sm">
@@ -225,8 +263,6 @@ export default function CardManagement() {
               </Card>
             ))}
           </div>
-
-          {/* Credit Card Actions */}
           <Card>
             <CardHeader>
               <CardTitle>Credit Card Actions</CardTitle>
