@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Loan", description = "Endpoints for managing loans")
 public class LoanController {
+
+  private static final Logger logger = LoggerFactory.getLogger(LoanController.class);
 
   private final LoanService loanService;
 
@@ -33,6 +37,7 @@ public class LoanController {
   @PostMapping("/{customerId}")
   public ResponseEntity<LoanResponse> createLoan(
       @PathVariable Long customerId, @RequestBody @Valid LoanRequest loan) {
+    logger.info("Request received to create loan for customer {}", customerId);
     var createdLoan = loanService.createLoan(loan, customerId);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdLoan);
   }
@@ -43,6 +48,7 @@ public class LoanController {
   })
   @GetMapping
   public ResponseEntity<List<LoanResponse>> getAllLoans() {
+    logger.info("Request received to get all loans");
     return ResponseEntity.ok(loanService.findAllLoans());
   }
 
@@ -54,6 +60,7 @@ public class LoanController {
   @PreAuthorize("#account.customer.id == principal.id")
   @GetMapping("/{id}")
   public ResponseEntity<LoanResponse> getLoanById(@PathVariable Long id) {
+    logger.info("Request received to get loan {}", id);
     var loan = loanService.findLoanById(id);
     return ResponseEntity.ok().body(loan);
   }

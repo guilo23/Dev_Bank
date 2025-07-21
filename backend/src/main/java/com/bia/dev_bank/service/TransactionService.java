@@ -13,12 +13,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TransactionService {
+  private static final Logger logger = LoggerFactory.getLogger(TransactionService.class);
   @Autowired private TransactionRepository transactionRepository;
   @Autowired private AccountRepository accountRepository;
   @Autowired private AccountService accountService;
@@ -26,6 +29,7 @@ public class TransactionService {
 
   public TransactionResponse createTransaction(
       TransactionRequest request, String originAccountNumber) {
+    logger.info("Creating transaction from account {}", originAccountNumber);
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
         accountRepository
@@ -33,6 +37,10 @@ public class TransactionService {
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
 
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn(
+          "User {} does not have permission to create transaction from account {}",
+          custumerId,
+          originAccountNumber);
       throw new AccessDeniedException("permission denied");
     }
     var accountO =
@@ -49,6 +57,7 @@ public class TransactionService {
 
     accountService.debit(accountO.getAccountNumber(), transaction.getAmount());
     accountService.credit(accountD.getAccountNumber(), transaction.getAmount());
+    logger.info("Transaction {} created successfully", transaction.getId());
 
     return new TransactionResponse(
         transaction.getAmount(),
@@ -58,6 +67,7 @@ public class TransactionService {
   }
 
   public List<StatementResponse> getStatementByAccountNumber(String accountNumber) {
+    logger.info("Generating statement for account {}", accountNumber);
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
         accountRepository
@@ -65,11 +75,16 @@ public class TransactionService {
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
 
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn(
+          "User {} does not have permission to generate statement for account {}",
+          custumerId,
+          accountNumber);
       throw new AccessDeniedException("permission denied");
     }
 
     List<Transaction> transactions =
         transactionRepository.findTransactionsByOriginAccountAccountNumber(accountNumber);
+    logger.info("Found {} transactions for account {}", transactions.size(), accountNumber);
 
     return transactions.stream()
         .map(
@@ -100,6 +115,7 @@ public class TransactionService {
   }
 
   public TransactionResponse getTransactionById(Long id) {
+    logger.info("Fetching transaction {}", id);
     var verify = transactionRepository.findById(id);
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
@@ -108,6 +124,7 @@ public class TransactionService {
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
 
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn("User {} does not have permission to fetch transaction {}", custumerId, id);
       throw new AccessDeniedException("permission denied");
     }
     var transaction =
@@ -116,6 +133,7 @@ public class TransactionService {
             .orElseThrow(
                 () ->
                     new EntityNotFoundException("there is no transactions registered to this id"));
+    logger.info("Transaction {} found", id);
     return new TransactionResponse(
         transaction.getAmount(),
         transaction.getDestinyAccount().getCustomer().getName(),
@@ -124,6 +142,7 @@ public class TransactionService {
   }
 
   public List<TransactionResponse> getTransactionByAccountNumber(String accountNumber) {
+    logger.info("Fetching transactions for account {}", accountNumber);
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
         accountRepository
@@ -131,21 +150,29 @@ public class TransactionService {
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
 
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn(
+          "User {} does not have permission to fetch transactions for account {}",
+          custumerId,
+          accountNumber);
       throw new AccessDeniedException("permission denied");
     }
 
     var transactions =
         transactionRepository.findTransactionsByOriginAccountAccountNumber(accountNumber);
+    logger.info("Found {} transactions for account {}", transactions.size(), accountNumber);
 
     return transactions.stream().map(TransactionResponse::new).collect(Collectors.toList());
   }
 
   public List<TransactionResponse> getAllTransactions() {
+    logger.info("Fetching all transactions");
     var transactions = transactionRepository.findAll();
+    logger.info("Found {} transactions", transactions.size());
     return transactions.stream().map(TransactionResponse::new).collect(Collectors.toList());
   }
 
   public void transactionDelete(Long id) {
+    logger.info("Deleting transaction {}", id);
     var verify = transactionRepository.findById(id);
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
@@ -153,8 +180,10 @@ public class TransactionService {
             .findByAccountNumber(verify.get().getOriginAccount().getAccountNumber())
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn("User {} does not have permission to delete transaction {}", custumerId, id);
       throw new AccessDeniedException("permission denied");
     }
     transactionRepository.deleteById(id);
+    logger.info("Transaction {} deleted successfully", id);
   }
 }

@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Customer", description = "Endpoints for managing customers")
 public class CustomerController {
 
+  private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
+
   @Autowired private CustomerService customerService;
 
   @Operation(summary = "createCustomer", description = "Registers a new costumer in the BIA system")
@@ -28,6 +32,7 @@ public class CustomerController {
   })
   @PostMapping
   public ResponseEntity createCustomer(@RequestBody @Valid CustomerRequest request) {
+    logger.info("Request received to create customer");
     var customer = customerService.createCustomer(request);
     return ResponseEntity.ok().body(customer);
   }
@@ -40,6 +45,7 @@ public class CustomerController {
   @PreAuthorize("#account.customer.id == principal.id")
   @GetMapping("/{customerId}")
   public ResponseEntity customerById(@PathVariable Long customerId) {
+    logger.info("Request received to get customer {}", customerId);
     var customer = customerService.getCostumerById(customerId);
     return ResponseEntity.ok().body(customer);
   }
@@ -53,6 +59,7 @@ public class CustomerController {
   @PutMapping("/{customerId}")
   public ResponseEntity customerUpdate(
       @PathVariable Long customerId, @RequestBody @Valid CustomerUpdate request) {
+    logger.info("Request received to update customer {}", customerId);
     var updated = customerService.customerUpdate(customerId, request);
     return ResponseEntity.ok().body(updated);
   }
@@ -65,6 +72,7 @@ public class CustomerController {
   @PreAuthorize("#account.customer.id == principal.id")
   @DeleteMapping("/{customerId}")
   public ResponseEntity customerDelete(@PathVariable Long customerId) {
+    logger.info("Request received to delete customer {}", customerId);
     customerService.customerDelete(customerId);
     return ResponseEntity.noContent().build();
   }

@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/bia/account")
 @Tag(name = "Account", description = "Endpoints for managing accounts")
 public class AccountController {
+
+  private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
   @Autowired private AccountService accountService;
 
@@ -32,6 +36,7 @@ public class AccountController {
   @PostMapping("/balanceIn/{accountNumber}")
   public ResponseEntity accountDeposit(
       @RequestBody @Valid AccountUpdate update, @PathVariable String accountNumber) {
+    logger.info("Request received to deposit to account {}", accountNumber);
     accountService.accountDeposit(update, accountNumber);
     return ResponseEntity.status(HttpStatus.ACCEPTED)
         .body("the value " + update.currentBalance() + " has been deposited in your account");
@@ -47,6 +52,7 @@ public class AccountController {
   @PostMapping("/balanceOut/{accountNumber}")
   public ResponseEntity accountCashOut(
       @RequestBody @Valid AccountUpdate update, @PathVariable String accountNumber) {
+    logger.info("Request received to withdraw from account {}", accountNumber);
     accountService.accountCashOut(update, accountNumber);
     return ResponseEntity.status(HttpStatus.ACCEPTED)
         .body("the value " + update.currentBalance() + " has been debit of your account");
@@ -66,6 +72,7 @@ public class AccountController {
   @PostMapping("/{customerId}")
   public ResponseEntity createAccount(
       @RequestBody @Valid AccountRequest request, @PathVariable Long customerId) {
+    logger.info("Request received to create account for customer {}", customerId);
     var account = accountService.createAccount(request, customerId);
     return ResponseEntity.ok().body(account);
   }
@@ -79,6 +86,7 @@ public class AccountController {
   })
   @GetMapping("/{accountNumber}")
   public ResponseEntity getAccountByNumber(@PathVariable String accountNumber) {
+    logger.info("Request received to get account {}", accountNumber);
     var account = accountService.getAccountById(accountNumber);
     return ResponseEntity.ok().body(account);
   }
@@ -92,6 +100,7 @@ public class AccountController {
   @PreAuthorize("#customerId == principal.id")
   @GetMapping("/list/{customerId}")
   public ResponseEntity getAllAccountByCostumerId(@PathVariable Long customerId) {
+    logger.info("Request received to get all accounts for customer {}", customerId);
     var accounts = accountService.getAllAccountByCostumerId(customerId);
     return ResponseEntity.ok().body(accounts);
   }
@@ -104,6 +113,7 @@ public class AccountController {
   @PutMapping("/{accountNumber}")
   public ResponseEntity accountUpdate(
       @PathVariable String accountNumber, @RequestBody @Valid AccountUpdate update) {
+    logger.info("Request received to update account {}", accountNumber);
     accountService.accountUpdate(accountNumber, update);
     return ResponseEntity.ok().body("your account has been updated");
   }
@@ -115,6 +125,7 @@ public class AccountController {
   })
   @DeleteMapping("/{accountNumber}")
   public ResponseEntity accountDelete(@PathVariable String accountNumber) {
+    logger.info("Request received to delete account {}", accountNumber);
     accountService.accountDelete(accountNumber);
     return ResponseEntity.ok().body(":( your account has been deleted");
   }
