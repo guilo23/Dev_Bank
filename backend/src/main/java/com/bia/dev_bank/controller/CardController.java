@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.math.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +69,12 @@ public class CardController {
   public ResponseEntity addCreditBuying(@RequestBody @Valid CardPaymentsRequest request) {
     var card = cardService.addCreditCardPayment(request);
     return ResponseEntity.status(HttpStatus.OK).body(card);
+  }
+
+  @PatchMapping("{cardId}/limit")
+  public ResponseEntity addLimit(@RequestParam BigDecimal plusLimit, @PathVariable Long cardId) {
+    cardService.increaseLimit(plusLimit, cardId);
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 
   @Operation(

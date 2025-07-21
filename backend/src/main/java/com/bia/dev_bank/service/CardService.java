@@ -66,6 +66,22 @@ public class CardService {
     return new CardResponse(card);
   }
 
+  public void increaseLimit(BigDecimal plusLimit, Long id) {
+    var card = cardRepository.findById(id).orElseThrow(() -> new RuntimeException());
+
+    if (plusLimit.compareTo(BigDecimal.ZERO) == 1) {
+      if (card.getCardType().equals(CardType.CREDIT)) {
+        card.setCardLimit(card.getCardLimit().add(plusLimit));
+      } else {
+        new RuntimeException("you can not increase the limit on a debit card");
+      }
+    } else if (plusLimit.compareTo(BigDecimal.ZERO) == 0) {
+      new RuntimeException("type a value bigger than zero");
+    } else {
+      new RuntimeException("negative numbers are not cool");
+    }
+  }
+
   @Transactional
   public CardPaymentsResponse addCreditCardPayment(CardPaymentsRequest request) {
     var cardVerify = cardRepository.findCardByCardNumber(request.cardNumber());

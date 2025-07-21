@@ -210,4 +210,10 @@ public class AccountServiceTest {
     accountService.accountDelete("12345678-9");
     verify(accountRepository).delete(account);
   }
+
+  @Test
+  void shouldGenerateAccountNumberWithCheckDigit() {
+    String accountNumber = AccountService.generateAccountNumberWithCheckDigit();
+    assertEquals(10, accountNumber.length());
+  }
 }

@@ -115,4 +115,58 @@ class CardControllerTest {
 
     Mockito.verify(cardService).cardDelete(1L);
   }
+
+  @Test
+  @WithMockUser
+  void shouldAddCreditBuying() throws Exception {
+    com.bia.dev_bank.dto.payments.CardPaymentsRequest request =
+        new com.bia.dev_bank.dto.payments.CardPaymentsRequest(
+            "1111222233334444", "TV", BigDecimal.valueOf(2500), 10);
+    com.bia.dev_bank.dto.payments.CardPaymentsResponse response =
+        new com.bia.dev_bank.dto.payments.CardPaymentsResponse(
+            "1111222233334444", "TV", 10, BigDecimal.valueOf(250), java.time.LocalDate.now());
+
+    Mockito.when(cardService.addCreditCardPayment(any())).thenReturn(response);
+
+    mockMvc
+        .perform(
+            post("/bia/cards/credit")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.productName").value("TV"));
+  }
+
+  @Test
+  @WithMockUser
+  void shouldAddDebitBuying() throws Exception {
+    com.bia.dev_bank.dto.payments.CardPaymentsRequest request =
+        new com.bia.dev_bank.dto.payments.CardPaymentsRequest(
+            "1111222233334444", "TV", BigDecimal.valueOf(2500), 1);
+    com.bia.dev_bank.entity.CardPayments response = new com.bia.dev_bank.entity.CardPayments();
+    response.setId(1L);
+
+    com.bia.dev_bank.entity.Card card = new com.bia.dev_bank.entity.Card();
+    card.setCardNumber("1111222233334444");
+    response.setCard(card);
+
+    Mockito.when(cardService.addDebitCardPayment(any())).thenReturn(response);
+
+    mockMvc
+        .perform(
+            post("/bia/cards/debit")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .with(csrf()))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser
+  void shouldAddLimit() throws Exception {
+    mockMvc
+        .perform(patch("/bia/cards/1/limit").param("plusLimit", "500").with(csrf()))
+        .andExpect(status().isOk());
+  }
 }

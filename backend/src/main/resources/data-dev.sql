@@ -24,15 +24,15 @@ INSERT INTO tb_account (account_number, customer_id, account_type, current_balan
 INSERT INTO tb_account (account_number, customer_id, account_type, current_balance, date_opened) VALUES ('000010', 10, 'SAVINGS', 1890.30, '2023-03-08');
 INSERT INTO tb_account (account_number, customer_id, account_type, current_balance, date_opened) VALUES ('000011', 11, 'CHECKING', 2750.00, '2022-10-22');
 
-INSERT INTO tb_card (id, card_number, card_type, card_limit, card_billing, account_number)
+INSERT INTO tb_card ( card_number, card_type, card_limit, card_billing, account_number)
 VALUES
-  (1, '4111111111111111', 'CREDIT', 5000.00, 1500.00, '000001'),
-  (2, '4222222222222222', 'DEBIT', NULL, NULL, '000002'),
-  (3, '4333333333333333', 'CREDIT', 3000.00, 800.00, '000003'),
-  (4, '4444444444444444', 'CREDIT', 7000.00, 2300.00, '000004'),
-  (5, '4555555555555555', 'DEBIT', NULL, NULL, '000005'),
-  (6, '4666666666666666', 'CREDIT', 6000.00, 1200.00, '000006'),
-  (7, '4777777777777777', 'CREDIT', 4000.00, 1700.00, '000007');
+  ( '4111111111111111', 'CREDIT', 5000.00, 1500.00, '000001'),
+  ( '4222222222222222', 'DEBIT', NULL, NULL, '000002'),
+  ( '4333333333333333', 'CREDIT', 3000.00, 800.00, '000003'),
+  ( '4444444444444444', 'CREDIT', 7000.00, 2300.00, '000004'),
+  ( '4555555555555555', 'DEBIT', NULL, NULL, '000005'),
+  ( '4666666666666666', 'CREDIT', 6000.00, 1200.00, '000006'),
+  ( '4777777777777777', 'CREDIT', 4000.00, 1700.00, '000007');
 
   INSERT INTO tb_card_payments (
     id, product_name, installment_amount, installment_number,
