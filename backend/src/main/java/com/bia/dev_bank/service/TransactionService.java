@@ -119,10 +119,16 @@ public class TransactionService {
   }
 
   public Page<Transaction> getTransactionsForAccount(String accountNumber, Pageable pageable) {
+    logger.info(
+        "Fetching transactions for account {} with page {} and size {}",
+        accountNumber,
+        pageable.getPageNumber(),
+        pageable.getPageSize());
     return transactionRepository.findByAccountNumber(accountNumber, pageable);
   }
 
   public List<TransactionResponse> getAllTransactionsForAccount(String accountNumber) {
+    logger.info("Fetching all transactions for account {}", accountNumber);
     List<Transaction> originTransactions =
         transactionRepository.findByOriginAccountAccountNumberOrderByTransactionDateDesc(
             accountNumber);
@@ -136,6 +142,7 @@ public class TransactionService {
     allTransactions.addAll(destinyTransactions);
 
     allTransactions.sort(Comparator.comparing(Transaction::getTransactionDate).reversed());
+    logger.info("Found {} transactions for account {}", allTransactions.size(), accountNumber);
 
     return allTransactions.stream().map(TransactionResponse::new).collect(Collectors.toList());
   }

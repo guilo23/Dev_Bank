@@ -149,12 +149,18 @@ public class TransactionController {
       @RequestParam String accountNumber,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
+    logger.info(
+        "Request received to get transactions for account {} with pagination (page: {}, size: {})",
+        accountNumber,
+        page,
+        size);
     Pageable pageable = PageRequest.of(page, size);
     return transactionService.getTransactionsForAccount(accountNumber, pageable);
   }
 
   @GetMapping("/by-account")
   public List<TransactionResponse> getTransactionsByAccount(@RequestParam String accountNumber) {
+    logger.info("Request received to get all transactions for account {}", accountNumber);
     return transactionService.getAllTransactionsForAccount(accountNumber);
   }
 

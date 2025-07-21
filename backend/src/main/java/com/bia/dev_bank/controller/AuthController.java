@@ -68,6 +68,7 @@ public class AuthController {
   })
   @PostMapping("/register")
   public ResponseEntity createCustomer(@RequestBody @Valid CustomerRequest request) {
+    logger.info("Request received to register new customer with email: {}", request.email());
     var customer = customerService.createCustomer(request);
     return ResponseEntity.ok().body(customer);
   }

@@ -50,7 +50,7 @@ public class CardPaymentsService {
         payment.getTransactions().stream()
             .map(t -> t.getAmount() != null ? t.getAmount() : BigDecimal.ZERO)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-    System.out.println(totalPaid);
+    logger.debug("Total paid for card payment {}: {}", cardPaymentId, totalPaid);
     payment.setPaidAmount(totalPaid);
     updateCardPaymentStatus(payment);
     cardPaymentsRepository.save(payment);
@@ -90,7 +90,7 @@ public class CardPaymentsService {
     accountService.debit(account.getAccountNumber(), payment.getTotalBuying());
     Transaction saved = transactionRepository.save(transaction);
     payment.getTransactions().add(saved);
-    System.out.println(payment.getTotalBuying());
+    logger.debug("Total buying for card payment {}: {}", cardPaymentId, payment.getTotalBuying());
     updatePaidAmount(payment.getId());
     logger.info("Transaction added to card payment {} successfully", cardPaymentId);
     return new TransactionResponse(
