@@ -32,7 +32,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @Tag(name = "Authentication", description = "Endpoints for user authentication and registration")
 public class AuthController {
+
   private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
   @Autowired private AuthenticationManager authenticationManager;
   @Autowired private PasswordEncoder passwordEncoder;
   @Autowired private CustomDetailService userDetailsService;

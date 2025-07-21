@@ -133,7 +133,6 @@ class TransactionControllerTest {
   void shouldAddTransactionToLoanPayments() throws Exception {
     Long loanPaymentsId = 5L;
     TransactionRequest request = new TransactionRequest(BigDecimal.valueOf(90.0), "456");
-    System.out.println(objectMapper.writeValueAsString(request));
 
     mockMvc
         .perform(
@@ -141,10 +140,6 @@ class TransactionControllerTest {
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-        .andDo(result -> System.out.println("Response status: " + result.getResponse().getStatus()))
-        .andDo(
-            result ->
-                System.out.println("Response body: " + result.getResponse().getContentAsString()))
         .andExpect(status().isOk())
         .andExpect(content().string("payed"));
   }
