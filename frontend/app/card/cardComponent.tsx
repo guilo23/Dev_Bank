@@ -1,12 +1,12 @@
 'use client';
-
+import { CardRequestDialog } from '@/components/card/cardRequest';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CreditCard, Eye, EyeOff, Lock, Unlock, Plus, Settings } from 'lucide-react';
+import { CreditCard, Eye, EyeOff, Lock, Unlock, Settings } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getCards } from '@/service/card';
 import { cardResponse } from '@/types/card';
@@ -72,10 +72,7 @@ export default function CardManagement() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Card Management</h1>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Request Card
-        </Button>
+        <CardRequestDialog />
       </div>
 
       <Tabs defaultValue="debit" className="w-full">
