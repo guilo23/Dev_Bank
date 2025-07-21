@@ -16,12 +16,21 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +39,9 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Transaction", description = "Endpoints for managing transactions and loan payments")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 public class TransactionController {
+
+  private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
+
   private final ObjectMapper objectMapper;
   private final TransactionService transactionService;
   private final LoanPaymentsService loanPaymentsService;
@@ -53,8 +65,8 @@ public class TransactionController {
   @PostMapping("/{originAccountNumber}")
   public ResponseEntity createTransaction(
       @RequestBody @Valid TransactionRequest request, @PathVariable String originAccountNumber) {
+    logger.info("Request received to create transaction from account {}", originAccountNumber);
     var transaction = transactionService.createTransaction(request, originAccountNumber);
-    System.out.println(request);
     return ResponseEntity.ok()
         .body(
             ":) congratulations transaction to "
@@ -76,6 +88,7 @@ public class TransactionController {
   })
   @GetMapping("/{id}")
   public ResponseEntity getTransactionById(@PathVariable Long id) {
+    logger.info("Request received to get transaction {}", id);
     var transaction = transactionService.getTransactionById(id);
     return ResponseEntity.ok().body(transaction);
   }
@@ -94,6 +107,7 @@ public class TransactionController {
   })
   @GetMapping("/account/{accountNumber}")
   public ResponseEntity getTransactionsByAccountNumber(@PathVariable String accountNumber) {
+    logger.info("Request received to get transactions for account {}", accountNumber);
     var transactions = transactionService.getTransactionByAccountNumber(accountNumber);
     return ResponseEntity.ok().body(transactions);
   }
@@ -112,6 +126,7 @@ public class TransactionController {
   })
   @GetMapping("/list")
   public ResponseEntity getAllTransactions() {
+    logger.info("Request received to get all transactions");
     var transactions = transactionService.getAllTransactions();
     return ResponseEntity.ok().body(transactions);
   }
@@ -132,6 +147,7 @@ public class TransactionController {
   @PostMapping("/loanPayments/{loanPaymentsId}")
   public ResponseEntity transactionAddLoanPayments(
       @PathVariable Long loanPaymentsId, @RequestBody @Valid TransactionRequest request) {
+    logger.info("Request received to add loan payment for loan {}", loanPaymentsId);
     loanPaymentsService.addTransactionToLoanPayment(loanPaymentsId, request);
     return ResponseEntity.ok().body("payed");
   }
@@ -141,12 +157,18 @@ public class TransactionController {
       @RequestParam String accountNumber,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
+    logger.info(
+        "Request received to get transactions for account {} with pagination (page: {}, size: {})",
+        accountNumber,
+        page,
+        size);
     Pageable pageable = PageRequest.of(page, size);
     return transactionService.getTransactionsForAccount(accountNumber, pageable);
   }
 
   @GetMapping("/by-account")
   public List<TransactionResponse> getTransactionsByAccount(@RequestParam String accountNumber) {
+    logger.info("Request received to get all transactions for account {}", accountNumber);
     return transactionService.getAllTransactionsForAccount(accountNumber);
   }
 
@@ -163,6 +185,7 @@ public class TransactionController {
   })
   @DeleteMapping("/{id}")
   public ResponseEntity transactionsDelete(@PathVariable Long id) {
+    logger.info("Request received to delete transaction {}", id);
     transactionService.transactionDelete(id);
     return ResponseEntity.ok().body("transaction has been deleted");
   }

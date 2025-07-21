@@ -15,6 +15,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Card", description = "Endpoints for managing cards")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 public class CardController {
+
+  private static final Logger logger = LoggerFactory.getLogger(CardController.class);
 
   private final CardService cardService;
   private final CardPaymentsService cardPaymentsService;
@@ -46,6 +50,7 @@ public class CardController {
   @PostMapping("/add/{accountNumber}")
   public ResponseEntity createCard(
       @RequestBody @Valid CreditRequest request, @PathVariable String accountNumber) {
+    logger.info("Request received to create card for account {}", accountNumber);
     var card = cardService.cardCreate(request, accountNumber);
     return ResponseEntity.status(HttpStatus.CREATED).body(card);
   }
@@ -66,6 +71,7 @@ public class CardController {
   })
   @PostMapping("/credit")
   public ResponseEntity addCreditBuying(@RequestBody @Valid CardPaymentsRequest request) {
+    logger.info("Request received to add credit buying for card {}", request.cardNumber());
     var card = cardService.addCreditCardPayment(request);
     return ResponseEntity.status(HttpStatus.OK).body(card);
   }
@@ -87,6 +93,7 @@ public class CardController {
   })
   @PostMapping("/debit")
   public ResponseEntity addDebitBuying(@RequestBody @Valid CardPaymentsRequest request) {
+    logger.info("Request received to add debit buying for card {}", request.cardNumber());
     var card = cardService.addDebitCardPayment(request);
     cardPaymentsService.addTransactionToCardPayments(card.getId());
     return ResponseEntity.status(HttpStatus.OK).body(new CardPaymentsResponse(card));
@@ -102,6 +109,7 @@ public class CardController {
   })
   @GetMapping("/{cardId}")
   public ResponseEntity getCardById(@PathVariable Long cardId) {
+    logger.info("Request received to get card {}", cardId);
     var card = cardService.getCardById(cardId);
     return ResponseEntity.status(HttpStatus.OK).body(card);
   }
@@ -117,6 +125,7 @@ public class CardController {
   })
   @GetMapping("/list/{accountNumber}")
   public ResponseEntity getAllCardByAccount(@PathVariable String accountNumber) {
+    logger.info("Request received to get all cards for account {}", accountNumber);
     var cards = cardService.getAllCardByAccountNumber(accountNumber);
     return ResponseEntity.status(HttpStatus.OK).body(cards);
   }
@@ -131,6 +140,7 @@ public class CardController {
   })
   @PutMapping("/{id}")
   public ResponseEntity cardUpdate(@PathVariable Long id, @RequestBody @Valid CreditUpdate update) {
+    logger.info("Request received to update card {}", id);
     var card = cardService.cardUpdate(update, id);
     return ResponseEntity.status(HttpStatus.OK).body(card);
   }
@@ -145,6 +155,7 @@ public class CardController {
   })
   @DeleteMapping("/{id}")
   public ResponseEntity cardDelete(@PathVariable Long id) {
+    logger.info("Request received to delete card {}", id);
     cardService.cardDelete(id);
     return ResponseEntity.status(HttpStatus.OK).body("card has been deleted");
   }

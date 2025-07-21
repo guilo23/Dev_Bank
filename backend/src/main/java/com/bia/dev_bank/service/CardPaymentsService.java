@@ -14,6 +14,8 @@ import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class CardPaymentsService {
+  private static final Logger logger = LoggerFactory.getLogger(CardPaymentsService.class);
   private final CardPaymentsRepository cardPaymentsRepository;
   private final TransactionRepository transactionRepository;
   private final AccountRepository accountRepository;
@@ -28,14 +31,17 @@ public class CardPaymentsService {
   private final SecurityUtil securityUtil;
 
   public CardPaymentsResponse getCardPaymentsById(Long id) {
+    logger.info("Fetching card payment {}", id);
     var payment =
         cardPaymentsRepository
             .findById(id)
             .orElseThrow(() -> new EntityNotFoundException("report not found"));
+    logger.info("Card payment {} found", id);
     return new CardPaymentsResponse(payment);
   }
 
   public void updatePaidAmount(Long cardPaymentId) {
+    logger.info("Updating paid amount for card payment {}", cardPaymentId);
     var payment =
         cardPaymentsRepository
             .findById(cardPaymentId)
@@ -44,14 +50,16 @@ public class CardPaymentsService {
         payment.getTransactions().stream()
             .map(t -> t.getAmount() != null ? t.getAmount() : BigDecimal.ZERO)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-    System.out.println(totalPaid);
+    logger.debug("Total paid for card payment {}: {}", cardPaymentId, totalPaid);
     payment.setPaidAmount(totalPaid);
     updateCardPaymentStatus(payment);
     cardPaymentsRepository.save(payment);
+    logger.info("Paid amount for card payment {} updated successfully", cardPaymentId);
   }
 
   @Transactional
   public TransactionResponse addTransactionToCardPayments(Long cardPaymentId) {
+    logger.info("Adding transaction to card payment {}", cardPaymentId);
     var cardVerify = cardPaymentsRepository.findById(cardPaymentId);
     var accountNumber = cardVerify.get().getCard().getAccount().getAccountNumber();
     var custumerId = securityUtil.getCurrentUserId();
@@ -61,6 +69,10 @@ public class CardPaymentsService {
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
 
     if (!acc.getCustomer().getId().equals(custumerId)) {
+      logger.warn(
+          "User {} does not have permission to add transaction to card payment {}",
+          custumerId,
+          cardPaymentId);
       throw new AccessDeniedException("permission denied");
     }
 
@@ -78,8 +90,9 @@ public class CardPaymentsService {
     accountService.debit(account.getAccountNumber(), payment.getTotalBuying());
     Transaction saved = transactionRepository.save(transaction);
     payment.getTransactions().add(saved);
-    System.out.println(payment.getTotalBuying());
+    logger.debug("Total buying for card payment {}: {}", cardPaymentId, payment.getTotalBuying());
     updatePaidAmount(payment.getId());
+    logger.info("Transaction added to card payment {} successfully", cardPaymentId);
     return new TransactionResponse(
         saved.getAmount(),
         "",
@@ -88,6 +101,7 @@ public class CardPaymentsService {
   }
 
   public void updateCardPaymentStatus(CardPayments payment) {
+    logger.info("Updating status for card payment {}", payment.getId());
     BigDecimal expected =
         payment.getInstallmentAmount() != null ? payment.getInstallmentAmount() : BigDecimal.ZERO;
     BigDecimal paid = payment.getPaidAmount() != null ? payment.getPaidAmount() : BigDecimal.ZERO;
@@ -97,9 +111,11 @@ public class CardPaymentsService {
     if (paid.compareTo(expected) >= 0) {
       payment.setPAID(PayedStatus.PAYED);
       payment.setPaymentDate(today);
+      logger.info("Card payment {} status updated to PAYED", payment.getId());
     } else if (paid.compareTo(expected) < 0) {
       payment.setPAID(PayedStatus.PARTIAL);
       payment.setPaymentDate(today);
+      logger.info("Card payment {} status updated to PARTIAL", payment.getId());
     }
   }
 }

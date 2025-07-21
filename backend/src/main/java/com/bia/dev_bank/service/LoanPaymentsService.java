@@ -13,24 +13,29 @@ import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class LoanPaymentsService {
+  private static final Logger logger = LoggerFactory.getLogger(LoanPaymentsService.class);
   private final LoanPaymentsRepository loanPaymentsRepository;
   private final TransactionRepository transactionRepository;
   private final AccountRepository accountRepository;
   public final SecurityUtil securityUtil;
 
   public LoanPayments getLoanPaymentsById(Long id) {
+    logger.info("Fetching loan payment {}", id);
     var custumerId = securityUtil.getCurrentUserId();
     var loan =
         loanPaymentsRepository
             .findById(id)
             .orElseThrow(() -> new EntityNotFoundException("loan not found"));
     if (!loan.getLoan().getCustomer().getId().equals(custumerId)) {
+      logger.warn("User {} does not have permission to fetch loan payment {}", custumerId, id);
       throw new AccessDeniedException("permission denied");
     }
     return loanPaymentsRepository
@@ -39,6 +44,7 @@ public class LoanPaymentsService {
   }
 
   public LoanPayments updatePaidAmount(Long loanPaymentId) {
+    logger.info("Updating paid amount for loan payment {}", loanPaymentId);
     LoanPayments payment = getLoanPaymentsById(loanPaymentId);
 
     BigDecimal totalPaid =
@@ -48,17 +54,23 @@ public class LoanPaymentsService {
 
     payment.setPaidAmount(totalPaid);
     updateLoanPaymentStatus(payment);
+    logger.info("Paid amount for loan payment {} updated successfully", loanPaymentId);
     return loanPaymentsRepository.save(payment);
   }
 
   public TransactionResponse addTransactionToLoanPayment(
       Long loanPaymentId, TransactionRequest request) {
+    logger.info("Adding transaction to loan payment {}", loanPaymentId);
     var custumerId = securityUtil.getCurrentUserId();
     var loan =
         loanPaymentsRepository
             .findById(loanPaymentId)
             .orElseThrow(() -> new EntityNotFoundException("loan not found"));
     if (!loan.getLoan().getCustomer().getId().equals(custumerId)) {
+      logger.warn(
+          "User {} does not have permission to add transaction to loan payment {}",
+          custumerId,
+          loanPaymentId);
       throw new AccessDeniedException("permission denied");
     }
     var payment = getLoanPaymentsById(loanPaymentId);
@@ -73,11 +85,13 @@ public class LoanPaymentsService {
 
     Transaction saved = transactionRepository.save(transaction);
     updatePaidAmount(loanPaymentId);
+    logger.info("Transaction added to loan payment {} successfully", loanPaymentId);
 
     return new TransactionResponse(saved);
   }
 
   public void updateLoanPaymentStatus(LoanPayments payment) {
+    logger.info("Updating status for loan payment {}", payment.getLoanPaymentId());
     Double expected =
         Double.parseDouble(
             payment.getPaymentAmount() != null ? String.valueOf(payment.getPaymentAmount()) : "0");
@@ -91,13 +105,17 @@ public class LoanPaymentsService {
     if (paid >= expected) {
       payment.setPayedStatus(PayedStatus.PAYED);
       payment.setPaidDate(today);
+      logger.info("Loan payment {} status updated to PAYED", payment.getLoanPaymentId());
     } else if (paid > 0) {
       payment.setPayedStatus(PayedStatus.PARTIAL);
       payment.setPaidDate(today);
+      logger.info("Loan payment {} status updated to PARTIAL", payment.getLoanPaymentId());
     } else if (today.isAfter(scheduledDate)) {
       payment.setPayedStatus(PayedStatus.TO_PAY);
+      logger.info("Loan payment {} status updated to TO_PAY", payment.getLoanPaymentId());
     } else {
       payment.setPayedStatus(PayedStatus.TO_PAY);
+      logger.info("Loan payment {} status updated to TO_PAY", payment.getLoanPaymentId());
     }
   }
 }

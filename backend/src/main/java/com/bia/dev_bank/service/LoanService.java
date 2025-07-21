@@ -17,17 +17,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class LoanService {
 
+  private static final Logger logger = LoggerFactory.getLogger(LoanService.class);
+
   private final LoanRepository loanRepository;
   private final CustomerRepository customerRepository;
   private final LoanPaymentsRepository loanPaymentsRepository;
 
   public LoanResponse createLoan(LoanRequest request, Long customerId) {
+    logger.info("Creating loan for customer {}", customerId);
 
     Customer customer =
         customerRepository
@@ -50,11 +55,13 @@ public class LoanService {
 
     loanRepository.save(loan);
     generatedLoanPayments(loan);
+    logger.info("Loan {} created successfully for customer {}", loan.getId(), customerId);
 
     return new LoanResponse(loan);
   }
 
   public void generatedLoanPayments(Loan loan) {
+    logger.info("Generating loan payments for loan {}", loan.getId());
     int term = loan.getInstallments();
     BigDecimal totalAmount = loan.getLoanAmount();
     BigDecimal monthlyAmount =
@@ -78,19 +85,24 @@ public class LoanService {
     }
 
     loanPaymentsRepository.saveAll(payments);
+    logger.info("{} loan payments generated for loan {}", payments.size(), loan.getId());
   }
 
   public List<LoanResponse> findAllLoans() {
+    logger.info("Fetching all loans");
     var loans = loanRepository.findAll();
+    logger.info("Found {} loans", loans.size());
 
     return loans.stream().map(LoanResponse::new).collect(Collectors.toList());
   }
 
   public LoanResponse findLoanById(Long id) {
+    logger.info("Fetching loan {}", id);
     var loan =
         loanRepository
             .findById(id)
             .orElseThrow(() -> new EntityNotFoundException("no loan for this id"));
+    logger.info("Loan {} found", id);
     return new LoanResponse(loan);
   }
 }

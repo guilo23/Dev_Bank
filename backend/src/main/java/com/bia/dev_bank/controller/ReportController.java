@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Report", description = "Endpoints for generating account and card transaction reports")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 public class ReportController {
+
+  private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
 
   private final CardService cardService;
   private final TransactionService transactionService;
@@ -47,6 +51,7 @@ public class ReportController {
   @GetMapping("/transaction/{accountNumber}")
   public ResponseEntity<List<StatementResponse>> transactionReport(
       @PathVariable String accountNumber) {
+    logger.info("Request received to generate transaction report for account {}", accountNumber);
     var report = transactionService.getStatementByAccountNumber(accountNumber);
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
@@ -66,6 +71,7 @@ public class ReportController {
   })
   @GetMapping("/debit/{cardNumber}")
   public ResponseEntity<List<StatementResponse>> cardDebitReport(@PathVariable String cardNumber) {
+    logger.info("Request received to generate debit card report for card {}", cardNumber);
     var report = cardService.cardsDebitPaymentsReport(cardNumber);
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
@@ -85,6 +91,7 @@ public class ReportController {
   })
   @GetMapping("/credit/{cardNumber}")
   public ResponseEntity<List<StatementResponse>> cardCreditReport(@PathVariable String cardNumber) {
+    logger.info("Request received to generate credit card report for card {}", cardNumber);
     var report = cardService.cardsCreditPaymentsReport(cardNumber);
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
@@ -104,6 +111,7 @@ public class ReportController {
   })
   @GetMapping("/all/{accountNumber}")
   public ResponseEntity<List<StatementResponse>> allReports(@PathVariable String accountNumber) {
+    logger.info("Request received to generate all reports for account {}", accountNumber);
     var reports = reportService.allcardReports(accountNumber);
     return ResponseEntity.status(HttpStatus.OK).body(reports);
   }

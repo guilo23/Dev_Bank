@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,12 +33,15 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CardService {
 
+  private static final Logger logger = LoggerFactory.getLogger(CardService.class);
+
   private final CardRepository cardRepository;
   private final AccountRepository accountRepository;
   private final CardPaymentsRepository cardPaymentsRepository;
   private final SecurityUtil securityUtil;
 
   public CardResponse cardCreate(CreditRequest request, String accountNumber) {
+    logger.info("Creating card for account {}", accountNumber);
     var custumerId = securityUtil.getCurrentUserId();
     Account acc =
         accountRepository
@@ -44,6 +49,10 @@ public class CardService {
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
 
     if (!acc.getCustomer().getId().equals(custumerId)) {
+      logger.warn(
+          "User {} does not have permission to create card for account {}",
+          custumerId,
+          accountNumber);
       throw new AccessDeniedException("permission denied");
     }
     var account =
@@ -63,11 +72,13 @@ public class CardService {
             new ArrayList<>(),
             account);
     cardRepository.save(card);
+    logger.info("Card {} created successfully for account {}", card.getCardNumber(), accountNumber);
     return new CardResponse(card);
   }
 
   @Transactional
   public CardPaymentsResponse addCreditCardPayment(CardPaymentsRequest request) {
+    logger.info("Adding credit card payment for card {}", request.cardNumber());
     var cardVerify = cardRepository.findCardByCardNumber(request.cardNumber());
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
@@ -76,6 +87,10 @@ public class CardService {
             .orElseThrow(() -> new EntityNotFoundException("acount not found"));
 
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn(
+          "User {} does not have permission to add credit card payment for card {}",
+          custumerId,
+          request.cardNumber());
       throw new AccessDeniedException("permission denied");
     }
     var card =
@@ -105,6 +120,7 @@ public class CardService {
                 LocalDate.now(),
                 request.installmentNumber(),
                 card));
+    logger.info("Credit card payment for card {} added successfully", request.cardNumber());
     return new CardPaymentsResponse(
         card.getCardNumber(),
         payments.get(0).getProductName(),
@@ -113,6 +129,7 @@ public class CardService {
   }
 
   public List<StatementResponse> cardsDebitPaymentsReport(String cardNumber) {
+    logger.info("Generating debit payments report for card {}", cardNumber);
     var cardVerify = cardRepository.findCardByCardNumber(cardNumber);
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
@@ -120,6 +137,10 @@ public class CardService {
             .findByAccountNumber(cardVerify.get().getAccount().getAccountNumber())
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn(
+          "User {} does not have permission to generate debit payments report for card {}",
+          custumerId,
+          cardNumber);
       throw new AccessDeniedException("permission denied");
     }
     var card =
@@ -128,6 +149,7 @@ public class CardService {
             .orElseThrow(() -> new EntityNotFoundException("card not found"));
     if (CardType.DEBIT.equals(card.getCardType())) {
       List<CardPayments> payments = cardPaymentsRepository.findByCardId(card.getId());
+      logger.info("Found {} debit payments for card {}", payments.size(), cardNumber);
       return payments.stream()
           .map(
               px ->
@@ -138,6 +160,7 @@ public class CardService {
                       String.format("debit payment %s of", px.getProductName())))
           .toList();
     } else {
+      logger.warn("Card {} is not a debit card", cardNumber);
       List<StatementResponse> returns = new ArrayList<>();
       returns.add(
           new StatementResponse(
@@ -147,6 +170,7 @@ public class CardService {
   }
 
   public List<StatementResponse> cardsCreditPaymentsReport(String cardNumber) {
+    logger.info("Generating credit payments report for card {}", cardNumber);
     var cardVerify = cardRepository.findCardByCardNumber(cardNumber);
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
@@ -154,6 +178,10 @@ public class CardService {
             .findByAccountNumber(cardVerify.get().getAccount().getAccountNumber())
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn(
+          "User {} does not have permission to generate credit payments report for card {}",
+          custumerId,
+          cardNumber);
       throw new AccessDeniedException("permission denied");
     }
     var card =
@@ -162,6 +190,7 @@ public class CardService {
             .orElseThrow(() -> new EntityNotFoundException("cardNumber not found"));
     if (CardType.CREDIT.equals(card.getCardType())) {
       List<CreditPurchase> purchases = card.getPurchases();
+      logger.info("Found {} credit purchases for card {}", purchases.size(), cardNumber);
       return purchases.stream()
           .map(
               px ->
@@ -172,6 +201,7 @@ public class CardService {
                       String.format("buy of one %s", px.getProductName())))
           .toList();
     } else {
+      logger.warn("Card {} is not a credit card", cardNumber);
       List<StatementResponse> returns = new ArrayList<>();
       returns.add(
           new StatementResponse("", BigDecimal.ZERO, LocalDate.now(), "card type not found"));
@@ -180,6 +210,7 @@ public class CardService {
   }
 
   public CardResponse getCardById(Long id) {
+    logger.info("Fetching card {}", id);
     var cardVerify = cardRepository.findById(id);
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
@@ -187,22 +218,29 @@ public class CardService {
             .findByAccountNumber(cardVerify.get().getAccount().getAccountNumber())
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn("User {} does not have permission to fetch card {}", custumerId, id);
       throw new AccessDeniedException("permission denied");
     }
     var card =
         cardRepository
             .findById(id)
             .orElseThrow(() -> new EntityNotFoundException("card not found"));
+    logger.info("Card {} found", id);
     return new CardResponse(card);
   }
 
   public List<CardResponse> getAllCardByAccountNumber(String accountNumber) {
+    logger.info("Fetching all cards for account {}", accountNumber);
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
         accountRepository
             .findByAccountNumber(accountNumber)
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn(
+          "User {} does not have permission to fetch all cards for account {}",
+          custumerId,
+          accountNumber);
       throw new AccessDeniedException("permission denied");
     }
 
@@ -210,11 +248,13 @@ public class CardService {
         cardRepository
             .findAllCardsByAccountAccountNumber(accountNumber)
             .orElseThrow(() -> new EntityNotFoundException("card not found"));
+    logger.info("Found {} cards for account {}", cards.size(), accountNumber);
 
     return cards.stream().map(CardResponse::new).collect(Collectors.toList());
   }
 
   public List<Card> getAllCardForReport(String accountNumber) {
+    logger.info("Fetching all cards for report for account {}", accountNumber);
     return cardRepository
         .findAllCardsByAccountAccountNumber(accountNumber)
         .orElseThrow(() -> new EntityNotFoundException("card not found"));
@@ -222,6 +262,7 @@ public class CardService {
 
   @Transactional
   public CardResponse cardUpdate(CreditUpdate update, Long id) {
+    logger.info("Updating card {}", id);
     var cardVerify = cardRepository.findById(id);
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
@@ -229,6 +270,7 @@ public class CardService {
             .findByAccountNumber(cardVerify.get().getAccount().getAccountNumber())
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn("User {} does not have permission to update card {}", custumerId, id);
       throw new AccessDeniedException("permission denied");
     }
     var card =
@@ -236,10 +278,12 @@ public class CardService {
             .findById(id)
             .orElseThrow(() -> new EntityNotFoundException("card not found"));
     card.setCardLimit(update.cardLimit());
+    logger.info("Card {} updated successfully", id);
     return new CardResponse(card);
   }
 
   public void cardDelete(Long id) {
+    logger.info("Deleting card {}", id);
     var cardVerify =
         cardRepository
             .findById(id)
@@ -250,14 +294,17 @@ public class CardService {
             .findByAccountNumber(cardVerify.getAccount().getAccountNumber())
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn("User {} does not have permission to delete card {}", custumerId, id);
       throw new AccessDeniedException("permission denied");
     }
 
     cardRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("card not found"));
     cardRepository.deleteById(id);
+    logger.info("Card {} deleted successfully", id);
   }
 
   public CardPayments addDebitCardPayment(CardPaymentsRequest request) {
+    logger.info("Adding debit card payment for card {}", request.cardNumber());
     var cardVerify = cardRepository.findCardByCardNumber(request.cardNumber());
     var custumerId = securityUtil.getCurrentUserId();
     Account account =
@@ -265,6 +312,10 @@ public class CardService {
             .findByAccountNumber(cardVerify.get().getAccount().getAccountNumber())
             .orElseThrow(() -> new EntityNotFoundException("account not found"));
     if (!account.getCustomer().getId().equals(custumerId)) {
+      logger.warn(
+          "User {} does not have permission to add debit card payment for card {}",
+          custumerId,
+          request.cardNumber());
       throw new AccessDeniedException("permission denied");
     }
     var card =
@@ -285,6 +336,7 @@ public class CardService {
             card,
             new ArrayList<>());
     cardPaymentsRepository.save(payment);
+    logger.info("Debit card payment for card {} added successfully", request.cardNumber());
     return payment;
   }
 }
