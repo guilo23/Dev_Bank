@@ -10,12 +10,16 @@ import com.bia.dev_bank.repository.TransactionRepository;
 import com.bia.dev_bank.utils.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -112,6 +116,28 @@ public class TransactionService {
                   description);
             })
         .toList();
+  }
+
+  public Page<Transaction> getTransactionsForAccount(String accountNumber, Pageable pageable) {
+    return transactionRepository.findByAccountNumber(accountNumber, pageable);
+  }
+
+  public List<TransactionResponse> getAllTransactionsForAccount(String accountNumber) {
+    List<Transaction> originTransactions =
+        transactionRepository.findByOriginAccountAccountNumberOrderByTransactionDateDesc(
+            accountNumber);
+
+    List<Transaction> destinyTransactions =
+        transactionRepository.findByDestinyAccountAccountNumberOrderByTransactionDateDesc(
+            accountNumber);
+
+    List<Transaction> allTransactions = new ArrayList<>();
+    allTransactions.addAll(originTransactions);
+    allTransactions.addAll(destinyTransactions);
+
+    allTransactions.sort(Comparator.comparing(Transaction::getTransactionDate).reversed());
+
+    return allTransactions.stream().map(TransactionResponse::new).collect(Collectors.toList());
   }
 
   public TransactionResponse getTransactionById(Long id) {
