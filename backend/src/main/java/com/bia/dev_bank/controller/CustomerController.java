@@ -21,7 +21,10 @@ public class CustomerController {
 
   @Autowired private CustomerService customerService;
 
-  @Operation(summary = "createCustomer", description = "Registers a new costumer in the BIA system")
+  @Deprecated(since = "1.1", forRemoval = true)
+  @Operation(
+      summary = "createCustomer [DEPRECATED]",
+      description = "Registers a new costumer in the BIA system")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Customer successfully created"),
     @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
@@ -47,6 +50,12 @@ public class CustomerController {
   @Operation(summary = "customerUpdate", description = "Updates customer details by customer ID")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Customer updated successfully"),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource"),
     @ApiResponse(responseCode = "404", description = "Customer not found", content = @Content)
   })
   @PreAuthorize("#account.customer.id == principal.id")
@@ -60,6 +69,12 @@ public class CustomerController {
   @Operation(summary = "customerDelete", description = "Deletes a customer by ID")
   @ApiResponses({
     @ApiResponse(responseCode = "204", description = "Customer deleted successfully"),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource"),
     @ApiResponse(responseCode = "404", description = "Customer not found", content = @Content)
   })
   @PreAuthorize("#account.customer.id == principal.id")

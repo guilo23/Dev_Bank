@@ -1,6 +1,9 @@
 package com.bia.dev_bank.controller;
 
+import com.bia.dev_bank.config.SecurityConfig;
 import com.bia.dev_bank.dto.transaction.TransactionRequest;
+import com.bia.dev_bank.dto.transaction.TransactionResponse;
+import com.bia.dev_bank.entity.Transaction;
 import com.bia.dev_bank.service.LoanPaymentsService;
 import com.bia.dev_bank.service.TransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,9 +11,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/bia/transactions")
 @Validated
 @Tag(name = "Transaction", description = "Endpoints for managing transactions and loan payments")
+@SecurityRequirement(name = SecurityConfig.SECURITY)
 public class TransactionController {
   private final ObjectMapper objectMapper;
   private final TransactionService transactionService;
@@ -30,7 +39,16 @@ public class TransactionController {
       description = "Performs a transaction from the origin account to the target account")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Transaction completed successfully"),
-    @ApiResponse(responseCode = "400", description = "Invalid transaction data", content = @Content)
+    @ApiResponse(
+        responseCode = "400",
+        description = "Invalid transaction data",
+        content = @Content),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource")
   })
   @PostMapping("/{originAccountNumber}")
   public ResponseEntity createTransaction(
@@ -48,7 +66,13 @@ public class TransactionController {
       summary = "getTransactionByID",
       description = "Retrieves all transactions linked to a specific account")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "Transactions retrieved successfully")
+    @ApiResponse(responseCode = "200", description = "Transactions retrieved successfully"),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource")
   })
   @GetMapping("/{id}")
   public ResponseEntity getTransactionById(@PathVariable Long id) {
@@ -60,7 +84,13 @@ public class TransactionController {
       summary = "getTransactionsByAccountNumber",
       description = "Retrieves all transactions in the system")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "List of transactions retrieved successfully")
+    @ApiResponse(responseCode = "200", description = "List of transactions retrieved successfully"),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource")
   })
   @GetMapping("/account/{accountNumber}")
   public ResponseEntity getTransactionsByAccountNumber(@PathVariable String accountNumber) {
@@ -72,7 +102,13 @@ public class TransactionController {
       summary = "getAllTransactions",
       description = "Retrieves all transactions in the system")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "List of transactions retrieved successfully")
+    @ApiResponse(responseCode = "200", description = "List of transactions retrieved successfully"),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource")
   })
   @GetMapping("/list")
   public ResponseEntity getAllTransactions() {
@@ -85,7 +121,13 @@ public class TransactionController {
       description = "Adds a transaction as a loan payment")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Loan payment added successfully"),
-    @ApiResponse(responseCode = "404", description = "Loan payment not found", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Loan payment not found", content = @Content),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource")
   })
   @PostMapping("/loanPayments/{loanPaymentsId}")
   public ResponseEntity transactionAddLoanPayments(
@@ -94,10 +136,30 @@ public class TransactionController {
     return ResponseEntity.ok().body("payed");
   }
 
+  @GetMapping("/page")
+  public Page<Transaction> getTransactionsByAccount(
+      @RequestParam String accountNumber,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    return transactionService.getTransactionsForAccount(accountNumber, pageable);
+  }
+
+  @GetMapping("/by-account")
+  public List<TransactionResponse> getTransactionsByAccount(@RequestParam String accountNumber) {
+    return transactionService.getAllTransactionsForAccount(accountNumber);
+  }
+
   @Operation(summary = "transactionsDelete", description = "Deletes a transaction by its ID")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Transaction deleted successfully"),
-    @ApiResponse(responseCode = "404", description = "Transaction not found", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Transaction not found", content = @Content),
+    @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized - Invalid or missing authentication token"),
+    @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden - The user does not have permission to access this resource")
   })
   @DeleteMapping("/{id}")
   public ResponseEntity transactionsDelete(@PathVariable Long id) {
