@@ -33,12 +33,14 @@ export default function CardManagement() {
         const enriched: ExtendedCard[] = rawCards.map((card) => {
           const isCredit = card.cardType === 'CREDIT';
           const used = isCredit ? Math.floor(Math.random() * card.cardLimit) : undefined;
+          const createdDate = new Date();
+          const expiryYear = (createdDate.getFullYear() + 5).toString().slice(-2);
 
           return {
             ...card,
             status: Math.random() > 0.2 ? 'active' : 'inactive',
             locked: false,
-            expiry: `${String(Math.floor(Math.random() * 12 + 1)).padStart(2, '0')}/2${Math.floor(Math.random() * 5 + 5)}`,
+            expiry: `${String(Math.floor(Math.random() * 12 + 1)).padStart(2, '0')}/${expiryYear}`,
             used,
             available: isCredit && used !== undefined ? card.cardLimit - used : undefined,
           };
