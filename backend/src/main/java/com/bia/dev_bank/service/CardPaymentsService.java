@@ -57,7 +57,7 @@ public class CardPaymentsService {
   }
 
   @Transactional
-  public TransactionResponse addTransactionToCardPayments(Long cardPaymentId) {
+  public TransactionResponse addTransactionToCardPayments(Long cardPaymentId,BigDecimal payedValue) {
     var cardVerify = cardPaymentsRepository.findById(cardPaymentId);
     var accountNumber = cardVerify.get().getCard().getAccount().getAccountNumber();
     var custumerId = securityUtil.getCurrentUserId();
@@ -80,11 +80,10 @@ public class CardPaymentsService {
             .orElseThrow(() -> new EntityNotFoundException("not found"));
     var transaction =
         new Transaction(
-            null, payment.getTotalBuying(), null, account, null, payment, LocalDate.now());
-    accountService.debit(account.getAccountNumber(), payment.getTotalBuying());
+            null, payedValue, null, account, null, payment, LocalDate.now());
+    accountService.debit(account.getAccountNumber(), payedValue);
     Transaction saved = transactionRepository.save(transaction);
     payment.getTransactions().add(saved);
-    System.out.println(payment.getTotalBuying());
     updatePaidAmount(payment.getId());
     return new TransactionResponse(
         saved.getAmount(),

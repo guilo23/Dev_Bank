@@ -121,6 +121,7 @@ public class CardService {
                 LocalDate.now(),
                 request.installmentNumber(),
                 card));
+    card.setCardBilling(card.getCardBilling().add(payments.get(0).getTotalBuying()));
     return new CardPaymentsResponse(
         card.getCardNumber(),
         payments.get(0).getProductName(),

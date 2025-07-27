@@ -94,9 +94,9 @@ public class CardController {
   })
   @PostMapping("/debit")
   public ResponseEntity addDebitBuying(@RequestBody @Valid CardPaymentsRequest request) {
-    var card = cardService.addDebitCardPayment(request);
-    cardPaymentsService.addTransactionToCardPayments(card.getId());
-    return ResponseEntity.status(HttpStatus.OK).body(new CardPaymentsResponse(card));
+    var cardPayment = cardService.addDebitCardPayment(request);
+    cardPaymentsService.addTransactionToCardPayments(cardPayment.getId(),request.totalBuying());
+    return ResponseEntity.status(HttpStatus.OK).body(new CardPaymentsResponse(cardPayment));
   }
 
   @Operation(summary = "getCardByID", description = "Retrieves card details by card ID")

@@ -39,7 +39,7 @@ VALUES
     total_buying, paid_amount, due_date, payment_date, paid, card_id
   )
   VALUES
-  (1, 'Notebook', 1000.00, 1, 6000.00, 1000.00, '2025-07-10', '2025-07-10', 'PAYED', 1),
+  (1, 'Notebook', 1000.00, 1, 6000.00, 1000.00, '2025-07-10', '2025-07-10', 'NOT_PAYED', 1),
   (2, 'Notebook', 1000.00, 2, 6000.00, 0.00, '2025-08-10', NULL, 'NOT_PAYED', 1),
   (3, 'Notebook', 1000.00, 3, 6000.00, 0.00, '2025-09-10', NULL, 'NOT_PAYED', 1),
   (4, 'Notebook', 1000.00, 4, 6000.00, 0.00, '2025-10-10', NULL, 'NOT_PAYED', 1),
