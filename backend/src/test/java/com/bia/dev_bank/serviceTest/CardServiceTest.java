@@ -123,6 +123,7 @@ public class CardServiceTest {
   void shouldAddCreditCardPaymentSuccessfully() {
     Card card = new Card();
     card.setCardType(CardType.CREDIT);
+    card.setCardBilling(BigDecimal.valueOf(1000.00));
     card.setPurchases(new ArrayList<>());
     card.setCardNumber("123456");
     Account acc = new Account();

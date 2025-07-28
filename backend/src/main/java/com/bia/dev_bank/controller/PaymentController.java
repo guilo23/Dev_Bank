@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.math.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,19 @@ public class PaymentController {
   public ResponseEntity getCardPaymentsInstallments(@RequestParam Long cardId) {
     var payments = cardPaymentsService.getCardPaymentsreportByid(cardId);
     return ResponseEntity.status(HttpStatus.OK).body(payments);
+  }
+
+  @GetMapping("/billing/{cardId}")
+  public ResponseEntity getActualBilling(@PathVariable Long cardId, @RequestParam String month) {
+    var cards = cardPaymentsService.getActualBilling(cardId, month);
+    return ResponseEntity.status(HttpStatus.OK).body(cards);
+  }
+
+  @PostMapping("/creditPayment/{cardPaymentId}")
+  public ResponseEntity addCreditPayment(
+      @PathVariable Long cardPaymentId, @RequestBody Double payedValue) {
+    cardPaymentsService.addTransactionToCardPayments(cardPaymentId, BigDecimal.valueOf(payedValue));
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 
   @Operation(

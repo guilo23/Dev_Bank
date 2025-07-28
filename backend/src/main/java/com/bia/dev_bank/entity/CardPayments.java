@@ -40,7 +40,7 @@ public class CardPayments {
   private LocalDate paymentDate;
 
   @Enumerated(EnumType.STRING)
-  private PayedStatus PAID;
+  private PayedStatus paid;
 
   @ManyToOne
   @JoinColumn(name = "card_id", nullable = false)

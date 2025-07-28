@@ -34,6 +34,7 @@ public class CardService {
   private final CardRepository cardRepository;
   private final AccountRepository accountRepository;
   private final CardPaymentsRepository cardPaymentsRepository;
+  private final CardPaymentsService cardPaymentsService;
   private final SecurityUtil securityUtil;
 
   public CardResponse cardCreate(CreditRequest request, String accountNumber) {
@@ -108,7 +109,7 @@ public class CardService {
       payment.setProductName(request.productName());
       payment.setTotalBuying(request.totalBuying());
       payment.calculatedPaymentsDetails();
-      payment.setPAID(PayedStatus.TO_PAY);
+      payment.setPaid(PayedStatus.TO_PAY);
       payments.add(payment);
     }
     cardPaymentsRepository.saveAll(payments);
@@ -121,6 +122,7 @@ public class CardService {
                 LocalDate.now(),
                 request.installmentNumber(),
                 card));
+    card.setCardBilling(card.getCardBilling().add(payments.get(0).getTotalBuying()));
     return new CardPaymentsResponse(
         card.getCardNumber(),
         payments.get(0).getProductName(),
@@ -272,6 +274,18 @@ public class CardService {
 
     cardRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("card not found"));
     cardRepository.deleteById(id);
+  }
+
+  @Transactional
+  public void payActualBilling(List<CardPayments> cardPayments) {
+    if (cardPayments.isEmpty()) {
+      return;
+    }
+    var balance = cardPayments.get(0).getCard().getAccount();
+    for (CardPayments temp : cardPayments) {
+      cardPaymentsService.addTransactionToCardPayments(temp.getId(), temp.getInstallmentAmount());
+      balance.setCurrentBalance(balance.getCurrentBalance().subtract(temp.getInstallmentAmount()));
+    }
   }
 
   public CardPayments addDebitCardPayment(CardPaymentsRequest request) {
