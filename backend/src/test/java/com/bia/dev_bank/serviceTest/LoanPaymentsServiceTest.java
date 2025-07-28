@@ -154,4 +154,17 @@ class LoanPaymentsServiceTest {
 
     assertEquals(BigDecimal.valueOf(100.00), response.amount());
   }
+
+  @Test
+  void shouldUpdateLoanPaymentStatusToPaid() {
+    LoanPayments payment = new LoanPayments();
+    payment.setPaymentAmount(new BigDecimal("200.00"));
+    payment.setPaidAmount(new BigDecimal("200.00"));
+    payment.setScheduledPaymentDate(LocalDate.now().plusDays(10));
+
+    loanPaymentsService.updateLoanPaymentStatus(payment);
+
+    assertEquals(PayedStatus.PAYED, payment.getPayedStatus());
+    assertEquals(LocalDate.now(), payment.getPaidDate());
+  }
 }

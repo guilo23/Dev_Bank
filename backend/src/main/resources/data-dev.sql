@@ -24,6 +24,36 @@ INSERT INTO tb_account (account_number, customer_id, account_type, current_balan
 INSERT INTO tb_account (account_number, customer_id, account_type, current_balance, date_opened) VALUES ('000010', 10, 'SAVINGS', 1890.30, '2023-03-08');
 INSERT INTO tb_account (account_number, customer_id, account_type, current_balance, date_opened) VALUES ('000011', 11, 'CHECKING', 2750.00, '2022-10-22');
 
+INSERT INTO tb_card ( card_number, card_type, card_limit, card_billing, account_number)
+VALUES
+  ( '4111111111111111', 'CREDIT', 8000.00, 6000.00, '000001'),
+  ( '4222222222222222', 'DEBIT', NULL, NULL, '000002'),
+  ( '4333333333333333', 'CREDIT', 3000.00, 800.00, '000003'),
+  ( '4444444444444444', 'CREDIT', 9000.00, 4500.00, '000004'),
+  ( '4555555555555555', 'DEBIT', NULL, NULL, '000005'),
+  ( '4666666666666666', 'CREDIT', 6000.00, 3200.00, '000006'),
+  ( '4777777777777777', 'CREDIT', 4000.00, 1700.00, '000007');
+
+  INSERT INTO tb_card_payments (
+    id, product_name, installment_amount, installment_number,
+    total_buying, paid_amount, due_date, payment_date, paid, card_id
+  )
+  VALUES
+  (1, 'Notebook', 1000.00, 1, 6000.00, 1000.00, '2025-07-10', '2025-07-10', 'NOT_PAYED', 1),
+  (2, 'Notebook', 1000.00, 2, 6000.00, 0.00, '2025-08-10', NULL, 'NOT_PAYED', 1),
+  (3, 'Notebook', 1000.00, 3, 6000.00, 0.00, '2025-09-10', NULL, 'NOT_PAYED', 1),
+  (4, 'Notebook', 1000.00, 4, 6000.00, 0.00, '2025-10-10', NULL, 'NOT_PAYED', 1),
+  (5, 'Notebook', 1000.00, 5, 6000.00, 0.00, '2025-11-10', NULL, 'NOT_PAYED', 1),
+  (6, 'Notebook', 1000.00, 6, 6000.00, 0.00, '2025-12-10', NULL, 'NOT_PAYED', 1),
+  (7, 'TV 4K', 1500.00, 1, 4500.00, 1500.00, '2025-07-10', '2025-07-10', 'PAYED', 4),
+  (8, 'TV 4K', 1500.00, 2, 4500.00, 0.00, '2025-08-10', NULL, 'NOT_PAYED', 4),
+  (9, 'TV 4K', 1500.00, 3, 4500.00, 0.00, '2025-09-10', NULL, 'NOT_PAYED', 4),
+  (10, 'Geladeira', 800.00, 1, 3200.00, 800.00, '2025-07-10', '2025-07-10', 'PAYED', 6),
+  (11, 'Geladeira', 800.00, 2, 3200.00, 0.00, '2025-08-10', NULL, 'NOT_PAYED', 6),
+  (12, 'Geladeira', 800.00, 3, 3200.00, 0.00, '2025-09-10', NULL, 'NOT_PAYED', 6),
+  (13, 'Geladeira', 800.00, 4, 3200.00, 0.00, '2025-10-10', NULL, 'NOT_PAYED', 6);
+
+
 INSERT INTO tb_transaction (amount, origin_account_id, destiny_account_id, transaction_date) VALUES (150.00, '000001', '000002', '2023-01-15');
 INSERT INTO tb_transaction (amount, origin_account_id, destiny_account_id, transaction_date) VALUES (300.50, '000003', '000004', '2023-03-22');
 INSERT INTO tb_transaction (amount, origin_account_id, destiny_account_id, transaction_date) VALUES (75.25, '000005', '000006', '2023-05-10');
@@ -110,7 +140,7 @@ INSERT INTO tb_transaction (amount, destiny_account_id, origin_account_id, trans
 INSERT INTO tb_transaction (amount, destiny_account_id, origin_account_id, transaction_date) VALUES (15.00, '000011', '000010', '2025-06-03');
 INSERT INTO tb_transaction (amount, destiny_account_id, origin_account_id, transaction_date) VALUES (25.00, '000003', '000011', '2025-06-04');
 INSERT INTO tb_transaction (amount, destiny_account_id, origin_account_id, transaction_date) VALUES (10.00, '000004', '000011', '2025-06-05');
-
+INSERT INTO tb_transaction (amount, destiny_account_id, origin_account_id, transaction_date) VALUES (10.00, '000001', '000011', '2025-06-05');
 
 UPDATE tb_account SET current_balance = 910.75 WHERE account_number = '000001';  -- 1000 -150 +60.75
 UPDATE tb_account SET current_balance = 1530.00 WHERE account_number = '000002'; -- 1500 +150 -220.10
@@ -124,7 +154,7 @@ UPDATE tb_account SET current_balance = 2530.00 WHERE account_number = '000009';
 UPDATE tb_account SET current_balance = 3500.00 WHERE account_number = '000010'; -- 2300 +1200
 UPDATE tb_account SET current_balance = 1639.25 WHERE account_number = '000011'; -- 1700 -60.75
 
-UPDATE tb_account SET current_balance = 930.00 WHERE account_number = '000001';  -- saldo inicial 1000 - envio 240 + recebimento 170
+UPDATE tb_account SET current_balance = 1930.00 WHERE account_number = '000001';  -- saldo inicial 1000 - envio 240 + recebimento 170
 UPDATE tb_account SET current_balance = 1520.00 WHERE account_number = '000002';  -- 1500 - envio 155 + recebimento 175
 UPDATE tb_account SET current_balance = 2010.00 WHERE account_number = '000003';  -- 2000 - envio 120 + recebimento 130
 UPDATE tb_account SET current_balance = 2560.00 WHERE account_number = '000004';  -- 2500 - envio 130 + recebimento 190

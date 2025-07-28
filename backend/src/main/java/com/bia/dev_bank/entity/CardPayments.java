@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "tb_cardPayments")
+@Table(name = "tb_card_payments")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -40,7 +40,7 @@ public class CardPayments {
   private LocalDate paymentDate;
 
   @Enumerated(EnumType.STRING)
-  private PayedStatus PAID;
+  private PayedStatus paid;
 
   @ManyToOne
   @JoinColumn(name = "card_id", nullable = false)

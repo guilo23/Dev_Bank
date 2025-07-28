@@ -71,7 +71,8 @@ class PaymentControllerTest {
   void shouldGetCardPaymentById() throws Exception {
     var cardPaymentId = 1L;
     CardPaymentsResponse response =
-        new CardPaymentsResponse("123456", "geladeira", 1, BigDecimal.valueOf(250));
+        new CardPaymentsResponse(
+            "123456", "geladeira", 1, BigDecimal.valueOf(250), LocalDate.now());
 
     when(cardPaymentsService.getCardPaymentsById(cardPaymentId)).thenReturn(response);
 
@@ -80,5 +81,24 @@ class PaymentControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.productName").value("geladeira"))
         .andExpect(jsonPath("$.cardNumber").value("123456"));
+  }
+
+  @Test
+  @WithMockUser
+  void shouldGetCardPaymentsInstallments() throws Exception {
+    var cardId = 1L;
+    var response =
+        java.util.List.of(
+            new CardPaymentsResponse(
+                "123456", "geladeira", 1, BigDecimal.valueOf(250), LocalDate.now()),
+            new CardPaymentsResponse(
+                "123456", "geladeira", 2, BigDecimal.valueOf(250), LocalDate.now()));
+
+    when(cardPaymentsService.getCardPaymentsreportByid(cardId)).thenReturn(response);
+
+    mockMvc
+        .perform(get("/bia/payments/card-payments").param("cardId", "1").with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(2));
   }
 }

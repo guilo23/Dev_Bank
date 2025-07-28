@@ -123,6 +123,7 @@ public class CardServiceTest {
   void shouldAddCreditCardPaymentSuccessfully() {
     Card card = new Card();
     card.setCardType(CardType.CREDIT);
+    card.setCardBilling(BigDecimal.valueOf(1000.00));
     card.setPurchases(new ArrayList<>());
     card.setCardNumber("123456");
     Account acc = new Account();
@@ -295,5 +296,34 @@ public class CardServiceTest {
     when(cardRepository.findById(2L)).thenReturn(Optional.empty());
 
     assertThrows(EntityNotFoundException.class, () -> cardService.cardDelete(2L));
+  }
+
+  @Test
+  void shouldIncreaseLimitSuccessfully() {
+    Card card = new Card();
+    card.setCardType(CardType.CREDIT);
+    card.setCardLimit(new BigDecimal("1000"));
+
+    when(cardRepository.findById(1L)).thenReturn(Optional.of(card));
+
+    cardService.increaseLimit(new BigDecimal("500"), 1L);
+
+    assertEquals(new BigDecimal("1500"), card.getCardLimit());
+  }
+
+  @Test
+  void shouldAddDebitCardPaymentSuccessfully() {
+    CardPaymentsRequest request =
+        new CardPaymentsRequest("1111222233334444", "Fone", new BigDecimal("300"), 1);
+
+    when(securityUtil.getCurrentUserId()).thenReturn(1L);
+    when(cardRepository.findCardByCardNumber("1111222233334444")).thenReturn(Optional.of(card));
+    when(accountRepository.findByAccountNumber("123456")).thenReturn(Optional.of(account));
+    when(cardPaymentsRepository.save(any(CardPayments.class))).thenAnswer(i -> i.getArguments()[0]);
+
+    CardPayments response = cardService.addDebitCardPayment(request);
+
+    assertEquals("Fone", response.getProductName());
+    assertEquals(new BigDecimal("300"), response.getTotalBuying());
   }
 }

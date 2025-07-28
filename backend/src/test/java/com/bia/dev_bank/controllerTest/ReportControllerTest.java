@@ -88,4 +88,20 @@ public class ReportControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.length()").value(2));
   }
+
+  @Test
+  @WithMockUser
+  void shouldListAllcardCreditbyCardNumber() throws Exception {
+    when(cardService.cardsCreditPaymentsReport("12345"))
+        .thenReturn(
+            java.util.List.of(
+                new StatementResponse(
+                    "credit", BigDecimal.valueOf(500), LocalDate.now(), "descrition"),
+                new StatementResponse(
+                    "credit", BigDecimal.valueOf(500), LocalDate.now(), "descrition")));
+    mockMvc
+        .perform(get("/bia/report/credit/12345").with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(2));
+  }
 }

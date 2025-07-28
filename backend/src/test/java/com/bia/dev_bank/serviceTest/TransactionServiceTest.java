@@ -251,4 +251,39 @@ public class TransactionServiceTest {
     transactionService.transactionDelete(1L);
     verify(transactionRepository).deleteById(1L);
   }
+
+  @Test
+  void shouldGetAllTransactionsForAccount() {
+    String accountNumber = "123";
+    Transaction transaction1 =
+        new Transaction(
+            1L,
+            BigDecimal.valueOf(100.00),
+            destinyAccount,
+            originAccount,
+            null,
+            null,
+            LocalDate.now());
+    Transaction transaction2 =
+        new Transaction(
+            2L,
+            BigDecimal.valueOf(200.00),
+            originAccount,
+            destinyAccount,
+            null,
+            null,
+            LocalDate.now());
+
+    when(transactionRepository.findByOriginAccountAccountNumberOrderByTransactionDateDesc(
+            accountNumber))
+        .thenReturn(List.of(transaction1));
+    when(transactionRepository.findByDestinyAccountAccountNumberOrderByTransactionDateDesc(
+            accountNumber))
+        .thenReturn(List.of(transaction2));
+
+    List<TransactionResponse> responses =
+        transactionService.getAllTransactionsForAccount(accountNumber);
+
+    assertEquals(2, responses.size());
+  }
 }

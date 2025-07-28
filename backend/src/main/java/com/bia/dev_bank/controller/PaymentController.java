@@ -8,13 +8,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.math.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,6 +41,25 @@ public class PaymentController {
   public ResponseEntity getLoanPaymentById(Long loanPaymentId) {
     var loan = loanPaymentsService.getLoanPaymentsById(loanPaymentId);
     return ResponseEntity.status(HttpStatus.OK).body(loan);
+  }
+
+  @GetMapping("/card-payments")
+  public ResponseEntity getCardPaymentsInstallments(@RequestParam Long cardId) {
+    var payments = cardPaymentsService.getCardPaymentsreportByid(cardId);
+    return ResponseEntity.status(HttpStatus.OK).body(payments);
+  }
+
+  @GetMapping("/billing/{cardId}")
+  public ResponseEntity getActualBilling(@PathVariable Long cardId, @RequestParam String month) {
+    var cards = cardPaymentsService.getActualBilling(cardId, month);
+    return ResponseEntity.status(HttpStatus.OK).body(cards);
+  }
+
+  @PostMapping("/creditPayment/{cardPaymentId}")
+  public ResponseEntity addCreditPayment(
+      @PathVariable Long cardPaymentId, @RequestBody Double payedValue) {
+    cardPaymentsService.addTransactionToCardPayments(cardPaymentId, BigDecimal.valueOf(payedValue));
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 
   @Operation(

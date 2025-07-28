@@ -34,6 +34,7 @@ public class CardService {
   private final CardRepository cardRepository;
   private final AccountRepository accountRepository;
   private final CardPaymentsRepository cardPaymentsRepository;
+  private final CardPaymentsService cardPaymentsService;
   private final SecurityUtil securityUtil;
 
   public CardResponse cardCreate(CreditRequest request, String accountNumber) {
@@ -66,6 +67,22 @@ public class CardService {
     return new CardResponse(card);
   }
 
+  public void increaseLimit(BigDecimal plusLimit, Long id) {
+    var card = cardRepository.findById(id).orElseThrow(() -> new RuntimeException());
+
+    if (plusLimit.compareTo(BigDecimal.ZERO) == 1) {
+      if (card.getCardType().equals(CardType.CREDIT)) {
+        card.setCardLimit(card.getCardLimit().add(plusLimit));
+      } else {
+        new RuntimeException("you can not increase the limit on a debit card");
+      }
+    } else if (plusLimit.compareTo(BigDecimal.ZERO) == 0) {
+      new RuntimeException("type a value bigger than zero");
+    } else {
+      new RuntimeException("negative numbers are not cool");
+    }
+  }
+
   @Transactional
   public CardPaymentsResponse addCreditCardPayment(CardPaymentsRequest request) {
     var cardVerify = cardRepository.findCardByCardNumber(request.cardNumber());
@@ -92,7 +109,7 @@ public class CardService {
       payment.setProductName(request.productName());
       payment.setTotalBuying(request.totalBuying());
       payment.calculatedPaymentsDetails();
-      payment.setPAID(PayedStatus.TO_PAY);
+      payment.setPaid(PayedStatus.TO_PAY);
       payments.add(payment);
     }
     cardPaymentsRepository.saveAll(payments);
@@ -105,11 +122,13 @@ public class CardService {
                 LocalDate.now(),
                 request.installmentNumber(),
                 card));
+    card.setCardBilling(card.getCardBilling().add(payments.get(0).getTotalBuying()));
     return new CardPaymentsResponse(
         card.getCardNumber(),
         payments.get(0).getProductName(),
         payments.get(0).getInstallmentNumber(),
-        payments.get(0).getInstallmentAmount());
+        payments.get(0).getInstallmentAmount(),
+        payments.get(0).getDueDate());
   }
 
   public List<StatementResponse> cardsDebitPaymentsReport(String cardNumber) {
@@ -255,6 +274,18 @@ public class CardService {
 
     cardRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("card not found"));
     cardRepository.deleteById(id);
+  }
+
+  @Transactional
+  public void payActualBilling(List<CardPayments> cardPayments) {
+    if (cardPayments.isEmpty()) {
+      return;
+    }
+    var balance = cardPayments.get(0).getCard().getAccount();
+    for (CardPayments temp : cardPayments) {
+      cardPaymentsService.addTransactionToCardPayments(temp.getId(), temp.getInstallmentAmount());
+      balance.setCurrentBalance(balance.getCurrentBalance().subtract(temp.getInstallmentAmount()));
+    }
   }
 
   public CardPayments addDebitCardPayment(CardPaymentsRequest request) {
