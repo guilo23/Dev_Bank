@@ -33,7 +33,7 @@ const navigation = [
   },
   {
     name: 'Cards',
-    href: '/cards',
+    href: '/card',
     icon: CreditCard,
   },
   {
