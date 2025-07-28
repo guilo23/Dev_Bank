@@ -48,9 +48,17 @@ public class PaymentController {
     var payments = cardPaymentsService.getCardPaymentsreportByid(cardId);
     return ResponseEntity.status(HttpStatus.OK).body(payments);
   }
+
+  @GetMapping("/billing/{cardId}")
+  public ResponseEntity getActualBilling(@PathVariable Long cardId, @RequestParam String month) {
+    var cards = cardPaymentsService.getActualBilling(cardId, month);
+    return ResponseEntity.status(HttpStatus.OK).body(cards);
+  }
+
   @PostMapping("/creditPayment/{cardPaymentId}")
-  public ResponseEntity addCreditPayment(@PathVariable Long cardPaymentId,@RequestBody Double payedValue){
-    cardPaymentsService.addTransactionToCardPayments(cardPaymentId,BigDecimal.valueOf(payedValue));
+  public ResponseEntity addCreditPayment(
+      @PathVariable Long cardPaymentId, @RequestBody Double payedValue) {
+    cardPaymentsService.addTransactionToCardPayments(cardPaymentId, BigDecimal.valueOf(payedValue));
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 

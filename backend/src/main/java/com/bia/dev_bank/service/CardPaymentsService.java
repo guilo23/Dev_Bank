@@ -57,7 +57,8 @@ public class CardPaymentsService {
   }
 
   @Transactional
-  public TransactionResponse addTransactionToCardPayments(Long cardPaymentId,BigDecimal payedValue) {
+  public TransactionResponse addTransactionToCardPayments(
+      Long cardPaymentId, BigDecimal payedValue) {
     var cardVerify = cardPaymentsRepository.findById(cardPaymentId);
     var accountNumber = cardVerify.get().getCard().getAccount().getAccountNumber();
     var custumerId = securityUtil.getCurrentUserId();
@@ -78,18 +79,27 @@ public class CardPaymentsService {
         accountRepository
             .findByAccountNumber(payment.getCard().getAccount().getAccountNumber())
             .orElseThrow(() -> new EntityNotFoundException("not found"));
+    var card = payment.getCard();
     var transaction =
-        new Transaction(
-            null, payedValue, null, account, null, payment, LocalDate.now());
+        new Transaction(null, payedValue, null, account, null, payment, LocalDate.now());
     accountService.debit(account.getAccountNumber(), payedValue);
     Transaction saved = transactionRepository.save(transaction);
     payment.getTransactions().add(saved);
     updatePaidAmount(payment.getId());
+    card.setCardBilling(card.getCardBilling().subtract(payedValue));
     return new TransactionResponse(
         saved.getAmount(),
         "",
         saved.getOriginAccount().getCustomer().getName(),
         saved.getTransactionDate());
+  }
+
+  public List<CardPaymentsResponse> getActualBilling(Long cardId, String month) {
+    var payments =
+        cardPaymentsRepository
+            .findByCardIdAndMonth(cardId, month)
+            .orElseThrow(() -> new EntityNotFoundException(""));
+    return payments.stream().map(CardPaymentsResponse::new).toList();
   }
 
   public void updateCardPaymentStatus(CardPayments payment) {
@@ -100,10 +110,10 @@ public class CardPaymentsService {
     LocalDate today = LocalDate.now();
 
     if (paid.compareTo(expected) >= 0) {
-      payment.setPAID(PayedStatus.PAYED);
+      payment.setPaid(PayedStatus.PAYED);
       payment.setPaymentDate(today);
     } else if (paid.compareTo(expected) < 0) {
-      payment.setPAID(PayedStatus.PARTIAL);
+      payment.setPaid(PayedStatus.PARTIAL);
       payment.setPaymentDate(today);
     }
   }

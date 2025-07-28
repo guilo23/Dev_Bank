@@ -1,31 +1,23 @@
 package com.bia.dev_bank.serviceTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
-import com.bia.dev_bank.dto.transaction.TransactionResponse;
+import com.bia.dev_bank.dto.payments.*;
+import com.bia.dev_bank.dto.transaction.*;
 import com.bia.dev_bank.entity.*;
-import com.bia.dev_bank.entity.enums.PayedStatus;
-import com.bia.dev_bank.repository.AccountRepository;
-import com.bia.dev_bank.repository.CardPaymentsRepository;
-import com.bia.dev_bank.repository.TransactionRepository;
-import com.bia.dev_bank.service.AccountService;
-import com.bia.dev_bank.service.CardPaymentsService;
-import com.bia.dev_bank.utils.SecurityUtil;
-import jakarta.persistence.EntityNotFoundException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import com.bia.dev_bank.entity.enums.*;
+import com.bia.dev_bank.repository.*;
+import com.bia.dev_bank.service.*;
+import com.bia.dev_bank.utils.*;
+import jakarta.persistence.*;
+import java.math.*;
+import java.time.*;
+import java.util.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.*;
+import org.mockito.*;
+import org.mockito.junit.jupiter.*;
 
 @ExtendWith(MockitoExtension.class)
 class CardPaymentsServiceTest {
@@ -45,31 +37,28 @@ class CardPaymentsServiceTest {
   @BeforeEach
   void setup() {
     account = new Account();
+    // ...
+    account.setCurrentBalance(BigDecimal.valueOf(1000));
+
+    card = new Card();
+    account = new Account();
     account.setAccountNumber("000123");
     account.setCustomer(
         new Customer(
             1L,
-            "João",
-            "email",
-            "senha",
+            "João da Silva",
+            "joao@email.com",
+            "senha123",
             "USER",
-            "1980-01-01",
-            "12345678900",
+            "1985-01-01",
+            "111.222.333-44",
             "11999999999",
             List.of()));
-    account.setCurrentBalance(BigDecimal.valueOf(1000));
-
-    card = new Card();
+    card.setCardBilling(BigDecimal.valueOf(500));
     card.setAccount(account);
-
     payment = new CardPayments();
     payment.setId(1L);
     payment.setCard(card);
-    payment.setInstallmentAmount(BigDecimal.valueOf(500));
-    payment.setPaidAmount(BigDecimal.ZERO);
-    payment.setTotalBuying(BigDecimal.valueOf(500));
-    payment.setDueDate(LocalDate.now());
-    payment.setTransactions(new ArrayList<>());
   }
 
   @Test
@@ -110,7 +99,7 @@ class CardPaymentsServiceTest {
 
     cardPaymentsService.updateCardPaymentStatus(payment);
 
-    assertEquals(PayedStatus.PAYED, payment.getPAID());
+    assertEquals(PayedStatus.PAYED, payment.getPaid());
     assertEquals(LocalDate.now(), payment.getPaymentDate());
   }
 
@@ -121,7 +110,7 @@ class CardPaymentsServiceTest {
 
     cardPaymentsService.updateCardPaymentStatus(payment);
 
-    assertEquals(PayedStatus.PARTIAL, payment.getPAID());
+    assertEquals(PayedStatus.PARTIAL, payment.getPaid());
     assertEquals(LocalDate.now(), payment.getPaymentDate());
   }
 
@@ -134,10 +123,11 @@ class CardPaymentsServiceTest {
         .thenAnswer(invocation -> invocation.getArgument(0));
     when(securityUtil.getCurrentUserId()).thenReturn(1L);
 
-    TransactionResponse response = cardPaymentsService.addTransactionToCardPayments(1L);
+    TransactionResponse response =
+        cardPaymentsService.addTransactionToCardPayments(1L, BigDecimal.valueOf(100));
 
-    assertEquals(payment.getTotalBuying(), response.amount());
-    assertEquals("João", response.senderName());
-    verify(accountService).debit(account.getAccountNumber(), payment.getTotalBuying());
+    assertEquals(BigDecimal.valueOf(100), response.amount());
+    assertEquals("João da Silva", response.senderName());
+    verify(accountService).debit(account.getAccountNumber(), response.amount());
   }
 }

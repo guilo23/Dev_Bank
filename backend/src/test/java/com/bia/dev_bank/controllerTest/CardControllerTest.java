@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.bia.dev_bank.controller.*;
 import com.bia.dev_bank.dto.card.*;
 import com.bia.dev_bank.entity.enums.*;
+import com.bia.dev_bank.repository.*;
 import com.bia.dev_bank.security.*;
 import com.bia.dev_bank.service.*;
 import com.fasterxml.jackson.databind.*;
@@ -34,6 +35,8 @@ class CardControllerTest {
   @MockitoBean private CustomDetailService customDetailService;
 
   @MockitoBean private CardService cardService;
+
+  @MockitoBean private CardPaymentsRepository cardPaymentsRepository;
 
   @MockitoBean private CardPaymentsService cardPaymentsService;
 

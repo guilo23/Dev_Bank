@@ -12,7 +12,6 @@ public record CardResponse(
         card.getCardType(),
         card.getCardNumber(),
         card.getCardLimit(),
-
         card.getAccount().getCustomer().getName());
   }
 }

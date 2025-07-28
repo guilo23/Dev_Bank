@@ -1,23 +1,20 @@
 package com.bia.dev_bank.controller;
 
-import com.bia.dev_bank.config.SecurityConfig;
-import com.bia.dev_bank.dto.card.CreditRequest;
-import com.bia.dev_bank.dto.card.CreditUpdate;
-import com.bia.dev_bank.dto.payments.CardPaymentsRequest;
-import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
-import com.bia.dev_bank.service.CardPaymentsService;
-import com.bia.dev_bank.service.CardService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import com.bia.dev_bank.config.*;
+import com.bia.dev_bank.dto.card.*;
+import com.bia.dev_bank.dto.payments.*;
+import com.bia.dev_bank.repository.*;
+import com.bia.dev_bank.service.*;
+import io.swagger.v3.oas.annotations.*;
+import io.swagger.v3.oas.annotations.media.*;
+import io.swagger.v3.oas.annotations.responses.*;
+import io.swagger.v3.oas.annotations.security.*;
+import io.swagger.v3.oas.annotations.tags.*;
+import jakarta.persistence.*;
+import jakarta.validation.*;
 import java.math.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,6 +26,7 @@ public class CardController {
 
   private final CardService cardService;
   private final CardPaymentsService cardPaymentsService;
+  private final CardPaymentsRepository cardPaymentsRepository;
 
   @Operation(
       summary = "Create a new card for an account",
@@ -95,8 +93,20 @@ public class CardController {
   @PostMapping("/debit")
   public ResponseEntity addDebitBuying(@RequestBody @Valid CardPaymentsRequest request) {
     var cardPayment = cardService.addDebitCardPayment(request);
-    cardPaymentsService.addTransactionToCardPayments(cardPayment.getId(),request.totalBuying());
+    cardPaymentsService.addTransactionToCardPayments(cardPayment.getId(), request.totalBuying());
     return ResponseEntity.status(HttpStatus.OK).body(new CardPaymentsResponse(cardPayment));
+  }
+
+  @PostMapping("/credit/{cardId}")
+  public ResponseEntity payActualBilling(
+      @PathVariable Long cardId, @RequestBody MonthRequest month) {
+    var cards =
+        cardPaymentsRepository
+            .findByCardIdAndMonth(cardId, month.month())
+            .orElseThrow(() -> new EntityNotFoundException("Nenhuma parecla pendente na fatura"));
+    System.out.println(cards);
+    cardService.payActualBilling(cards);
+    return ResponseEntity.status(HttpStatus.valueOf(200)).build();
   }
 
   @Operation(summary = "getCardByID", description = "Retrieves card details by card ID")

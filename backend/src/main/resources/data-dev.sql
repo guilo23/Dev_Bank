@@ -26,12 +26,12 @@ INSERT INTO tb_account (account_number, customer_id, account_type, current_balan
 
 INSERT INTO tb_card ( card_number, card_type, card_limit, card_billing, account_number)
 VALUES
-  ( '4111111111111111', 'CREDIT', 5000.00, 1500.00, '000001'),
+  ( '4111111111111111', 'CREDIT', 8000.00, 6000.00, '000001'),
   ( '4222222222222222', 'DEBIT', NULL, NULL, '000002'),
   ( '4333333333333333', 'CREDIT', 3000.00, 800.00, '000003'),
-  ( '4444444444444444', 'CREDIT', 7000.00, 2300.00, '000004'),
+  ( '4444444444444444', 'CREDIT', 9000.00, 4500.00, '000004'),
   ( '4555555555555555', 'DEBIT', NULL, NULL, '000005'),
-  ( '4666666666666666', 'CREDIT', 6000.00, 1200.00, '000006'),
+  ( '4666666666666666', 'CREDIT', 6000.00, 3200.00, '000006'),
   ( '4777777777777777', 'CREDIT', 4000.00, 1700.00, '000007');
 
   INSERT INTO tb_card_payments (
@@ -154,7 +154,7 @@ UPDATE tb_account SET current_balance = 2530.00 WHERE account_number = '000009';
 UPDATE tb_account SET current_balance = 3500.00 WHERE account_number = '000010'; -- 2300 +1200
 UPDATE tb_account SET current_balance = 1639.25 WHERE account_number = '000011'; -- 1700 -60.75
 
-UPDATE tb_account SET current_balance = 930.00 WHERE account_number = '000001';  -- saldo inicial 1000 - envio 240 + recebimento 170
+UPDATE tb_account SET current_balance = 1930.00 WHERE account_number = '000001';  -- saldo inicial 1000 - envio 240 + recebimento 170
 UPDATE tb_account SET current_balance = 1520.00 WHERE account_number = '000002';  -- 1500 - envio 155 + recebimento 175
 UPDATE tb_account SET current_balance = 2010.00 WHERE account_number = '000003';  -- 2000 - envio 120 + recebimento 130
 UPDATE tb_account SET current_balance = 2560.00 WHERE account_number = '000004';  -- 2500 - envio 130 + recebimento 190
