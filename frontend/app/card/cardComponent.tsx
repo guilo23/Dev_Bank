@@ -16,7 +16,6 @@ type ExtendedCard = cardResponse & {
   status: 'active' | 'inactive';
   locked: boolean;
   expiry: string;
-  used?: number;
   available?: number;
 };
 
@@ -33,14 +32,19 @@ export default function CardManagement() {
         const enriched: ExtendedCard[] = rawCards.map((card) => {
           const isCredit = card.cardType === 'CREDIT';
           const used = isCredit ? Math.floor(Math.random() * card.cardLimit) : undefined;
+          const createdDate = new Date();
+          const expiryYear = (createdDate.getFullYear() + 5).toString().slice(-2);
 
           return {
             ...card,
             status: Math.random() > 0.2 ? 'active' : 'inactive',
             locked: false,
-            expiry: `${String(Math.floor(Math.random() * 12 + 1)).padStart(2, '0')}/2${Math.floor(Math.random() * 5 + 5)}`,
+            expiry: `${String(Math.floor(Math.random() * 12 + 1)).padStart(2, '0')}/${expiryYear}`,
             used,
-            available: isCredit && used !== undefined ? card.cardLimit - used : undefined,
+            available:
+              isCredit && card.cardBilling !== undefined
+                ? card.cardLimit - card.cardBilling
+                : undefined,
           };
         });
 
@@ -214,13 +218,14 @@ export default function CardManagement() {
                     <div className="flex justify-between">
                       <span className="text-sm text-muted-foreground">Used Limit</span>
                       <span className="text-sm font-medium">
-                        R$ {card.used?.toLocaleString() ?? 0} / R$ {card.cardLimit.toLocaleString()}
+                        R$ {card.cardBilling?.toLocaleString() ?? 0} / R${' '}
+                        {card.cardLimit.toLocaleString()}
                       </span>
                     </div>
                     <div className="w-full bg-muted rounded-full h-2">
                       <div
                         className="bg-primary h-2 rounded-full"
-                        style={{ width: `${((card.used ?? 0) / card.cardLimit) * 100}%` }}
+                        style={{ width: `${((card.cardBilling ?? 0) / card.cardLimit) * 100}%` }}
                       />
                     </div>
                   </div>
@@ -268,11 +273,11 @@ export default function CardManagement() {
               <div className="grid gap-4 md:grid-cols-3">
                 <Button variant="outline" className="h-20 flex-col gap-2">
                   <CreditCard className="h-6 w-6" />
-                  Increase Limit
+                  Request Increase Limit
                 </Button>
                 <Button variant="outline" className="h-20 flex-col gap-2">
                   <Settings className="h-6 w-6" />
-                  Installment Options
+                  pay Installment
                 </Button>
                 <Button variant="outline" className="h-20 flex-col gap-2">
                   <Eye className="h-6 w-6" />

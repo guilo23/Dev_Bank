@@ -22,4 +22,14 @@ public interface CardPaymentsRepository extends JpaRepository<CardPayments, Long
           """)
   Optional<List<CardPayments>> findByCardIdAndMonth(
       @Param("cardId") Long cardId, @Param("month") String month);
+
+  @Query(
+      """
+              SELECT cp FROM CardPayments cp
+              WHERE cp.productName = :productName
+                AND cp.installmentNumber = :installment
+                AND cp.paid = "NOT_PAYED"
+              """)
+  Optional<CardPayments> findByProductNameAndInstallmentNumber(
+      @Param("productName") String productName, @Param("installment") int installment);
 }

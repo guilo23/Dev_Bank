@@ -8,6 +8,7 @@ export interface cardResponse {
   cardType: string;
   cardNumber: string;
   cardLimit: number;
+  cardBilling: number;
   customername: string;
 }
 export interface paymentResponse {

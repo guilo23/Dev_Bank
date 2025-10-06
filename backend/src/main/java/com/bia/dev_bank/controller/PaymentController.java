@@ -1,17 +1,17 @@
 package com.bia.dev_bank.controller;
 
-import com.bia.dev_bank.config.SecurityConfig;
-import com.bia.dev_bank.service.CardPaymentsService;
-import com.bia.dev_bank.service.LoanPaymentsService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.bia.dev_bank.config.*;
+import com.bia.dev_bank.dto.payments.*;
+import com.bia.dev_bank.repository.*;
+import com.bia.dev_bank.service.*;
+import io.swagger.v3.oas.annotations.*;
+import io.swagger.v3.oas.annotations.responses.*;
+import io.swagger.v3.oas.annotations.security.*;
+import io.swagger.v3.oas.annotations.tags.*;
+import jakarta.persistence.*;
 import java.math.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +23,7 @@ public class PaymentController {
 
   private final LoanPaymentsService loanPaymentsService;
   private final CardPaymentsService cardPaymentsService;
+  private final CardPaymentsRepository cardPaymentsRepository;
 
   @Operation(
       summary = "getLoanPaymentByID",
@@ -47,6 +48,18 @@ public class PaymentController {
   public ResponseEntity getCardPaymentsInstallments(@RequestParam Long cardId) {
     var payments = cardPaymentsService.getCardPaymentsreportByid(cardId);
     return ResponseEntity.status(HttpStatus.OK).body(payments);
+  }
+
+  @PostMapping("/billing")
+  public ResponseEntity payInstallment(@RequestBody PayRequest request) {
+    var payment =
+        cardPaymentsRepository
+            .findByProductNameAndInstallmentNumber(request.productName(), request.installment())
+            .orElseThrow(
+                () -> new EntityNotFoundException("installment not found or already paid"));
+    cardPaymentsService.addTransactionToCardPayments(
+        payment.getId(), payment.getInstallmentAmount());
+    return ResponseEntity.status(HttpStatusCode.valueOf(200)).build();
   }
 
   @GetMapping("/billing/{cardId}")
