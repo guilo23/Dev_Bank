@@ -47,7 +47,7 @@ class CardControllerTest {
   void shouldCreateCard() throws Exception {
     CreditRequest request = new CreditRequest(CardType.DEBIT, "1111222233334444", BigDecimal.ZERO);
     CardResponse response =
-        new CardResponse(1L, CardType.DEBIT, "1111222233334444", BigDecimal.ZERO, "Maria");
+        new CardResponse(1L, CardType.DEBIT, "1111222233334444", BigDecimal.ZERO,BigDecimal.ZERO, "Maria");
 
     Mockito.when(cardService.cardCreate(any(CreditRequest.class), eq("123456")))
         .thenReturn(response);
@@ -66,7 +66,7 @@ class CardControllerTest {
   @WithMockUser
   void shouldGetCardById() throws Exception {
     CardResponse response =
-        new CardResponse(1L, CardType.DEBIT, "1111222233334444", BigDecimal.ZERO, "Maria");
+        new CardResponse(1L, CardType.DEBIT, "1111222233334444", BigDecimal.ZERO,BigDecimal.ZERO,"Maria");
 
     Mockito.when(cardService.getCardById(1L)).thenReturn(response);
 
@@ -80,7 +80,7 @@ class CardControllerTest {
   @WithMockUser
   void shouldGetAllCardsByAccount() throws Exception {
     CardResponse response =
-        new CardResponse(1L, CardType.DEBIT, "1111222233334444", BigDecimal.ZERO, "Maria");
+        new CardResponse(1L, CardType.DEBIT, "1111222233334444", BigDecimal.ZERO,BigDecimal.ZERO, "Maria");
 
     Mockito.when(cardService.getAllCardByAccountNumber("123456")).thenReturn(List.of(response));
 
@@ -95,7 +95,7 @@ class CardControllerTest {
   void shouldUpdateCard() throws Exception {
     CreditUpdate update = new CreditUpdate(BigDecimal.valueOf(2000));
     CardResponse response =
-        new CardResponse(1L, CardType.DEBIT, "1111222233334444", BigDecimal.valueOf(2000), "Maria");
+        new CardResponse(1L, CardType.DEBIT, "1111222233334444", BigDecimal.valueOf(2000),BigDecimal.ZERO, "Maria");
     Mockito.when(cardService.cardUpdate(any(CreditUpdate.class), eq(1L))).thenReturn(response);
 
     mockMvc

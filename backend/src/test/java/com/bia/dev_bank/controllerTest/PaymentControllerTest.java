@@ -1,30 +1,27 @@
 package com.bia.dev_bank.controllerTest;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.bia.dev_bank.controller.PaymentController;
-import com.bia.dev_bank.dto.payments.CardPaymentsResponse;
-import com.bia.dev_bank.entity.LoanPayments;
-import com.bia.dev_bank.entity.enums.PayedStatus;
-import com.bia.dev_bank.security.CustomDetailService;
-import com.bia.dev_bank.security.JwtUtil;
-import com.bia.dev_bank.service.CardPaymentsService;
-import com.bia.dev_bank.service.LoanPaymentsService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import com.bia.dev_bank.controller.*;
+import com.bia.dev_bank.dto.payments.*;
+import com.bia.dev_bank.entity.*;
+import com.bia.dev_bank.entity.enums.*;
+import com.bia.dev_bank.repository.*;
+import com.bia.dev_bank.security.*;
+import com.bia.dev_bank.service.*;
+import com.fasterxml.jackson.databind.*;
+import java.math.*;
+import java.time.*;
+import java.util.*;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.boot.test.autoconfigure.web.servlet.*;
+import org.springframework.security.test.context.support.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import org.springframework.test.context.*;
+import org.springframework.test.context.bean.override.mockito.*;
+import org.springframework.test.web.servlet.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PaymentController.class)
 @ActiveProfiles("test")
@@ -39,6 +36,10 @@ class PaymentControllerTest {
   @MockitoBean private LoanPaymentsService loanPaymentsService;
 
   @MockitoBean private CardPaymentsService cardPaymentsService;
+
+  @MockitoBean
+  private CardPaymentsRepository cardPaymentsRepository;
+
 
   @Autowired private ObjectMapper objectMapper;
 
